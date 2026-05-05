@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Program {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  category    String   // e.g., Education, Health, WASH
+  description String
+  imageUrl    String?
+  features    String?  // Changed from String[] for SQLite
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SuccessStory {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String
+  location    String?
+  imageUrl    String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model News {
+  id          String   @id @default(uuid())
+  title       String
+  summary     String
+  content     String
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Contact {
+  id          String   @id @default(uuid())
+  officeName  String
+  address     String
+  phone       String?
+  email       String?
+  lat         Float?
+  lng         Float?
+  createdAt   DateTime @default(now())
+}
