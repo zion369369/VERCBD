@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/app/assets/logo.png";
 
 const Footer = () => {
   return (
@@ -9,9 +11,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand Info */}
           <div>
-            <h3 className="text-xl font-bold mb-6">
-              VERC<span className="text-brand-secondary">.</span>
-            </h3>
+            <div className="flex items-center gap-3 mb-6">
+              <Image 
+                src={logo} 
+                alt="VERC Logo" 
+                width={50} 
+                height={50} 
+                className="object-contain"
+              />
+            </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Village Education Resource Center (VERC) is a non-governmental development organization
               working since 1977 for community empowerment in Bangladesh.

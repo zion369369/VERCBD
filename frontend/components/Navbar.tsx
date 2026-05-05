@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, ChevronDown, Search, Globe } from "lucide-react";
+import logo from "@/app/assets/logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,10 +31,14 @@ const Navbar = () => {
       <div className="container-custom">
         <div className="flex justify-between h-20 items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-brand-primary tracking-tight">
-              VERC<span className="text-brand-secondary">.</span>
-            </span>
+          <Link href="/" className="flex items-center gap-2">
+            <Image 
+              src={logo} 
+              alt="VERC Logo" 
+              width={60} 
+              height={60} 
+              className="object-contain"
+            />
           </Link>
 
           {/* Desktop Nav */}
