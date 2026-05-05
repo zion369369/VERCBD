@@ -1,140 +1,297 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Users, Target, Heart } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  ArrowRight, CheckCircle2, Users, Target, Heart, Globe, 
+  BarChart3, ShieldCheck, Zap, Sparkles, Droplets, BookOpen, 
+  Briefcase, Star, MessageSquare 
+} from "lucide-react";
+import washHero from "@/app/assets/wash_hero.png";
+import educationHero from "@/app/assets/education_hero.png";
 
 export default function Home() {
-  const stats = [
-    { label: "Years of Experience", value: "45+" },
-    { label: "People Reached", value: "2M+" },
-    { label: "Upazilas Covered", value: "50+" },
-    { label: "Dedicated Staff", value: "1,500+" },
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    "https://scontent.fdac20-1.fna.fbcdn.net/v/t39.30808-6/582285775_4282541052026382_7442564411324054501_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_eui2=AeHwx95pGnkNTuQgekKRKnd0ANAShKpAFH0A0BKEqkAUfYa09ZAJSaP94Tw-bx7yAOwCN63jgZJaEykcxyutR4be&_nc_ohc=v_PtojhbPgQQ7kNvwHWNK3x&_nc_oc=AdpxIbs_892V_QWWF0Q1wZ-gcxNLAKp0m6DbBB542cBwcPgOgeKjVszriKkNTYxWW9E&_nc_zt=23&_nc_ht=scontent.fdac20-1.fna&_nc_gid=kSSvh2l383G6CUjSUKpdkw&_nc_ss=7b2a8&oh=00_Af6kjwsfKz9CSqJdk9C_slURCdjM34_64MxPObs7vh73CA&oe=6A005210",
+    "https://scontent.fdac20-1.fna.fbcdn.net/v/t39.30808-6/503121614_4119628138317675_1336772247178020094_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_eui2=AeF9yQbTAWUq494v0hzY6nRdVFnj7R-uCUVUWePtH64JRX1gWG7MY4DRtUtsiWHz69OJYGs9FOFUH7a75OPang1r&_nc_ohc=r77VUMHGI-cQ7kNvwFntow_&_nc_oc=Adpa2_7ZGC6lA5Nek7XXT8YjYEwKUjSKLqXtoiypk2whB-ql3Fduw7hxisvYsNsP-LQ&_nc_zt=23&_nc_ht=scontent.fdac20-1.fna&_nc_gid=A1u3RWlDbbf0eYbhKrC6fQ&_nc_ss=7b2a8&oh=00_Af7Rbw2I5I47jIevslRzqZtvcZFfIKjvU-LuEfcOr2j3xw&oe=6A00277F"
   ];
 
-  const solutions = [
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const stats = [
+    { label: "Lives Transformed", value: "2M+", icon: <Users size={20} /> },
+    { label: "Districts Covered", value: "30+", icon: <Globe size={20} /> },
+    { label: "Community Leaders", value: "1,500+", icon: <Sparkles size={20} /> },
+    { label: "Legacy Years", value: "50+", icon: <HistoryIcon size={20} /> },
+  ];
+
+  const socialPrograms = [
     {
       title: "Non-Formal Education",
-      desc: "Innovative models of community-run schools and adult education.",
-      href: "/solutions/education",
-      icon: <CheckCircle2 className="text-brand-secondary" />,
+      desc: "Providing innovative learning models for marginalized children and adults.",
+      href: "/programs/education",
+      icon: <BookOpen className="text-blue-500" />,
+      color: "bg-blue-50"
     },
     {
-      title: "WASH (Water & Sanitation)",
-      desc: "Pioneering Community Led Total Sanitation (CLTS) since 2000.",
-      href: "/solutions/wash",
-      icon: <Target className="text-brand-secondary" />,
+      title: "Health & WaSH",
+      desc: "Pioneering CLTS and providing life-saving water and healthcare services.",
+      href: "/programs/wash",
+      icon: <Droplets className="text-emerald-500" />,
+      color: "bg-emerald-50"
     },
     {
-      title: "Health Program",
-      desc: "Mother & Child hospitals and community-based health services.",
-      href: "/solutions/health",
-      icon: <Heart className="text-brand-secondary" />,
+      title: "Livelihood & Empowerment",
+      desc: "Building resilient futures through women's empowerment and vocational training.",
+      href: "/programs/livelihood",
+      icon: <Heart className="text-rose-500" />,
+      color: "bg-rose-50"
     },
     {
-      title: "Microfinance",
-      desc: "Empowering marginalized communities through economic self-reliance.",
-      href: "/solutions/microfinance",
-      icon: <Users className="text-brand-secondary" />,
+      title: "Capacity Building",
+      desc: "Strengthening local institutions and community leadership for long-term growth.",
+      href: "/programs/capacity",
+      icon: <Zap className="text-amber-500" />,
+      color: "bg-amber-50"
     },
   ];
 
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  };
+
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center bg-brand-primary overflow-hidden">
-        <div className="absolute inset-0 bg-black/40 z-10" />
-        {/* Placeholder for Hero Image */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
+    <div className="flex flex-col bg-white overflow-x-hidden">
+      {/* 1. HOME: Clear Mission Statement & Hero with Slideshow */}
+      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 z-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 0.7, scale: 1.05 }}
+              exit={{ opacity: 0, scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <img 
+                src={slides[currentSlide]} 
+                alt="VERC Impact" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900/80"></div>
+          
+          {/* Slide Indicators */}
+          <div className="absolute bottom-12 right-12 z-30 flex gap-3">
+              {slides.map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-1.5 transition-all duration-500 rounded-full ${i === currentSlide ? "w-10 bg-brand-secondary" : "w-2 bg-white/20"}`}
+                  />
+              ))}
+          </div>
+        </div>
         
         <div className="container-custom relative z-20 text-white">
-          <div className="max-w-2xl">
-            <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Empowering Communities for a Sustainable Future
-            </h1>
-            <p className="text-lg text-gray-200 mb-8 leading-relaxed">
-              Village Education Resource Center (VERC) is transforming the lives of marginalized 
-              communities in Bangladesh through education, health, and economic empowerment.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/about" className="btn-primary !bg-brand-secondary hover:!bg-brand-secondary/90">
-                Learn Our Story
-              </Link>
-              <Link href="/get-involved" className="px-6 py-2 border-2 border-white rounded-md hover:bg-white hover:text-brand-primary transition-all font-semibold">
-                Get Involved
-              </Link>
-            </div>
+          <div className="max-w-4xl">
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+            >
+                <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-8 border border-brand-primary/30 text-brand-secondary">
+                  Our Mission Statement
+                </span>
+                <h1 className="text-6xl lg:text-9xl font-black leading-[0.95] tracking-tighter mb-10">
+                  Transforming <br/> <span className="text-brand-secondary">Destinies.</span>
+                </h1>
+                <p className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed font-medium max-w-2xl">
+                    &quot;Transforming the lives of marginalized, disadvantaged and destitute people by providing humanitarian assistance and building resilient livelihoods.&quot;
+                </p>
+                <div className="flex flex-wrap gap-6">
+                  <Link href="/about" className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3">
+                    Our Story <ArrowRight size={20} />
+                  </Link>
+                  <Link href="/contact" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                    Partner with Us
+                  </Link>
+                </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-white py-16 border-b border-gray-100">
+      {/* 2. HOME: Key Impact Statistics */}
+      <section className="relative z-30 -mt-16">
         <div className="container-custom">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <div className="text-3xl lg:text-4xl font-bold text-brand-primary mb-2">{stat.value}</div>
-                <div className="text-sm text-gray-500 font-medium uppercase tracking-wider">{stat.label}</div>
-              </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+            {stats.map((stat, i) => (
+              <motion.div 
+                key={stat.label}
+                {...fadeIn}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white p-10 rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.06)] border border-gray-50 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500"
+              >
+                <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-all">
+                    {stat.icon}
+                </div>
+                <div className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">{stat.label}</div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Solutions Section */}
-      <section className="py-24 bg-brand-light">
+      {/* 3. HOME: Programs Overview */}
+      <section className="py-40 bg-white">
         <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold mb-4">Our Core Solutions</h2>
-            <p className="text-gray-600">
-              We address the most critical needs of rural and marginalized urban communities 
-              through integrated development approaches.
+          <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-8">
+            <div className="max-w-2xl">
+                <div className="flex items-center gap-3 text-brand-primary mb-6">
+                    <Target size={24} />
+                    <h2 className="font-black uppercase tracking-[0.2em] text-xs">Our Focus</h2>
+                </div>
+                <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tighter">
+                    Social Program <br/> <span className="text-brand-primary">Pillars.</span>
+                </h3>
+            </div>
+            <p className="text-xl text-gray-500 font-medium max-w-md leading-relaxed">
+                Addressing the most critical needs of rural and marginalized communities through integrated development approaches.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {solutions.map((item) => (
-              <div key={item.title} className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group">
-                <div className="mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors">{item.title}</h3>
-                <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+            {socialPrograms.map((item, i) => (
+              <motion.div 
+                key={item.title} 
+                {...fadeIn}
+                transition={{ delay: i * 0.1 }}
+                className={`${item.color} p-10 rounded-[48px] border border-transparent hover:border-gray-200 hover:bg-white hover:shadow-2xl transition-all duration-500 group flex flex-col h-full`}
+              >
+                <div className="mb-8 w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    {item.icon}
+                </div>
+                <h3 className="text-2xl font-black mb-4 text-gray-900 leading-tight">{item.title}</h3>
+                <p className="text-gray-500 font-medium mb-10 text-sm leading-relaxed">
                   {item.desc}
                 </p>
-                <Link href={item.href} className="text-brand-primary font-semibold text-sm flex items-center gap-2">
-                  View Program <ArrowRight size={16} />
+                <Link href={item.href} className="mt-auto inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
+                  Explore Program <ArrowRight size={14} />
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Impact Story Section (Highlighting scraped content) */}
-      <section className="py-24 bg-white">
+      {/* GLOBAL PARTNERSHIP SECTION - FEATURING ORLANDO BLOOM */}
+      <section className="py-40 bg-white">
         <div className="container-custom">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1">
-              <div className="text-brand-secondary font-bold text-sm uppercase tracking-widest mb-4">Impact Story</div>
-              <h2 className="text-4xl font-bold mb-6">Nilima's Journey to Self-Reliance</h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Nilima, like many in her community, struggled with extreme poverty. Through VERC's 
-                livelihood project, she received training and support to start her own venture. 
-                Today, she is not only supporting her family but also empowering other women in her village.
-              </p>
-              <Link href="/impact/nilima-success" className="btn-primary inline-flex items-center gap-2">
-                Read Full Story <ArrowRight size={18} />
-              </Link>
+            <div className="flex flex-col lg:flex-row items-center gap-24">
+                <div className="flex-1 space-y-10">
+                    <div className="flex items-center gap-3 text-brand-primary">
+                        <Globe size={24} />
+                        <h2 className="font-black uppercase tracking-widest text-xs">Global Collaborations</h2>
+                    </div>
+                    <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tighter">
+                        Partnering for <br/> <span className="text-brand-primary">Global Impact.</span>
+                    </h3>
+                    <p className="text-xl text-gray-600 font-medium leading-relaxed">
+                        VERC works alongside international agencies like **UNICEF** to implement life-changing infrastructure. 
+                        Field visits from Goodwill Ambassadors like **Orlando Bloom** highlight the success of our Community-Led models in providing safe water to marginalized families.
+                    </p>
+                    <div className="pt-6">
+                        <Link href="/partners" className="btn-primary px-10 py-5 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+                            Our Partners & Donors
+                        </Link>
+                    </div>
+                </div>
+                <div className="flex-1 relative h-[600px] w-full rounded-[64px] overflow-hidden shadow-2xl group">
+                    <img 
+                        src="https://scontent.fdac20-1.fna.fbcdn.net/v/t39.30808-6/582285775_4282541052026382_7442564411324054501_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_eui2=AeHwx95pGnkNTuQgekKRKnd0ANAShKpAFH0A0BKEqkAUfYa09ZAJSaP94Tw-bx7yAOwCN63jgZJaEykcxyutR4be&_nc_ohc=v_PtojhbPgQQ7kNvwHWNK3x&_nc_oc=AdpxIbs_892V_QWWF0Q1wZ-gcxNLAKp0m6DbBB542cBwcPgOgeKjVszriKkNTYxWW9E&_nc_zt=23&_nc_ht=scontent.fdac20-1.fna&_nc_gid=kSSvh2l383G6CUjSUKpdkw&_nc_ss=7b2a8&oh=00_Af6kjwsfKz9CSqJdk9C_slURCdjM34_64MxPObs7vh73CA&oe=6A005210" 
+                        alt="Orlando Bloom visiting VERC Project" 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                    />
+                    <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 text-white">
+                        <p className="text-xs font-black uppercase tracking-widest mb-2">Field Visit Spotlight</p>
+                        <h5 className="text-lg font-bold">Orlando Bloom observing the Pipe Water Network project.</h5>
+                    </div>
+                </div>
             </div>
-            <div className="flex-1 w-full h-[400px] bg-gray-200 rounded-2xl overflow-hidden relative">
-              <Image 
-                src="https://images.unsplash.com/photo-1531050170041-f88d748579f6?q=80&w=2070&auto=format&fit=crop" 
-                alt="Impact Story" 
-                fill 
-                className="object-cover"
-              />
+        </div>
+      </section>
+
+      {/* SUCCESS STORY - Immersive Style */}
+      <section className="py-40 relative bg-gray-50">
+        <div className="container-custom">
+            <div className="bg-white rounded-[64px] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch border border-gray-100">
+                <div className="flex-1 relative h-[400px] lg:h-auto">
+                    <img 
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvT5MrmPGsEYnFWwkigpCDcKu18qRR1t0LaQ&s" 
+                        alt="Youth Empowerment Group" 
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/40 to-transparent"></div>
+                </div>
+                <div className="flex-1 p-12 lg:p-24 space-y-10">
+                    <div className="flex items-center gap-3 text-brand-secondary">
+                        <Heart size={20} />
+                        <h4 className="font-black uppercase tracking-widest text-xs">Community Success</h4>
+                    </div>
+                    <h3 className="text-4xl lg:text-6xl font-black text-gray-900 leading-tight tracking-tighter">Empowering <br/> Future Generations.</h3>
+                    <p className="text-xl text-gray-600 leading-relaxed font-medium">
+                        &quot;VERC has always been focusing on strategies its course of action based on Strategic Planning. We nurture expansive patterns of thinking to set collective aspiration free.&quot;
+                    </p>
+                    <div className="pt-6">
+                        <Link href="/impact" className="btn-primary px-10 py-5 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+                            View Impact Results
+                        </Link>
+                    </div>
+                </div>
             </div>
-          </div>
+        </div>
+      </section>
+
+      {/* 4. HOME: Call to Action: Donate/Partner */}
+      <section className="py-40 bg-brand-primary text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 blur-[150px] -mr-40 mt-20"></div>
+        <div className="container-custom text-center relative z-10">
+            <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-12">
+                <h3 className="text-5xl lg:text-9xl font-black mb-12 leading-[0.9] tracking-tighter">Be the <br/> <span className="text-brand-secondary">Change.</span></h3>
+                <p className="text-2xl text-gray-300 font-medium">
+                    Support VERC in building a self-reliant and enlightened society based on justice, equity and sustainability.
+                </p>
+                <div className="flex flex-wrap justify-center gap-6 pt-10">
+                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-black rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
+                        Support Our Work
+                    </button>
+                    <button className="px-12 py-6 bg-transparent border-2 border-white/20 text-white text-xl font-bold rounded-3xl hover:bg-white/10 transition-all">
+                        Become a Partner
+                    </button>
+                </div>
+            </motion.div>
         </div>
       </section>
     </div>
   );
+}
+
+function HistoryIcon({ className, size }: { className?: string, size?: number }) {
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size || 24} height={size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>;
 }

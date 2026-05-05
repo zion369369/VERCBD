@@ -61,15 +61,15 @@ const Footer = () => {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="mt-1 flex-shrink-0" />
-                <span>B30, Ekhlas Uddin Khan Road, Savar, Dhaka</span>
+                <span>B30, Ekhlas Uddin Khan Road, Anandapur, Savar, Dhaka, Bangladesh</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="flex-shrink-0" />
-                <span>+88 02223371216</span>
+                <span>+88 02 7742029, +88 02 7745412</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="flex-shrink-0" />
-                <span>info@vercbd.org</span>
+                <span>verc@bangla.net</span>
               </li>
             </ul>
           </div>

@@ -10,20 +10,55 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navigation = [
-    { name: "About VERC", href: "/about" },
+    { name: "Home", href: "/" },
     {
-      name: "Solutions",
+      name: "About Us",
       href: "#",
       children: [
-        { name: "Education", href: "/solutions/education" },
-        { name: "Health", href: "/solutions/health" },
-        { name: "WASH", href: "/solutions/wash" },
-        { name: "Microfinance", href: "/solutions/microfinance" },
+        { name: "Vision and Mission", href: "/about" },
+        { name: "Governance & Leadership", href: "/about/organogram" },
+        { name: "Senior Staff Members", href: "/about/staff" },
+        { name: "Our Awards", href: "/about/awards" },
+        { name: "Policies & Legal Status", href: "/about/legal" },
       ],
     },
-    { name: "Impact", href: "/impact" },
-    { name: "Get Involved", href: "/get-involved" },
-    { name: "Resources", href: "/resources" },
+    {
+      name: "Social Programs",
+      href: "#",
+      children: [
+        { name: "Education - Non Formal", href: "/programs/education" },
+        { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
+        { name: "Capacity Building", href: "/programs/capacity" },
+        { name: "Health, Water & Sanitation", href: "/programs/wash" },
+      ],
+    },
+    {
+      name: "Microfinance",
+      href: "#",
+      children: [
+        { name: "Loan & Savings Products", href: "/microfinance/products" },
+        { name: "Eligibility & Process", href: "/microfinance/process" },
+      ],
+    },
+    {
+      name: "Impact & Partners",
+      href: "#",
+      children: [
+        { name: "Impact Results", href: "/impact" },
+        { name: "Transparency & Reporting", href: "/about/annual-report" },
+        { name: "Development Partners", href: "/partners" },
+      ],
+    },
+    {
+      name: "Resources & Contact",
+      href: "#",
+      children: [
+        { name: "Photo & Video Gallery", href: "/resources/gallery" },
+        { name: "Notices & Vacancies", href: "/resources/notices" },
+        { name: "Branch Network", href: "/resources/branches" },
+        { name: "Contact Us", href: "/contact" },
+      ],
+    },
   ];
 
   return (
@@ -53,12 +88,12 @@ const Navbar = () => {
                   {item.children && <ChevronDown size={14} />}
                 </Link>
                 {item.children && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    {item.children.map((child) => (
+                  <div className="absolute top-full left-0 mt-0 w-64 bg-white border-x border-b border-gray-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    {item.children.map((child, idx) => (
                       <Link
                         key={child.name}
                         href={child.href}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-light hover:text-brand-primary"
+                        className={`block px-6 py-3 text-[13px] font-semibold text-gray-800 hover:bg-gray-50 hover:text-brand-primary transition-all ${idx !== item.children.length - 1 ? "border-b border-gray-50" : ""}`}
                       >
                         {child.name}
                       </Link>
