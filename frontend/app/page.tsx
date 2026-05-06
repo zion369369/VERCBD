@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, CheckCircle2, Users, Target, Heart, Globe, 
   BarChart3, ShieldCheck, Zap, Sparkles, Droplets, BookOpen, 
-  Briefcase, Star, MessageSquare 
+  Briefcase, Star, MessageSquare, UserCheck, HeartPulse, Scale, 
+  TrendingUp, Handshake, Sun 
 } from "lucide-react";
 import washHero from "@/app/assets/wash_hero.png";
 import educationHero from "@/app/assets/education_hero.png";
@@ -30,7 +31,7 @@ export default function Home() {
   const stats = [
     { label: "Lives Transformed", value: "2M+", icon: <Users size={20} /> },
     { label: "Districts Covered", value: "30+", icon: <Globe size={20} /> },
-    { label: "Community Leaders", value: "1,500+", icon: <Sparkles size={20} /> },
+    { label: "Community Leaders", value: "1,500+", icon: <UserCheck size={20} /> },
     { label: "Legacy Years", value: "50+", icon: <HistoryIcon size={20} /> },
   ];
 
@@ -114,14 +115,11 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
             >
-                <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-8 border border-brand-primary/30 text-brand-secondary">
-                  Our Mission Statement
-                </span>
                 <h1 className="text-6xl lg:text-9xl font-black leading-[0.95] tracking-tighter mb-10">
                   Transforming <br/> <span className="text-brand-secondary">Destinies.</span>
                 </h1>
                 <p className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed font-medium max-w-2xl">
-                    &quot;Transforming the lives of marginalized, disadvantaged and destitute people by providing humanitarian assistance and building resilient livelihoods.&quot;
+                    Dedicated to empowering marginalized communities through sustainable innovation and participatory development since 1977.
                 </p>
                 <div className="flex flex-wrap gap-6">
                   <Link href="/about" className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3">
@@ -197,6 +195,64 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* 4. HOME: SDG Commitment Section */}
+      <section className="py-40 bg-gray-50 overflow-hidden">
+        <div className="container-custom">
+            <div className="text-center max-w-4xl mx-auto mb-24">
+                <motion.div {...fadeIn}>
+                    <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/10 rounded-full text-[10px] font-black uppercase tracking-widest text-brand-primary mb-8">
+                        Global Agenda 2030
+                    </span>
+                    <h2 className="text-5xl lg:text-8xl font-black text-gray-900 leading-[1] tracking-tighter mb-10">
+                        Achieving the <br/> <span className="text-brand-primary">SDGs.</span>
+                    </h2>
+                    <p className="text-xl text-gray-600 font-medium leading-relaxed">
+                        VERC is strongly committed to contributing to achieving the Sustainable Development Goals (SDGs) by 2030 through our high-impact core programs.
+                    </p>
+                </motion.div>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-6">
+                {[
+                    { id: 1, title: "No Poverty", color: "bg-[#E5243B]", desc: "Livelihood development for the disadvantaged.", icon: <Users size={32} /> },
+                    { id: 2, title: "Zero Hunger", color: "bg-[#DDA63A]", desc: "Rural development aimed at food security.", icon: <Zap size={32} /> }, // Closest to steam/energy of food
+                    { id: 3, title: "Good Health", color: "bg-[#4C9F38]", desc: "Mother & Child Hospital and health initiatives.", icon: <HeartPulse size={32} /> },
+                    { id: 4, title: "Quality Education", color: "bg-[#C5192D]", desc: "Emphasis on early childhood development.", icon: <BookOpen size={32} /> },
+                    { id: 5, title: "Gender Equality", color: "bg-[#FF3A21]", desc: "Empowering marginalized women populations.", icon: <Scale size={32} /> },
+                    { id: 6, title: "Clean Water", color: "bg-[#26BDE2]", desc: "Pioneers of the CLTS approach in Bangladesh.", icon: <Droplets size={32} /> },
+                    { id: 7, title: "Clean Energy", color: "bg-[#FCC30B]", desc: "Improved Cook Stove (ICS) program since 1987.", icon: <Sun size={32} /> },
+                    { id: 8, title: "Decent Work", color: "bg-[#A21942]", desc: "Micro-enterprise and income generation.", icon: <TrendingUp size={32} /> },
+                    { id: 10, title: "Reduced Inequality", color: "bg-[#DD1367]", desc: "Focus on justice for marginalized populations.", icon: <Target size={32} /> },
+                    { id: 13, title: "Climate Action", color: "bg-[#3F7E44]", desc: "Adaptation and disaster preparedness.", icon: <Globe size={32} /> },
+                    { id: 17, title: "Partnerships", color: "bg-[#19486A]", desc: "Collaboration with World Bank, PKSF, WaterAid.", icon: <Handshake size={32} /> },
+                ].map((sdg, i) => (
+                    <motion.div
+                        key={sdg.id}
+                        {...fadeIn}
+                        transition={{ delay: i * 0.05 }}
+                        className="group relative w-[calc(50%-1.5rem)] md:w-[calc(33.33%-1.5rem)] lg:w-[calc(20%-1.5rem)] xl:w-[calc(16.66%-1.5rem)] max-w-[200px] aspect-square"
+                    >
+                        <div className={`${sdg.color} p-6 h-full rounded-[32px] text-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl overflow-hidden flex flex-col justify-between`}>
+                            <div className="absolute top-0 right-0 p-4 opacity-10 scale-150 transform translate-x-4 -translate-y-4 font-black text-7xl">
+                                {sdg.id}
+                            </div>
+                            <div className="relative z-10">
+                                <div className="text-3xl font-black mb-1 leading-none">{sdg.id}</div>
+                                <div className="mb-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                                    {sdg.icon}
+                                </div>
+                                <h4 className="text-[11px] font-black uppercase tracking-tight leading-tight">{sdg.title}</h4>
+                            </div>
+                            <p className="relative z-10 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 leading-snug">
+                                {sdg.desc}
+                            </p>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
         </div>
       </section>
 

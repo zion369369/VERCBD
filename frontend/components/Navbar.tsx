@@ -34,7 +34,7 @@ const Navbar = () => {
     },
     {
       name: "Microfinance",
-      href: "#",
+      href: "/microfinance",
       children: [
         { name: "Loan & Savings Products", href: "/microfinance/products" },
         { name: "Eligibility & Process", href: "/microfinance/process" },

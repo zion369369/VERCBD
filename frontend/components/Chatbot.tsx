@@ -206,7 +206,7 @@ const AboutView = ({ onClose, language }: { onClose: () => void, language: "en" 
                 <Phone size={18} className="text-gray-300 mt-1" />
                 <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Phone & Support</p>
-                    <p className="text-[13px] text-gray-600 font-medium">+88 02 7742029, +88 02 7745412</p>
+                    <p className="text-[13px] text-gray-600 font-medium">+88 02223371216, +88 02223371217</p>
                 </div>
             </div>
             <div className="flex gap-4">
