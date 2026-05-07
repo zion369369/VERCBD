@@ -13,7 +13,8 @@ import {
   Handshake,
   DollarSign,
   CreditCard,
-  Building
+  Building,
+  Target
 } from "lucide-react";
 import Image from "next/image";
 
