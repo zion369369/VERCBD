@@ -342,7 +342,7 @@ const Chatbot = () => {
             initial={{ opacity: 0, scale: 0.95, y: 40, transformOrigin: "bottom right" }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 40 }}
-            className="relative bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[460px] h-[720px] flex flex-col overflow-hidden border border-gray-100 mb-4"
+            className="relative bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[460px] h-[600px] flex flex-col overflow-hidden border border-gray-100 mb-4"
           >
             {/* About & Info Overlay */}
             <AnimatePresence>
