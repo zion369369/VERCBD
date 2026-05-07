@@ -163,12 +163,12 @@ export default function PartnersPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900"></div>
         </div>
         
-        <div className="container-custom relative z-10 text-white">
+        <div className="container-custom relative z-10 text-white text-center">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="max-w-4xl"
+            className="max-w-4xl mx-auto"
           >
             <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-10 border border-brand-primary/30 text-brand-secondary">
               Strategic Collaboration
@@ -176,7 +176,7 @@ export default function PartnersPage() {
             <h1 className="text-6xl lg:text-9xl font-black mb-10 leading-[0.95] tracking-tighter">
               Global <br/> <span className="text-brand-secondary">Partners.</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl">
+            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mx-auto">
               Building a sustainable future through strong partnerships with international donors, NGOs, and the Government of Bangladesh.
             </p>
           </motion.div>

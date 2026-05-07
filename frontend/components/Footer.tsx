@@ -1,82 +1,162 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Facebook, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { 
+  Facebook, 
+  Twitter, 
+  Linkedin, 
+  Youtube, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  ArrowUpRight, 
+  Globe,
+  Heart
+} from "lucide-react";
 import logo from "@/app/assets/logo.png";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
+  const footerLinks = [
+    {
+      title: "Organization",
+      links: [
+        { name: "About VERC", href: "/about" },
+        { name: "Our History", href: "/about#history" },
+        { name: "Vision & Mission", href: "/about" },
+        { name: "Organogram", href: "/about/organogram" },
+        { name: "Leadership", href: "/about/staff" },
+      ]
+    },
+    {
+      title: "Social Programs",
+      links: [
+        { name: "Education", href: "/programs/education" },
+        { name: "Health & WASH", href: "/programs/wash" },
+        { name: "Livelihood", href: "/programs/livelihood" },
+        { name: "Capacity Building", href: "/programs/capacity" },
+        { name: "Partnerships", href: "/partners" },
+      ]
+    },
+    {
+      title: "Resources",
+      links: [
+        { name: "Annual Reports", href: "/about/annual-report" },
+        { name: "Policies", href: "/about/legal" },
+        { name: "Photo Gallery", href: "/resources/gallery" },
+        { name: "Notices", href: "/resources/notices" },
+        { name: "Contact Us", href: "/contact" },
+      ]
+    }
+  ];
+
   return (
-    <footer className="bg-brand-dark text-white pt-16 pb-8">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Brand Info */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
+    <footer className="bg-gray-900 text-white pt-32 pb-12 overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-primary/5 blur-[120px] -mr-40 mt-20"></div>
+      
+      <div className="container-custom relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 mb-24">
+          {/* Brand Column */}
+          <div className="lg:col-span-5 space-y-10">
+            <Link href="/" className="inline-block">
               <Image 
                 src={logo} 
                 alt="VERC Logo" 
-                width={50} 
-                height={50} 
-                className="object-contain"
+                width={100} 
+                height={100} 
+                className="opacity-100 object-contain"
               />
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Village Education Resource Center (VERC) is a non-governmental development organization
-              working since 1977 for community empowerment in Bangladesh.
+            </Link>
+            <p className="text-xl text-gray-400 font-medium leading-relaxed max-w-md">
+              A self-reliant and enlightened society based on justice, equity and sustainability where every human being has equal opportunity.
             </p>
-            <div className="flex space-x-4">
-              <Link href="#" className="hover:text-brand-secondary transition-colors"><Facebook size={20} /></Link>
-              <Link href="#" className="hover:text-brand-secondary transition-colors"><Twitter size={20} /></Link>
-              <Link href="#" className="hover:text-brand-secondary transition-colors"><Linkedin size={20} /></Link>
-              <Link href="#" className="hover:text-brand-secondary transition-colors"><Youtube size={20} /></Link>
+            <div className="flex gap-5">
+              {[
+                { icon: <Facebook size={20} />, href: "https://facebook.com" },
+                { icon: <Twitter size={20} />, href: "https://twitter.com" },
+                { icon: <Linkedin size={20} />, href: "https://linkedin.com" },
+                { icon: <Youtube size={20} />, href: "https://youtube.com" }
+              ].map((social, i) => (
+                <a 
+                  key={i} 
+                  href={social.href} 
+                  className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300 border border-white/10"
+                >
+                  {social.icon}
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li><Link href="/about" className="hover:text-white">About VERC</Link></li>
-              <li><Link href="/impact" className="hover:text-white">Impact</Link></li>
-              <li><Link href="/resources" className="hover:text-white">Resources</Link></li>
-              <li><Link href="/career" className="hover:text-white">Careers</Link></li>
-              <li><Link href="/contact" className="hover:text-white">Contact Us</Link></li>
-            </ul>
-          </div>
-
-          {/* Solutions */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Our Solutions</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li><Link href="/solutions/education" className="hover:text-white">Non-Formal Education</Link></li>
-              <li><Link href="/solutions/health" className="hover:text-white">Health Programs</Link></li>
-              <li><Link href="/solutions/wash" className="hover:text-white">Water & Sanitation</Link></li>
-              <li><Link href="/solutions/microfinance" className="hover:text-white">Microfinance</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Contact Us</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li className="flex items-start gap-3">
-                <MapPin size={18} className="mt-1 flex-shrink-0" />
-                <span>B30, Ekhlas Uddin Khan Road, Anandapur, Savar, Dhaka, Bangladesh</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone size={18} className="flex-shrink-0" />
-                <span>+88 02223371216, +88 02223371217</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail size={18} className="flex-shrink-0" />
-                <span>verc@bangla.net</span>
-              </li>
-            </ul>
+          {/* Links Columns */}
+          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+            {footerLinks.map((group, i) => (
+              <div key={i} className="space-y-8">
+                <h4 className="text-xs font-black uppercase tracking-[0.3em] text-brand-secondary">{group.title}</h4>
+                <ul className="space-y-5">
+                  {group.links.map((link, j) => (
+                    <li key={j}>
+                      <Link 
+                        href={link.href} 
+                        className="text-gray-400 hover:text-white transition-colors font-medium flex items-center group gap-1"
+                      >
+                        {link.name}
+                        <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} Village Education Resource Center (VERC). All rights reserved.</p>
+        {/* Contact Strip */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12 border-y border-white/10 mb-12">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><MapPin size={24} /></div>
+            <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Visit Us</p>
+                <p className="text-sm font-bold">B-30, Ekhlaspur, Savar, Dhaka</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Mail size={24} /></div>
+            <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Email Us</p>
+                <p className="text-sm font-bold">info@vercbd.org</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Phone size={24} /></div>
+            <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Call Us</p>
+                <p className="text-sm font-bold">+880-2-224441511</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 font-bold text-xs uppercase tracking-widest">
+            <div className="flex items-center gap-2">
+                <span>© {currentYear} VERC Bangladesh</span>
+                <span className="hidden md:inline">•</span>
+                <span>All Rights Reserved</span>
+            </div>
+            <div className="flex items-center gap-6">
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
+                <div className="flex items-center gap-2 text-brand-secondary">
+                    <Globe size={14} />
+                    <span>English (US)</span>
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+                Built with <Heart size={14} className="text-brand-secondary fill-brand-secondary" /> for Impact
+            </div>
         </div>
       </div>
     </footer>

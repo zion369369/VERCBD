@@ -4,8 +4,7 @@ import React from "react";
 import { Users, Shield, Target, Award, History, BookOpen, Heart, Droplets, Briefcase, Globe, Zap, CheckCircle2, ArrowRight, TrendingUp, BarChart3, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import washHero from "@/app/assets/wash_hero.png";
-import educationHero from "@/app/assets/education_hero.png";
+import aboutHero from "@/app/assets/about_official.jpg";
 
 export default function AboutPage() {
   const coreValues = [
@@ -38,7 +37,7 @@ export default function AboutPage() {
       <section className="relative min-h-[90vh] flex items-center pt-20 pb-32 overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <Image 
-            src={washHero} 
+            src={aboutHero} 
             alt="VERC Hero" 
             fill 
             className="object-cover opacity-60 scale-105"
@@ -158,8 +157,8 @@ export default function AboutPage() {
                 className="relative h-[600px] lg:h-[800px] rounded-[64px] overflow-hidden shadow-2xl group"
             >
                 <Image 
-                    src={educationHero} 
-                    alt="Education Program" 
+                    src={aboutHero} 
+                    alt="VERC Journey" 
                     fill 
                     className="object-cover group-hover:scale-110 transition-transform duration-1000"
                 />

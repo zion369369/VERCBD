@@ -34,8 +34,9 @@ const Navbar = () => {
     },
     {
       name: "Microfinance",
-      href: "/microfinance",
+      href: "#",
       children: [
+        { name: "About Microfinance", href: "/microfinance" },
         { name: "Loan & Savings Products", href: "/microfinance/products" },
         { name: "Eligibility & Process", href: "/microfinance/process" },
       ],
@@ -62,70 +63,77 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
-      <div className="container-custom">
-        <div className="flex justify-between h-20 items-center">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image 
-              src={logo} 
-              alt="VERC Logo" 
-              width={60} 
-              height={60} 
-              className="object-contain"
-            />
-          </Link>
-
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <div key={item.name} className="relative group">
-                <Link
-                  href={item.href}
-                  className="nav-link flex items-center gap-1"
-                >
-                  {item.name}
-                  {item.children && <ChevronDown size={14} />}
-                </Link>
-                {item.children && (
-                  <div className="absolute top-full left-0 mt-0 w-64 bg-white border-x border-b border-gray-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    {item.children.map((child, idx) => (
-                      <Link
-                        key={child.name}
-                        href={child.href}
-                        className={`block px-6 py-3 text-[13px] font-semibold text-gray-800 hover:bg-gray-50 hover:text-brand-primary transition-all ${idx !== item.children.length - 1 ? "border-b border-gray-50" : ""}`}
-                      >
-                        {child.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Utility Nav */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <button className="p-2 text-gray-500 hover:text-brand-primary">
-              <Search size={20} />
-            </button>
-            <button className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-brand-primary">
-              <Globe size={18} />
-              EN
-            </button>
-            <Link href="/donate" className="btn-primary">
-              Donate
+    <nav className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100 h-24 flex items-center">
+      <div className="container-custom w-full">
+        <div className="flex items-center h-full">
+          {/* Logo - Left aligned slot */}
+          <div className="flex-1 flex justify-start">
+            <Link href="/" className="flex items-center gap-2">
+              <Image 
+                src={logo} 
+                alt="VERC Logo" 
+                width={75} 
+                height={75} 
+                className="object-contain"
+                priority
+              />
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-gray-600"
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
+          {/* Desktop Nav - Centered slot */}
+          <div className="hidden lg:flex justify-center">
+            <div className="flex items-center space-x-8">
+              {navigation.map((item) => (
+                <div key={item.name} className="relative group">
+                  <Link
+                    href={item.href}
+                    className="nav-link flex items-center gap-1 py-4"
+                  >
+                    {item.name}
+                    {item.children && <ChevronDown size={14} />}
+                  </Link>
+                  {item.children && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-64 bg-white border border-gray-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-b-2xl overflow-hidden">
+                      {item.children.map((child, idx) => (
+                        <Link
+                          key={child.name}
+                          href={child.href}
+                          className={`block px-6 py-3 text-[13px] font-semibold text-gray-800 hover:bg-gray-50 hover:text-brand-primary transition-all ${idx !== item.children.length - 1 ? "border-b border-gray-50" : ""}`}
+                        >
+                          {child.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Utility Nav - Right aligned slot */}
+          <div className="flex-1 flex justify-end items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-4">
+              <button className="p-2 text-gray-500 hover:text-brand-primary transition-colors">
+                <Search size={20} />
+              </button>
+              <button className="flex items-center gap-1 text-sm font-bold text-gray-700 hover:text-brand-primary transition-colors">
+                <Globe size={18} />
+                EN
+              </button>
+              <Link href="/donate" className="btn-primary shadow-lg shadow-brand-primary/20">
+                Donate
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 text-gray-600 hover:text-brand-primary transition-colors"
+              >
+                {isOpen ? <X size={28} /> : <Menu size={28} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>

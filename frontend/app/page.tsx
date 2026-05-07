@@ -12,11 +12,13 @@ import {
 } from "lucide-react";
 import washHero from "@/app/assets/wash_hero.png";
 import educationHero from "@/app/assets/education_hero.png";
+import homeHero1 from "@/app/assets/home_official_1.jpg";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
+    homeHero1,
     "https://scontent.fdac20-1.fna.fbcdn.net/v/t39.30808-6/582285775_4282541052026382_7442564411324054501_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_eui2=AeHwx95pGnkNTuQgekKRKnd0ANAShKpAFH0A0BKEqkAUfYa09ZAJSaP94Tw-bx7yAOwCN63jgZJaEykcxyutR4be&_nc_ohc=v_PtojhbPgQQ7kNvwHWNK3x&_nc_oc=AdpxIbs_892V_QWWF0Q1wZ-gcxNLAKp0m6DbBB542cBwcPgOgeKjVszriKkNTYxWW9E&_nc_zt=23&_nc_ht=scontent.fdac20-1.fna&_nc_gid=kSSvh2l383G6CUjSUKpdkw&_nc_ss=7b2a8&oh=00_Af6kjwsfKz9CSqJdk9C_slURCdjM34_64MxPObs7vh73CA&oe=6A005210",
     "https://scontent.fdac20-1.fna.fbcdn.net/v/t39.30808-6/503121614_4119628138317675_1336772247178020094_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_eui2=AeF9yQbTAWUq494v0hzY6nRdVFnj7R-uCUVUWePtH64JRX1gWG7MY4DRtUtsiWHz69OJYGs9FOFUH7a75OPang1r&_nc_ohc=r77VUMHGI-cQ7kNvwFntow_&_nc_oc=Adpa2_7ZGC6lA5Nek7XXT8YjYEwKUjSKLqXtoiypk2whB-ql3Fduw7hxisvYsNsP-LQ&_nc_zt=23&_nc_ht=scontent.fdac20-1.fna&_nc_gid=A1u3RWlDbbf0eYbhKrC6fQ&_nc_ss=7b2a8&oh=00_Af7Rbw2I5I47jIevslRzqZtvcZFfIKjvU-LuEfcOr2j3xw&oe=6A00277F"
   ];
@@ -76,7 +78,7 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-white overflow-x-hidden">
       {/* 1. HOME: Clear Mission Statement & Hero with Slideshow */}
-      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-gray-900">
+      <section className="relative min-h-screen flex items-center pt-32 overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.div
@@ -88,7 +90,7 @@ export default function Home() {
               className="absolute inset-0"
             >
               <img 
-                src={slides[currentSlide]} 
+                src={typeof slides[currentSlide] === 'string' ? slides[currentSlide] : slides[currentSlide].src} 
                 alt="VERC Impact" 
                 className="w-full h-full object-cover"
               />
@@ -108,8 +110,8 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="container-custom relative z-20 text-white">
-          <div className="max-w-4xl">
+        <div className="container-custom relative z-20 text-white text-center">
+          <div className="max-w-4xl mx-auto">
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -118,10 +120,10 @@ export default function Home() {
                 <h1 className="text-6xl lg:text-9xl font-black leading-[0.95] tracking-tighter mb-10">
                   Transforming <br/> <span className="text-brand-secondary">Destinies.</span>
                 </h1>
-                <p className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed font-medium max-w-2xl">
+                <p className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed font-medium max-w-2xl mx-auto">
                     Dedicated to empowering marginalized communities through sustainable innovation and participatory development since 1977.
                 </p>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap justify-center gap-6">
                   <Link href="/about" className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3">
                     Our Story <ArrowRight size={20} />
                   </Link>
