@@ -1,0 +1,43 @@
+services:
+  # Backend Service (NestJS)
+  - type: web
+    name: verc-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npx prisma generate && npm run start:prod
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        fromDatabase:
+          name: verc-db
+          property: connectionString
+      - key: PORT
+        value: 3001
+
+  # Frontend Service (Next.js)
+  - type: web
+    name: verc-frontend
+    env: node
+    rootDir: frontend
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: verc-backend
+          property: host
+      - key: GEMINI_API_KEY
+        sync: false # User will need to add this manually in Render dashboard
+
+databases:
+  - name: verc-db
+    plan: free
+    databaseName: vercbd
+    user: verc_user
