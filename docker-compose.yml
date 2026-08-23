@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: verc-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: verc_user
+      POSTGRES_PASSWORD: verc_password
+      POSTGRES_DB: vercbd
+    ports:
+      - "5432:5432"
+    volumes:
+      - verc_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  verc_postgres_data:
+    driver: local
