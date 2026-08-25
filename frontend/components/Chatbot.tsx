@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { X, Send, Bot, User, Loader2, MessageSquare, Info, History, Target, Shield, Award, Users, ChevronLeft, MapPin, Phone, Mail, BookOpen, Heart, Droplets, Briefcase, Globe, Zap, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -225,6 +226,7 @@ const AboutView = ({ onClose, language }: { onClose: () => void, language: "en" 
 };
 
 const Chatbot = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -251,6 +253,11 @@ const Chatbot = () => {
   useEffect(() => {
     if (isOpen && !isAboutOpen) scrollToBottom();
   }, [messages, isOpen, isAboutOpen]);
+
+  // Safely check after all React hooks are declared
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const handleSend = async (textOverride?: string) => {
     const triggerAbout = ["About VERC", "ভার্ক সম্পর্কে", "About Us", "আমাদের সম্পর্কে", "Who is VERC", "ভার্ক কে", "Introduction", "পরিচিতি"];

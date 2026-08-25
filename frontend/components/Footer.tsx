@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { 
   Facebook, 
   Twitter, 
@@ -15,20 +15,27 @@ import {
   Globe,
   Heart
 } from "lucide-react";
-import logo from "@/app/assets/logo.png";
+import { useContent } from "@/context/ContentContext";
 
 const Footer = () => {
+  const pathname = usePathname();
+  const { siteSettings } = useContent();
   const currentYear = new Date().getFullYear();
+
+  // Hide footer when in the admin portal
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const footerLinks = [
     {
       title: "Organization",
       links: [
         { name: "About VERC", href: "/about" },
-        { name: "Our History", href: "/about#history" },
+        { name: "Our History", href: "/about" },
         { name: "Vision & Mission", href: "/about" },
-        { name: "Organogram", href: "/about/organogram" },
-        { name: "Leadership", href: "/about/staff" },
+        { name: "Leadership Team", href: "/about" },
+        { name: "Admin Studio", href: "/admin" },
       ]
     },
     {
@@ -44,11 +51,11 @@ const Footer = () => {
     {
       title: "Resources",
       links: [
-        { name: "Annual Reports", href: "/about/annual-report" },
-        { name: "Policies", href: "/about/legal" },
         { name: "Photo Gallery", href: "/resources/gallery" },
-        { name: "Notices", href: "/resources/notices" },
+        { name: "Branch Network", href: "/resources/branches" },
+        { name: "Microfinance", href: "/microfinance" },
         { name: "Contact Us", href: "/contact" },
+        { name: "Donate", href: "/donate" },
       ]
     }
   ];
@@ -62,27 +69,27 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-5 space-y-10">
             <Link href="/" className="inline-block">
-              <Image 
-                src={logo} 
+              <img 
+                src={siteSettings.logoUrl || "/assets/logo.png"} 
                 alt="VERC Logo" 
-                width={100} 
-                height={100} 
-                className="opacity-100 object-contain"
+                className="h-20 w-auto object-contain brightness-0 invert"
               />
             </Link>
             <p className="text-xl text-gray-400 font-medium leading-relaxed max-w-md">
-              A self-reliant and enlightened society based on justice, equity and sustainability where every human being has equal opportunity.
+              {siteSettings.tagline || "A self-reliant and enlightened society based on justice, equity and sustainability where every human being has equal opportunity."}
             </p>
             <div className="flex gap-5">
               {[
-                { icon: <Facebook size={20} />, href: "https://facebook.com" },
-                { icon: <Twitter size={20} />, href: "https://twitter.com" },
-                { icon: <Linkedin size={20} />, href: "https://linkedin.com" },
-                { icon: <Youtube size={20} />, href: "https://youtube.com" }
+                { icon: <Facebook size={20} />, href: siteSettings.facebookUrl },
+                { icon: <Twitter size={20} />, href: siteSettings.twitterUrl },
+                { icon: <Linkedin size={20} />, href: siteSettings.linkedinUrl },
+                { icon: <Youtube size={20} />, href: siteSettings.youtubeUrl }
               ].map((social, i) => (
                 <a 
                   key={i} 
-                  href={social.href} 
+                  href={social.href || "#"} 
+                  target="_blank"
+                  rel="noreferrer"
                   className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300 border border-white/10"
                 >
                   {social.icon}
@@ -120,21 +127,21 @@ const Footer = () => {
             <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><MapPin size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Visit Us</p>
-                <p className="text-sm font-bold">B-30, Ekhlaspur, Savar, Dhaka</p>
+                <p className="text-sm font-bold truncate max-w-[240px]">{siteSettings.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Mail size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Email Us</p>
-                <p className="text-sm font-bold">info@vercbd.org</p>
+                <p className="text-sm font-bold">{siteSettings.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Phone size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Call Us</p>
-                <p className="text-sm font-bold">+880-2-224441511</p>
+                <p className="text-sm font-bold">{siteSettings.phone}</p>
             </div>
           </div>
         </div>
@@ -142,7 +149,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 font-bold text-xs uppercase tracking-widest">
             <div className="flex items-center gap-2">
-                <span>© {currentYear} VERC Bangladesh</span>
+                <span>© {currentYear} {siteSettings.siteTitle.split("|")[0]}</span>
                 <span className="hidden md:inline">•</span>
                 <span>All Rights Reserved</span>
             </div>
@@ -155,7 +162,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="flex items-center gap-2">
-                Built with <Heart size={14} className="text-brand-secondary fill-brand-secondary" /> for Impact
+                Built with <Heart size={14} className="text-brand-secondary fill-brand-secondary" /> for Community
             </div>
         </div>
       </div>

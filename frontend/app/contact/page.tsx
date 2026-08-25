@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Mail, 
@@ -13,34 +13,62 @@ import {
   CheckCircle2,
   Building2,
   Headphones,
-  UserCheck
+  UserCheck,
+  Check
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useContent } from "@/context/ContentContext";
 
 export default function ContactPage() {
+  const { siteSettings, addMessage } = useContent();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "General Inquiry",
+    message: ""
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    addMessage({
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message
+    });
+
+    setSubmitted(true);
+    setFormData({ name: "", email: "", subject: "General Inquiry", message: "" });
+    setTimeout(() => setSubmitted(false), 5000);
+  };
+
   const contactInfo = [
     {
       title: "Head Office",
-      desc: "B-30, Ekhlaspur, Savar, Dhaka-1340, Bangladesh",
+      desc: siteSettings.address,
       icon: <Building2 className="text-brand-primary" />,
-      action: "Get Directions",
-      link: "https://maps.google.com"
+      action: "Headquarters",
+      link: "#map"
     },
     {
       title: "Email Us",
-      desc: "info@vercbd.org",
+      desc: siteSettings.email,
       sub: "General Inquiries",
       icon: <Mail className="text-brand-primary" />,
       action: "Send Message",
-      link: "mailto:info@vercbd.org"
+      link: `mailto:${siteSettings.email}`
     },
     {
       title: "Call Support",
-      desc: "+880-2-224441511",
-      sub: "Sun-Thu, 9am - 5pm",
+      desc: siteSettings.phone,
+      sub: `Hotline: ${siteSettings.hotline || siteSettings.phone}`,
       icon: <Phone className="text-brand-primary" />,
       action: "Call Now",
-      link: "tel:+8802224441511"
+      link: `tel:${siteSettings.phone.replace(/[^0-9+]/g, '')}`
     }
   ];
 
@@ -56,12 +84,10 @@ export default function ContactPage() {
       {/* 1. HERO */}
       <section className="relative h-[50vh] flex items-center overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
-          <Image 
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
+          <img 
+            src="/assets/home_official_1.jpg" 
             alt="Contact VERC" 
-            fill 
-            className="object-cover opacity-50 scale-105"
-            priority
+            className="w-full h-full object-cover opacity-50 scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900"></div>
@@ -87,7 +113,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* 2. CONTACT OPTIONS */}
+      {/* 2. CONTACT OPTIONS (Dynamic from Admin siteSettings) */}
       <section className="py-32 bg-white relative z-20 rounded-t-[64px] -mt-12">
         <div className="container-custom">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -107,7 +133,7 @@ export default function ContactPage() {
                         </p>
                         {info.sub && <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-10">{info.sub}</p>}
                         <div className="mt-auto pt-8 border-t border-gray-200">
-                            <a href={info.link} target={info.link.startsWith('http') ? '_blank' : '_self'} className="flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
+                            <a href={info.link} className="flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
                                 {info.action} <Send size={14} />
                             </a>
                         </div>
@@ -118,7 +144,7 @@ export default function ContactPage() {
       </section>
 
       {/* 3. CONTACT FORM & MAP */}
-      <section className="py-32 bg-gray-50">
+      <section className="py-32 bg-gray-50" id="map">
         <div className="container-custom">
             <div className="bg-white rounded-[64px] shadow-2xl overflow-hidden flex flex-col lg:flex-row items-stretch border border-gray-100">
                 <div className="flex-1 p-12 lg:p-24 space-y-12">
@@ -131,21 +157,51 @@ export default function ContactPage() {
                             Direct Inquiry <br/> <span className="text-brand-primary">Gateway.</span>
                         </h3>
                     </div>
+
+                    {submitted && (
+                      <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center gap-4 text-emerald-800 animate-fadeIn">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0">
+                          <Check size={20} />
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-sm">Message Sent Successfully!</p>
+                          <p className="text-xs text-emerald-600">Your inquiry has been delivered directly to the VERC administrative team.</p>
+                        </div>
+                      </div>
+                    )}
                     
-                    <form className="space-y-8">
+                    <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-3">
                                 <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 ml-2">Full Name</label>
-                                <input type="text" placeholder="John Doe" className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium" />
+                                <input 
+                                  type="text" 
+                                  required
+                                  placeholder="John Doe" 
+                                  value={formData.name}
+                                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                  className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium" 
+                                />
                             </div>
                             <div className="space-y-3">
                                 <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 ml-2">Email Address</label>
-                                <input type="email" placeholder="john@example.com" className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium" />
+                                <input 
+                                  type="email" 
+                                  required
+                                  placeholder="john@example.com" 
+                                  value={formData.email}
+                                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                  className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium" 
+                                />
                             </div>
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 ml-2">Inquiry Type</label>
-                            <select className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium appearance-none">
+                            <select 
+                              value={formData.subject}
+                              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                              className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium appearance-none"
+                            >
                                 <option>General Inquiry</option>
                                 <option>Partnership Proposal</option>
                                 <option>Donor Information</option>
@@ -155,16 +211,25 @@ export default function ContactPage() {
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 ml-2">Your Message</label>
-                            <textarea rows={6} placeholder="How can we help you?" className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium resize-none"></textarea>
+                            <textarea 
+                              rows={6} 
+                              required
+                              placeholder="How can we help you?" 
+                              value={formData.message}
+                              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                              className="w-full px-8 py-5 bg-gray-50 border border-transparent rounded-[24px] focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all outline-none font-medium resize-none"
+                            ></textarea>
                         </div>
-                        <button className="w-full py-6 bg-brand-primary text-white text-xl font-black rounded-[24px] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4">
+                        <button 
+                          type="submit"
+                          className="w-full py-6 bg-brand-primary text-white text-xl font-black rounded-[24px] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 cursor-pointer"
+                        >
                             Send Message <Send size={20} />
                         </button>
                     </form>
                 </div>
                 
                 <div className="flex-1 bg-gray-100 relative min-h-[400px]">
-                    {/* Placeholder for Google Maps embed */}
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14602.700300486255!2d90.2602758!3d23.856754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755ebe946a4e40d%3A0xa64b38344e6d3!2sVERC%20Head%20Office!5e0!3m2!1sen!2sbd!4v1715012345678" 
                         className="absolute inset-0 w-full h-full grayscale border-none"
@@ -192,9 +257,9 @@ export default function ContactPage() {
                         With over **136 branches** across 25 areas in Bangladesh, VERC is always within reach of the communities we serve.
                     </p>
                     <div className="pt-8">
-                        <button className="px-12 py-6 bg-white border-2 border-brand-primary text-brand-primary text-xl font-black rounded-3xl hover:bg-brand-primary hover:text-white transition-all">
+                        <Link href="/resources/branches" className="px-12 py-6 bg-white border-2 border-brand-primary text-brand-primary text-xl font-black rounded-3xl hover:bg-brand-primary hover:text-white transition-all inline-block">
                             Browse All Branches
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 w-full">

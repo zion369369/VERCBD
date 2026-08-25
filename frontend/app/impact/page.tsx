@@ -8,72 +8,29 @@ import {
   HeartHandshake, 
   GraduationCap, 
   MapPin, 
-  Banknote,
-  Users,
-  Target,
-  ShieldCheck,
-  Mail,
-  Phone,
-  Building,
-  ArrowRight
+  Banknote, 
+  Users, 
+  Target, 
+  ShieldCheck, 
+  Mail, 
+  Phone, 
+  Building, 
+  ArrowRight 
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import impactHero from "@/app/assets/impact_hero.png";
+import { useContent } from "@/context/ContentContext";
 
 export default function ImpactPage() {
+  const { impactStats, teamMembers } = useContent();
+
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   };
-
-  const impactStats = [
-    {
-      icon: <MapPin className="text-brand-secondary" size={32} />,
-      value: "136",
-      label: "Branches",
-      desc: "Operating across 25 areas nationwide under VERC's extensive microfinance program.",
-      color: "bg-blue-50 border-blue-100"
-    },
-    {
-      icon: <Banknote className="text-emerald-500" size={32} />,
-      value: "Tk. 620 Crore+",
-      label: "Outstanding Microfinance",
-      desc: "Total outstanding amount of Tk. 620,69,29,412 (as of 30 November 2025), empowering rural economies.",
-      color: "bg-emerald-50 border-emerald-100"
-    },
-    {
-      icon: <BookOpen className="text-amber-500" size={32} />,
-      value: "300",
-      label: "Learning Centers",
-      desc: "Community-based centers providing catch-up education for COVID-19 dropouts and unenrolled children.",
-      color: "bg-amber-50 border-amber-100"
-    },
-    {
-      icon: <GraduationCap className="text-purple-500" size={32} />,
-      value: "222",
-      label: "Students Supported",
-      desc: "Provided stipend support under higher education and HSC, amounting to Tk. 3.9 million.",
-      color: "bg-purple-50 border-purple-100"
-    },
-    {
-      icon: <HeartHandshake className="text-rose-500" size={32} />,
-      value: "Camp 8W",
-      label: "Rohingya Response",
-      desc: "Implemented humanitarian support programs addressing the critical needs of displaced Rohingya Refugees.",
-      color: "bg-rose-50 border-rose-100"
-    }
-  ];
-
-  const leadershipTeam = [
-    { name: "Md. Yakub Hossain", role: "Executive Director", email: "yakub@vercbd.org" },
-    { name: "Md. Masud Hassan", role: "Deputy Executive Director", email: "masudhassan@vercbd.org" },
-    { name: "Ranada Prasad Saha", role: "Director, Microfinance, Capacity Enhancement & Climate Change", email: "ranada@vercbd.org" },
-    { name: "Mustafizur Rashid Mridha", role: "Director, Human Resource & Administration", email: "mrashid@vercbd.org" },
-    { name: "Md. Masud Royhan", role: "Director, Finance", email: "royhan@vercbd.org" }
-  ];
 
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
@@ -99,7 +56,7 @@ export default function ImpactPage() {
             className="max-w-4xl mx-auto"
           >
             <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-10 border border-brand-primary/30 text-brand-secondary">
-              Strategic Results 2025
+              Strategic Results
             </span>
             <h1 className="text-6xl lg:text-9xl font-black mb-8 leading-[0.95] tracking-tighter">
               Measurable <br/> <span className="text-brand-secondary">Impact.</span>
@@ -111,7 +68,7 @@ export default function ImpactPage() {
         </div>
       </section>
 
-      {/* 2. STATS: Programmatic Reach Grid */}
+      {/* 2. STATS: Programmatic Reach Grid (Dynamic from Admin) */}
       <section className="py-40 bg-white relative z-20 rounded-t-[64px] -mt-12">
         <div className="container-custom">
             <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
@@ -132,18 +89,18 @@ export default function ImpactPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {impactStats.map((stat, i) => (
                     <motion.div 
-                        key={i}
+                        key={stat.id}
                         {...fadeIn}
                         transition={{ delay: i * 0.1 }}
-                        className={`${stat.color} p-12 rounded-[56px] border flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500`}
+                        className="bg-blue-50/50 p-12 rounded-[56px] border border-blue-100/60 flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500"
                     >
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 transition-transform duration-500">
-                            {stat.icon}
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 transition-transform duration-500 text-brand-primary">
+                          <TrendingUp size={28} />
                         </div>
                         <h3 className="text-5xl font-black text-gray-900 mb-4 tracking-tighter">{stat.value}</h3>
-                        <h4 className="text-xl font-bold text-gray-800 mb-6">{stat.label}</h4>
+                        <h4 className="text-xl font-bold text-gray-800 mb-4">{stat.label}</h4>
                         <p className="text-gray-500 font-medium leading-relaxed flex-grow">
-                            {stat.desc}
+                            {stat.subText}
                         </p>
                     </motion.div>
                 ))}
@@ -157,15 +114,15 @@ export default function ImpactPage() {
                     <Target size={64} className="mb-8 text-brand-secondary opacity-80 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
                     <h3 className="text-3xl font-black mb-6 leading-tight">Committed to <br/> Global SDGs</h3>
                     <p className="text-brand-light/80 font-medium mb-8">Aligning every program with the 2030 Global Agenda for sustainable prosperity.</p>
-                    <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-brand-secondary hover:gap-4 transition-all">
+                    <Link href="/" className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-brand-secondary hover:gap-4 transition-all">
                         View SDG Alignment <ArrowRight size={14} />
-                    </button>
+                    </Link>
                 </motion.div>
             </div>
         </div>
       </section>
 
-      {/* 3. LEADERSHIP: Executive Governance */}
+      {/* 3. LEADERSHIP: Executive Governance (Dynamic from Admin) */}
       <section className="py-40 bg-gray-50">
         <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto mb-24">
@@ -190,17 +147,17 @@ export default function ImpactPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {leadershipTeam.map((member, i) => (
+                            {teamMembers.map((member, i) => (
                                 <motion.tr 
-                                    key={i}
+                                    key={member.id}
                                     {...fadeIn}
                                     transition={{ delay: i * 0.05 }}
                                     className="hover:bg-brand-light/30 transition-colors group"
                                 >
                                     <td className="px-10 py-8">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary font-black group-hover:bg-brand-primary group-hover:text-white transition-all">
-                                                {member.name.charAt(0)}
+                                            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-brand-primary/10 flex-shrink-0">
+                                              <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
                                             </div>
                                             <span className="font-black text-gray-900 text-lg">{member.name}</span>
                                         </div>
@@ -209,13 +166,15 @@ export default function ImpactPage() {
                                         <span className="font-bold text-gray-600">{member.role}</span>
                                     </td>
                                     <td className="px-10 py-8">
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col gap-1">
                                             <a href={`mailto:${member.email}`} className="flex items-center gap-2 text-sm text-brand-primary font-bold hover:underline">
                                                 <Mail size={14} /> {member.email}
                                             </a>
-                                            <span className="flex items-center gap-2 text-sm text-gray-400 font-medium">
-                                                <Phone size={14} /> +880-2-224441511
-                                            </span>
+                                            {member.phone && (
+                                                <span className="flex items-center gap-2 text-xs text-gray-400 font-medium">
+                                                    <Phone size={13} /> {member.phone}
+                                                </span>
+                                            )}
                                         </div>
                                     </td>
                                 </motion.tr>
@@ -245,11 +204,11 @@ export default function ImpactPage() {
                         We maintain the highest standards of financial integrity and programmatic accountability. Explore our detailed annual reports to see how we utilize every resource.
                     </p>
                     <div className="pt-8 flex flex-wrap gap-6">
-                        <Link href="/about/annual-report" className="px-10 py-5 bg-brand-secondary text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                            Latest Annual Report
+                        <Link href="/about" className="px-10 py-5 bg-brand-secondary text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+                            About Our Mission
                         </Link>
-                        <Link href="/about/legal" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
-                            Audit & Compliance
+                        <Link href="/contact" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                            Get in Touch
                         </Link>
                     </div>
                 </div>
@@ -272,7 +231,7 @@ export default function ImpactPage() {
         </div>
       </section>
 
-      {/* 5. CTA: Partner with Us */}
+      {/* 5. CTA */}
       <section className="py-40 bg-brand-light">
         <div className="container-custom text-center">
             <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-12">
@@ -292,6 +251,5 @@ export default function ImpactPage() {
         </div>
       </section>
     </div>
-
   );
 }

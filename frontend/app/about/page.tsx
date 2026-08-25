@@ -1,12 +1,16 @@
 "use client";
 
 import React from "react";
-import { Users, Shield, Target, Award, History, BookOpen, Heart, Droplets, Briefcase, Globe, Zap, CheckCircle2, ArrowRight, TrendingUp, BarChart3, Activity } from "lucide-react";
+import { Users, Shield, Target, Award, History, BookOpen, Heart, Droplets, Briefcase, Globe, Zap, CheckCircle2, ArrowRight, TrendingUp, BarChart3, Activity, Mail, Phone } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import aboutHero from "@/app/assets/about_official.jpg";
+import { useContent } from "@/context/ContentContext";
 
 export default function AboutPage() {
+  const { teamMembers, impactStats } = useContent();
+
   const coreValues = [
     { title: "Participation & Ownership", desc: "Ensuring community involvement in every stage of development.", color: "bg-blue-50" },
     { title: "Respect", desc: "Upholding the dignity and rights of every individual we serve.", color: "bg-green-50" },
@@ -17,12 +21,7 @@ export default function AboutPage() {
     { title: "Equality", desc: "Providing equal opportunities for marginalized segments of society.", color: "bg-rose-50" },
   ];
 
-  const stats = [
-    { label: "Millions", sub: "Lives Touched", icon: <Users size={24} /> },
-    { label: "50+", sub: "Countries using CLTS", icon: <Globe size={24} /> },
-    { label: "1977", sub: "Year Founded", icon: <History size={24} /> },
-    { label: "100%", sub: "Commitment", icon: <TrendingUp size={24} /> },
-  ];
+  const primaryStats = impactStats.slice(0, 4);
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -86,25 +85,25 @@ export default function AboutPage() {
                 transition={{ delay: 0.8, duration: 1 }}
                 className="flex flex-wrap gap-6"
               >
-                <button className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 group">
+                <Link href="/programs/education" className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 group">
                   Our Programs <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
-                </button>
-                <button className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
-                  Annual Reports
-                </button>
+                </Link>
+                <Link href="/contact" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                  Partner with Us
+                </Link>
               </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Floating Stats Section */}
+      {/* Floating Stats Section (Dynamic from Admin) */}
       <section className="relative z-20 -mt-20">
         <div className="container-custom">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
-                {stats.map((stat, i) => (
+                {primaryStats.map((stat, i) => (
                     <motion.div 
-                        key={i}
+                        key={stat.id}
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
@@ -112,17 +111,17 @@ export default function AboutPage() {
                         className="bg-white p-8 lg:p-12 rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.06)] border border-gray-50 flex flex-col items-center text-center group hover:translate-y-[-8px] transition-all duration-500"
                     >
                         <div className="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-colors">
-                            {stat.icon}
+                            <TrendingUp size={24} />
                         </div>
-                        <h4 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">{stat.label}</h4>
-                        <p className="text-[12px] font-black uppercase tracking-widest text-gray-400">{stat.sub}</p>
+                        <h4 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">{stat.value}</h4>
+                        <p className="text-[12px] font-black uppercase tracking-widest text-gray-400">{stat.label}</p>
                     </motion.div>
                 ))}
             </div>
         </div>
       </section>
 
-      {/* Journey Begins - Modern NGO Presentation */}
+      {/* Journey Begins */}
       <section className="py-40">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
@@ -173,80 +172,73 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Vision, Mission, Goals - High-Impact Cards */}
-      <section className="py-32 bg-gray-50/50">
+      {/* Leadership & Senior Staff Members (Dynamic from Admin) */}
+      <section className="py-32 bg-gray-50">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {[
-              { 
-                title: "Societal Vision", 
-                icon: <Target size={32} />, 
-                content: "A self-reliant and enlightened society based on justice, equity and sustainability where every human being has equal opportunity.",
-                bg: "bg-[#004B8D] text-white"
-              },
-              { 
-                title: "Mission Statement", 
-                icon: <Shield size={32} />, 
-                content: "Transforming the lives of marginalized, disadvantaged and destitute people by providing humanitarian assistance and resilient livelihoods.",
-                bg: "bg-white text-gray-900"
-              },
-              { 
-                title: "Our Goals", 
-                icon: <Zap size={32} />, 
-                content: "Sustainable socio-economic development of the disadvantaged and destitute people exploring their potentials and adaptation capacities.",
-                bg: "bg-white text-gray-900"
-              }
-            ].map((box, i) => (
-              <motion.div 
-                key={i} 
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="text-brand-primary font-black uppercase text-xs tracking-widest block mb-4">
+              Governance & Management
+            </span>
+            <h3 className="text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">
+              Senior Leadership Team.
+            </h3>
+            <p className="text-gray-500 mt-4 text-base">
+              Dedicated directors and professionals steering VERC&apos;s strategic vision nationwide.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {teamMembers.map((member, i) => (
+              <motion.div
+                key={member.id}
                 {...fadeIn}
                 transition={{ delay: i * 0.1 }}
-                className={`${box.bg} p-12 rounded-[56px] shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100/10 flex flex-col h-full`}
+                className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-xl transition-all duration-300"
               >
-                <div className="mb-10 opacity-80">{box.icon}</div>
-                <h4 className="text-3xl font-black mb-8 leading-tight">{box.title}</h4>
-                <p className="text-lg opacity-80 leading-relaxed font-medium mt-auto">{box.content}</p>
+                <div className="space-y-4">
+                  <div className="w-20 h-20 rounded-3xl overflow-hidden bg-brand-primary/10 border-2 border-brand-primary/20">
+                    <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-extrabold text-gray-900">{member.name}</h4>
+                    <p className="text-xs font-bold text-brand-primary mt-0.5">{member.role}</p>
+                    <span className="text-[11px] text-gray-400 font-semibold">{member.department}</span>
+                  </div>
+                  <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed">
+                    {member.bio}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100 mt-6 flex items-center gap-2 text-xs text-gray-500">
+                  <Mail size={14} className="text-brand-primary" />
+                  <a href={`mailto:${member.email}`} className="hover:underline font-semibold text-gray-700">
+                    {member.email}
+                  </a>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Core Values - Interactive List */}
-      <section className="py-40">
+      {/* Core Values */}
+      <section className="py-32 bg-white">
         <div className="container-custom">
-            <div className="flex flex-col lg:flex-row gap-24">
-                <div className="lg:w-1/3 sticky top-32 h-fit">
-                    <div className="flex items-center gap-3 text-brand-primary mb-6">
-                        <Award size={24} />
-                        <h2 className="font-black uppercase tracking-widest text-xs">Core Values</h2>
-                    </div>
-                    <h3 className="text-5xl font-black text-gray-900 mb-8 leading-tight">The Principles <br/> Behind Our <br/> Impact.</h3>
-                    <p className="text-xl text-gray-500 font-medium leading-relaxed">
-                        Seven core values that define how we work with communities and partners across the globe.
-                    </p>
-                </div>
-                <div className="lg:w-2/3 space-y-4">
-                    {coreValues.map((v, i) => (
-                        <motion.div 
-                            key={i}
-                            {...fadeIn}
-                            transition={{ delay: i * 0.05 }}
-                            className={`${v.color} p-10 rounded-[40px] flex items-start gap-8 group hover:scale-[1.02] transition-all cursor-default`}
-                        >
-                            <span className="text-4xl font-black opacity-10 mt-1">0{i+1}</span>
-                            <div>
-                                <h5 className="text-2xl font-black text-gray-900 mb-4">{v.title}</h5>
-                                <p className="text-lg text-gray-600 font-medium">{v.desc}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h3 className="text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">Our Core Values</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {coreValues.map((v, i) => (
+              <div key={i} className={`${v.color} p-8 rounded-3xl border border-gray-100`}>
+                <h4 className="text-lg font-bold text-gray-900 mb-2">{v.title}</h4>
+                <p className="text-sm text-gray-600">{v.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Pioneering Contributions - Google Grade Layout */}
+      {/* Pioneering Contributions */}
       <section className="py-40 bg-gray-900 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-primary/10 blur-[150px] -mr-40 mt-40"></div>
         <div className="container-custom relative z-10">
@@ -295,26 +287,6 @@ export default function AboutPage() {
                     </motion.div>
                 ))}
             </div>
-        </div>
-      </section>
-
-      {/* Corporate Call to Action */}
-      <section className="py-40 bg-brand-light">
-        <div className="container-custom text-center">
-            <motion.div {...fadeIn} className="max-w-4xl mx-auto">
-                <h3 className="text-5xl lg:text-8xl font-black text-gray-900 mb-12 leading-[1] tracking-tighter">Build a <br/> <span className="text-brand-primary">Self-Reliant Society.</span></h3>
-                <p className="text-2xl text-gray-600 font-medium mb-16">
-                    Join us in our mission to transform lives and build resilient livelihoods across Bangladesh.
-                </p>
-                <div className="flex flex-wrap justify-center gap-6">
-                    <button className="px-12 py-6 bg-brand-primary text-white text-xl font-black rounded-3xl shadow-[0_20px_50px_rgba(0,75,141,0.3)] hover:scale-105 active:scale-95 transition-all">
-                        Support Our Mission
-                    </button>
-                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-bold rounded-3xl border-2 border-brand-primary/10 hover:bg-brand-primary/5 transition-all">
-                        Work with Us
-                    </button>
-                </div>
-            </motion.div>
         </div>
       </section>
     </div>

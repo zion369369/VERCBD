@@ -23,24 +23,18 @@ import {
   Globe
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import microHero from "@/app/assets/microfinance_woman_hero.png";
+import { useContent } from "@/context/ContentContext";
 
 export default function MicrofinancePage() {
-  const products = [
-    { name: "Jagoron", desc: "Foundational micro-credit for group-based income generation.", icon: <Zap size={20} /> },
-    { name: "Agrosor", desc: "Advanced lending for micro-enterprise development.", icon: <TrendingUp size={20} /> },
-    { name: "Buniad", desc: "Specialized support for the ultra-poor and marginalized.", icon: <Home size={20} /> },
-    { name: "Sufolon", desc: "Dynamic investment for agricultural growth and productivity.", icon: <Leaf size={20} /> },
-    { name: "ENRICH", desc: "Elimination of poverty through resource and capacity enhancement.", icon: <Sparkles size={20} /> },
-    { name: "Elderly Care", desc: "Uplifting the quality of life for the elderly people.", icon: <Heart size={20} /> },
-    { name: "OBA Sanitation", desc: "Dedicated microfinance for sanitation and hygiene projects.", icon: <ShieldCheck size={20} /> }
-  ];
+  const { microfinanceProducts, impactStats } = useContent();
 
   const stats = [
     { label: "Villages", value: "2,477", icon: <MapPin size={18} /> },
     { label: "Districts", value: "19", icon: <Globe size={18} /> },
-    { label: "Branches", value: "69", icon: <Building2 size={18} /> },
-    { label: "Total Staff", value: "585", icon: <Users size={18} /> }
+    { label: "Branches", value: "136", icon: <Building2 size={18} /> },
+    { label: "Active Members", value: "200K+", icon: <Users size={18} /> }
   ];
 
   const fadeIn = {
@@ -111,8 +105,8 @@ export default function MicrofinancePage() {
                             <div className="text-4xl font-black text-brand-primary tracking-tighter">1982</div>
                         </div>
                         <div className="p-8 bg-brand-light/50 rounded-3xl border border-brand-primary/5">
-                            <h4 className="font-black text-gray-900 mb-2 uppercase tracking-widest text-[10px]">MRA Awarded</h4>
-                            <div className="text-4xl font-black text-brand-primary tracking-tighter">2006</div>
+                            <h4 className="font-black text-gray-900 mb-2 uppercase tracking-widest text-[10px]">MRA Certified</h4>
+                            <div className="text-4xl font-black text-brand-primary tracking-tighter">Approved</div>
                         </div>
                     </div>
                 </motion.div>
@@ -133,7 +127,7 @@ export default function MicrofinancePage() {
                             <div>
                                 <h5 className="font-black uppercase text-[10px] tracking-widest text-brand-secondary mb-2">The Goal</h5>
                                 <p className="text-lg text-gray-300 font-medium italic">
-                                    "To create a community force capable of planning, operating and managing need based development programs to overcome poverty."
+                                    &quot;To create a community force capable of planning, operating and managing need based development programs to overcome poverty.&quot;
                                 </p>
                             </div>
                             <div>
@@ -151,7 +145,6 @@ export default function MicrofinancePage() {
 
       {/* Geographical Reach Stats */}
       <section className="py-24 bg-brand-primary text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="container-custom relative z-10">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 items-center">
                 {stats.map((stat, i) => (
@@ -169,15 +162,10 @@ export default function MicrofinancePage() {
                     </motion.div>
                 ))}
             </div>
-            <div className="mt-24 pt-12 border-t border-white/10 text-center">
-                <p className="text-xl font-medium opacity-80 max-w-3xl mx-auto">
-                    Spanning across <span className="text-brand-secondary font-black">60 Upazilas</span> and <span className="text-brand-secondary font-black">355 Unions</span>, VERC is a vital pillar of Bangladesh's rural economy.
-                </p>
-            </div>
         </div>
       </section>
 
-      {/* Product Lines (Wings) */}
+      {/* Product Lines (Wings) - Dynamic from Admin */}
       <section className="py-32 bg-gray-50">
         <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto mb-24">
@@ -185,108 +173,53 @@ export default function MicrofinancePage() {
                     <Layers size={24} />
                     <h2 className="font-black uppercase tracking-widest text-xs">Our Product Lines</h2>
                 </div>
-                <h3 className="text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Eight Specialized <br/> <span className="text-brand-primary">Financial Wings.</span></h3>
+                <h3 className="text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Specialized <br/> <span className="text-brand-primary">Financial Wings.</span></h3>
                 <p className="text-xl text-gray-600 font-medium">
                     Our multidimensional lending system delivery is designed to meet specific market demands and empower different social groups.
                 </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {products.map((product, i) => (
+                {microfinanceProducts.map((product, i) => (
                     <motion.div 
-                        key={i}
+                        key={product.id}
                         {...fadeIn}
                         transition={{ delay: i * 0.05 }}
-                        className="p-10 bg-white rounded-[40px] border border-transparent hover:border-brand-primary/10 hover:shadow-2xl transition-all group h-full flex flex-col"
+                        className="p-10 bg-white rounded-[40px] border border-transparent hover:border-brand-primary/10 hover:shadow-2xl transition-all group h-full flex flex-col justify-between"
                     >
-                        <div className="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary mb-8 group-hover:bg-brand-primary group-hover:text-white transition-all">
-                            {product.icon}
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform overflow-hidden">
+                              <img src={product.imageUrl || "/assets/microfinance_hero.png"} alt={product.title} className="w-full h-full object-cover" />
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full">
+                              {product.category}
+                            </span>
+                          </div>
+                          
+                          <h4 className="text-2xl font-black text-gray-900 group-hover:text-brand-primary transition-colors">{product.title}</h4>
+                          <p className="text-gray-500 font-medium text-sm leading-relaxed">{product.description}</p>
+
+                          <div className="pt-2 text-xs space-y-1">
+                            <div className="flex justify-between text-gray-500">
+                              <span>Limit:</span>
+                              <span className="font-bold text-gray-800">{product.loanLimit}</span>
+                            </div>
+                            <div className="flex justify-between text-gray-500">
+                              <span>Tenure:</span>
+                              <span className="font-bold text-gray-800">{product.tenure}</span>
+                            </div>
+                          </div>
                         </div>
-                        <h4 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-brand-primary transition-colors">{product.name}</h4>
-                        <p className="text-lg text-gray-500 font-medium leading-relaxed mb-8 flex-grow">
-                            {product.desc}
-                        </p>
-                        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
-                            Learn More <ArrowRight size={14} />
-                        </button>
+
+                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                          <Link href="/contact" className="text-xs font-bold text-brand-primary hover:underline flex items-center gap-1">
+                            Apply & Inquire <ArrowRight size={12} />
+                          </Link>
+                        </div>
                     </motion.div>
                 ))}
-                
-                {/* Partnership Card */}
-                <motion.div 
-                    {...fadeIn}
-                    transition={{ delay: 0.4 }}
-                    className="p-10 bg-brand-secondary/10 rounded-[40px] border border-brand-secondary/20 flex flex-col justify-center text-center h-full"
-                >
-                    <div className="mb-6">
-                        <ShieldCheck className="mx-auto text-brand-secondary" size={48} />
-                    </div>
-                    <h4 className="text-2xl font-black text-gray-900 mb-4">PKSF Partnership</h4>
-                    <p className="text-lg text-gray-600 font-medium mb-8">
-                        VERC has been a proud PKSF Partner since 1996, ensuring world-class standards in micro-finance.
-                    </p>
-                </motion.div>
             </div>
-        </div>
-      </section>
-
-      {/* Agriculture & Skill Development */}
-      <section className="py-32 bg-white overflow-hidden">
-        <div className="container-custom">
-            <div className="bg-gray-900 rounded-[64px] flex flex-col lg:flex-row items-stretch overflow-hidden border border-white/5">
-                <div className="flex-1 p-12 lg:p-24 space-y-10">
-                    <div className="flex items-center gap-3 text-brand-secondary">
-                        <Leaf size={20} />
-                        <h4 className="font-black uppercase tracking-widest text-xs">Innovation in Farming</h4>
-                    </div>
-                    <h3 className="text-4xl lg:text-6xl font-black text-white leading-tight tracking-tighter">Beyond Just <br/> <span className="text-brand-secondary">Capital.</span></h3>
-                    <p className="text-xl text-gray-400 leading-relaxed font-medium">
-                        VERC provides skill development training in agriculture and other income-generating trades, along with leadership and human rights awareness, prior to starting activities.
-                    </p>
-                    <ul className="space-y-4">
-                        {[
-                            "Dynamic Agriculture Investment",
-                            "Skill Development Training",
-                            "Leadership Development",
-                            "Human Rights Awareness"
-                        ].map((item, i) => (
-                            <li key={i} className="flex items-center gap-4 text-white font-bold">
-                                <CheckCircle2 size={20} className="text-brand-secondary" />
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="flex-1 relative min-h-[400px]">
-                    <Image 
-                        src="https://images.unsplash.com/photo-1590650213165-c1fef80648c4?q=80&w=2070&auto=format&fit=crop" 
-                        alt="Agriculture Support" 
-                        fill 
-                        className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-l from-gray-900 via-transparent to-transparent"></div>
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-40 bg-brand-light">
-        <div className="container-custom text-center">
-            <motion.div {...fadeIn} className="max-w-4xl mx-auto">
-                <h3 className="text-5xl lg:text-8xl font-black text-gray-900 mb-12 leading-[1] tracking-tighter">Join the <br/> <span className="text-brand-primary">Self-Reliant Era.</span></h3>
-                <p className="text-2xl text-gray-600 font-medium mb-16">
-                    Partner with VERC Microfinance to drive economic growth and social status improvement in your community.
-                </p>
-                <div className="flex flex-wrap justify-center gap-6">
-                    <button className="px-12 py-6 bg-brand-primary text-white text-xl font-black rounded-3xl shadow-[0_20px_50px_rgba(0,75,141,0.3)] hover:scale-105 active:scale-95 transition-all">
-                        Apply for Loan
-                    </button>
-                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-bold rounded-3xl border-2 border-brand-primary/10 hover:bg-brand-primary/5 transition-all">
-                        Find a Branch
-                    </button>
-                </div>
-            </motion.div>
         </div>
       </section>
     </div>

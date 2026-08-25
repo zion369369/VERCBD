@@ -1,59 +1,119 @@
-import React from "react";
-import { Mail, UserCheck, Download } from "lucide-react";
+"use client";
 
-const AdminSubscribers = () => {
-  const subscribers = [
-    { id: 1, email: "rahim.khan@example.com", joined: "2024-04-20", status: "Active" },
-    { id: 2, email: "sarah.j@impact.org", joined: "2024-04-18", status: "Active" },
-    { id: 3, email: "community.lead@vercbd.org", joined: "2024-04-10", status: "Pending" },
-  ];
+import React, { useState } from "react";
+import { Users, Trash2, Mail, Download, Search, CheckCircle2 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
+
+export default function AdminSubscribersPage() {
+  const { subscribers, deleteSubscriber, primaryColor, theme } = useContent();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredSubscribers = subscribers.filter((s) =>
+    s.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const exportCSV = () => {
+    const headers = "ID,Email,Joined Date\n";
+    const rows = subscribers.map(s => `${s.id},${s.email},${s.joinedDate}`).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `vercbd-subscribers-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-bold text-gray-800">Newsletter Subscribers</h3>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
-          <Download size={18} /> Export CSV
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
+        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
+      }`}>
+        <div>
+          <h2 className="text-xl font-extrabold flex items-center gap-2">
+            <Mail style={{ color: primaryColor }} /> Newsletter Subscribers List
+          </h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
+            Manage stakeholders, donors, and community members subscribed to the monthly newsletter.
+          </p>
+        </div>
+
+        <button
+          onClick={exportCSV}
+          style={{ backgroundColor: primaryColor }}
+          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+        >
+          <Download size={15} /> Export CSV List
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Email Address</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Joined Date</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {subscribers.map((sub) => (
-              <tr key={sub.id}>
-                <td className="px-6 py-4 flex items-center gap-3">
-                  <div className="p-2 bg-brand-light rounded text-brand-primary">
-                    <Mail size={16} />
-                  </div>
-                  <span className="text-sm font-medium">{sub.email}</span>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{sub.joined}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                    sub.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                  }`}>
-                    {sub.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <button className="text-brand-primary text-xs font-bold hover:underline">Manage</button>
-                </td>
+      {/* Search & Stats Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative w-full sm:w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <input
+            type="text"
+            placeholder="Search email address..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`w-full pl-11 pr-4 py-2.5 rounded-2xl text-xs outline-none border font-medium ${
+              theme === "dark" ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500" : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm"
+            }`}
+          />
+        </div>
+
+        <div className="text-xs font-bold text-gray-600 dark:text-gray-400">
+          Total Subscribers: <span className="font-black" style={{ color: primaryColor }}>{subscribers.length}</span>
+        </div>
+      </div>
+
+      {/* Subscribers Table */}
+      <div className={`rounded-3xl border overflow-hidden transition-all ${
+        theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+      }`}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="border-b border-gray-200 dark:border-white/5 text-[11px] font-extrabold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/5">
+                <th className="py-4 px-6">Subscriber Email</th>
+                <th className="py-4 px-6">Subscribed Date</th>
+                <th className="py-4 px-6">Status</th>
+                <th className="py-4 px-6 text-right">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-medium">
+              {filteredSubscribers.map((sub) => (
+                <tr key={sub.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                  <td className="py-4 px-6 font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <Mail size={14} style={{ color: primaryColor }} /> {sub.email}
+                  </td>
+                  <td className="py-4 px-6 text-gray-600 dark:text-gray-400 font-medium">
+                    {sub.joinedDate}
+                  </td>
+                  <td className="py-4 px-6">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800">
+                      <CheckCircle2 size={11} /> Active
+                    </span>
+                  </td>
+                  <td className="py-4 px-6 text-right">
+                    <button
+                      onClick={() => {
+                        if (confirm(`Remove subscriber "${sub.email}"?`)) {
+                          deleteSubscriber(sub.id);
+                        }
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                      title="Remove Subscriber"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
-};
-
-export default AdminSubscribers;
+}

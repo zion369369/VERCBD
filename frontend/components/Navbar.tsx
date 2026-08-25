@@ -2,12 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Search, Globe } from "lucide-react";
-import logo from "@/app/assets/logo.png";
+import { useContent } from "@/context/ContentContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const { siteSettings, primaryColor } = useContent();
+
+  // Do not render public Navbar when inside the Admin Studio
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -16,10 +23,9 @@ const Navbar = () => {
       href: "#",
       children: [
         { name: "Vision and Mission", href: "/about" },
-        { name: "Governance & Leadership", href: "/about/organogram" },
-        { name: "Senior Staff Members", href: "/about/staff" },
-        { name: "Our Awards", href: "/about/awards" },
-        { name: "Policies & Legal Status", href: "/about/legal" },
+        { name: "Governance & Leadership", href: "/about" },
+        { name: "Senior Staff Members", href: "/about" },
+        { name: "Our Awards", href: "/about" },
       ],
     },
     {
@@ -27,9 +33,9 @@ const Navbar = () => {
       href: "#",
       children: [
         { name: "Education - Non Formal", href: "/programs/education" },
+        { name: "Health, Water & Sanitation", href: "/programs/wash" },
         { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
         { name: "Capacity Building", href: "/programs/capacity" },
-        { name: "Health, Water & Sanitation", href: "/programs/wash" },
       ],
     },
     {
@@ -37,8 +43,8 @@ const Navbar = () => {
       href: "#",
       children: [
         { name: "About Microfinance", href: "/microfinance" },
-        { name: "Loan & Savings Products", href: "/microfinance/products" },
-        { name: "Eligibility & Process", href: "/microfinance/process" },
+        { name: "Loan & Savings Products", href: "/microfinance" },
+        { name: "Eligibility & Process", href: "/microfinance" },
       ],
     },
     {
@@ -46,7 +52,6 @@ const Navbar = () => {
       href: "#",
       children: [
         { name: "Impact Results", href: "/impact" },
-        { name: "Transparency & Reporting", href: "/about/annual-report" },
         { name: "Development Partners", href: "/partners" },
       ],
     },
@@ -55,7 +60,6 @@ const Navbar = () => {
       href: "#",
       children: [
         { name: "Photo & Video Gallery", href: "/resources/gallery" },
-        { name: "Notices & Vacancies", href: "/resources/notices" },
         { name: "Branch Network", href: "/resources/branches" },
         { name: "Contact Us", href: "/contact" },
       ],
@@ -69,13 +73,10 @@ const Navbar = () => {
           {/* Logo - Left aligned slot */}
           <div className="flex-1 flex justify-start">
             <Link href="/" className="flex items-center gap-2">
-              <Image 
-                src={logo} 
-                alt="VERC Logo" 
-                width={75} 
-                height={75} 
-                className="object-contain"
-                priority
+              <img
+                src={siteSettings.logoUrl || "/assets/logo.png"}
+                alt="VERC Logo"
+                className="h-16 w-auto object-contain"
               />
             </Link>
           </div>
@@ -113,20 +114,27 @@ const Navbar = () => {
           {/* Utility Nav - Right aligned slot */}
           <div className="flex-1 flex justify-end items-center space-x-4">
             <div className="hidden lg:flex items-center space-x-4">
-              <button className="p-2 text-gray-500 hover:text-brand-primary transition-colors">
-                <Search size={20} />
-              </button>
-              <button className="flex items-center gap-1 text-sm font-bold text-gray-700 hover:text-brand-primary transition-colors">
-                <Globe size={18} />
-                EN
-              </button>
+              <Link
+                href="/admin"
+                style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Admin Studio
+              </Link>
               <Link href="/donate" className="btn-primary shadow-lg shadow-brand-primary/20">
                 Donate
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="lg:hidden">
+            <div className="lg:hidden flex items-center gap-2">
+              <Link
+                href="/admin"
+                style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
+                className="text-xs font-bold px-2 py-1 rounded"
+              >
+                Admin
+              </Link>
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 text-gray-600 hover:text-brand-primary transition-colors"
@@ -140,12 +148,13 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 py-4">
+        <div className="lg:hidden bg-white border-t border-gray-100 py-4 absolute top-24 left-0 right-0 shadow-xl">
           <div className="container-custom space-y-2">
             {navigation.map((item) => (
               <div key={item.name}>
                 <Link
                   href={item.href}
+                  onClick={() => setIsOpen(false)}
                   className="block py-2 text-base font-medium text-gray-900"
                 >
                   {item.name}
@@ -156,6 +165,7 @@ const Navbar = () => {
                       <Link
                         key={child.name}
                         href={child.href}
+                        onClick={() => setIsOpen(false)}
                         className="block py-2 text-sm text-gray-600"
                       >
                         {child.name}
@@ -165,7 +175,11 @@ const Navbar = () => {
                 )}
               </div>
             ))}
-            <Link href="/donate" className="block text-center btn-primary mt-4">
+            <Link
+              href="/donate"
+              onClick={() => setIsOpen(false)}
+              className="block text-center btn-primary mt-4"
+            >
               Donate
             </Link>
           </div>

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
+import { ContentProvider } from "@/context/ContentContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,12 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-brand-light text-brand-dark`}>
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Chatbot />
-        <Footer />
+        <ContentProvider>
+          <Navbar />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Chatbot />
+          <Footer />
+        </ContentProvider>
       </body>
     </html>
   );
