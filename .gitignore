@@ -27,3 +27,8 @@ Thumbs.db
 # TypeScript / Build Cache
 *.tsbuildinfo
 *.log
+
+# SQLite / Local DBs
+*.db
+*.db-journal
+dev.db

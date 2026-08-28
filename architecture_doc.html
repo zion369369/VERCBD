@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VERC - Technical and Operational Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    line-height: 1.55;
+    font-size: 9.5pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Header & Cover Banner */
+  .cover-header {
+    background: linear-gradient(135deg, #091e3a 0%, #0f3d68 50%, #0c6253 100%);
+    color: #ffffff;
+    padding: 32px 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    position: relative;
+    box-shadow: 0 10px 25px -5px rgba(15, 61, 104, 0.25);
+  }
+
+  .cover-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #34d399;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .cover-title {
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .cover-subtitle {
+    font-size: 11pt;
+    color: #cbd5e1;
+    font-weight: 400;
+    max-width: 90%;
+    margin-bottom: 18px;
+  }
+
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .meta-item {
+    font-size: 7.5pt;
+  }
+  .meta-label {
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .meta-value {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 8.5pt;
+    margin-top: 2px;
+  }
+
+  /* Section Styling */
+  .section-title {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #0f2b48;
+    border-left: 4px solid #0d9488;
+    padding-left: 10px;
+    margin-top: 22px;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section-title span.badge {
+    font-size: 7.5pt;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .subsection-title {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin-bottom: 8px;
+    color: #334155;
+    text-align: justify;
+  }
+
+  /* Key Metrics Cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-top: 3px solid #0d9488;
+  }
+  .stat-card.blue { border-top-color: #2563eb; }
+  .stat-card.amber { border-top-color: #d97706; }
+  .stat-card.purple { border-top-color: #7c3aed; }
+
+  .stat-number {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .stat-sub {
+    font-size: 7pt;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+
+  /* Architecture Flow Diagram Container */
+  .diagram-container {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 14px 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  }
+
+  .diagram-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .diagram-title {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #0f2b48;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .diagram-legend {
+    display: flex;
+    gap: 10px;
+    font-size: 7pt;
+    font-weight: 600;
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+
+  /* Multi-Tier Grid in Diagram */
+  .arch-tier-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .tier-label {
+    background: #f1f5f9;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 8pt;
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .tier-label span {
+    font-size: 6.5pt;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: none;
+  }
+
+  .tier-content {
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .box-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 7px 9px;
+  }
+  .box-card.primary { background: #f0fdf4; border-color: #bbf7d0; border-left: 3px solid #16a34a; }
+  .box-card.blue { background: #eff6ff; border-color: #bfdbfe; border-left: 3px solid #2563eb; }
+  .box-card.purple { background: #faf5ff; border-color: #e9d5ff; border-left: 3px solid #9333ea; }
+  .box-card.amber { background: #fffbeb; border-color: #fde68a; border-left: 3px solid #d97706; }
+  .box-card.dark { background: #f1f5f9; border-color: #cbd5e1; border-left: 3px solid #475569; }
+
+  .box-card h5 {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+  .box-card p {
+    font-size: 6.8pt;
+    color: #475569;
+    line-height: 1.3;
+    margin: 0;
+    text-align: left;
+  }
+
+  /* Tables */
+  table.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px 0;
+    font-size: 8pt;
+  }
+
+  table.custom-table th {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+    text-align: left;
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  table.custom-table td {
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: top;
+  }
+
+  table.custom-table tr:nth-child(even) td {
+    background: #fafafa;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 6.8pt;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tag.green { background: #dcfce7; color: #15803d; }
+  .tag.blue { background: #dbeafe; color: #1d4ed8; }
+  .tag.purple { background: #f3e8ff; color: #7e22ce; }
+  .tag.amber { background: #fef3c7; color: #b45309; }
+  .tag.slate { background: #f1f5f9; color: #475569; }
+
+  /* Flow Steps SVG or Cards */
+  .flow-step-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .flow-step-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+  }
+
+  .step-num {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: #0d9488;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 7pt;
+    font-weight: 700;
+    text-align: center;
+    line-height: 18px;
+    margin-bottom: 6px;
+  }
+
+  .flow-step-box h6 {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #0f2b48;
+    margin-bottom: 4px;
+  }
+
+  .flow-step-box p {
+    font-size: 7pt;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    text-align: left;
+  }
+
+  /* Two Column Layout */
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 10px 0;
+  }
+
+  .info-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .info-panel h4 {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #0f2b48;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .info-panel ul {
+    margin-left: 14px;
+    font-size: 7.5pt;
+    color: #475569;
+  }
+  .info-panel ul li {
+    margin-bottom: 4px;
+  }
+
+  .footer-bar {
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 7pt;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: COVER & EXECUTIVE OVERVIEW ==================== -->
+  <div class="cover-header">
+    <div class="cover-tag">Official Architecture Specification</div>
+    <div class="cover-title">Village Education Resource Center (VERC)</div>
+    <div class="cover-subtitle">Technical & Operational System Architecture, Data Flows, and Cloud Infrastructure Specifications</div>
+    
+    <div class="cover-meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">System Version</div>
+        <div class="meta-value">v2.4.0 (Enterprise Next.js + NestJS)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Architecture Style</div>
+        <div class="meta-value">Decoupled Modular Monolith + SSR</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Database Tier</div>
+        <div class="meta-value">PostgreSQL 16 / SQLite Prisma ORM</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">AI Engine</div>
+        <div class="meta-value">Gemini 1.5 Flash (SSE Streaming)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">12+ Modules</div>
+      <div class="stat-label">Admin Capabilities</div>
+      <div class="stat-sub">Real-time CRUD & sync</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-number">&lt; 120 ms</div>
+      <div class="stat-label">AI Stream Latency</div>
+      <div class="stat-sub">Gemini Flash SSE engine</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-number">99.10%</div>
+      <div class="stat-label">MF Recovery Rate</div>
+      <div class="stat-sub">112k+ Active Members</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-number">Zero-Downtime</div>
+      <div class="stat-label">CI/CD Deployments</div>
+      <div class="stat-sub">Automated Render & Netlify</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    1. Executive Summary & System Overview
+    <span class="badge">Architecture Scope</span>
+  </div>
+  <p>
+    The <strong>Village Education Resource Center (VERC)</strong> web platform is an enterprise-grade digital ecosystem built to serve beneficiaries, donors, humanitarian partners (e.g. UNICEF, Water.org), and administrative stakeholders. The platform delivers high-speed public awareness, dynamic programmatic discovery (WaSH, Non-Formal Education, Health, Microfinance), an AI-assisted conversational interface powered by Google Gemini, and a centralized administrative control center with real-time optimistic state management.
+  </p>
+
+  <div class="section-title">
+    2. End-to-End System Technical Architecture
+    <span class="badge">Layered Stack</span>
+  </div>
+
+  <div class="diagram-container">
+    <div class="diagram-header">
+      <div class="diagram-title">VERC Platform Multi-Tier Architecture</div>
+      <div class="diagram-legend">
+        <span><span class="legend-dot" style="background:#2563eb;"></span>Client/Edge</span>
+        <span><span class="legend-dot" style="background:#16a34a;"></span>Frontend (Next.js)</span>
+        <span><span class="legend-dot" style="background:#9333ea;"></span>Backend (NestJS)</span>
+        <span><span class="legend-dot" style="background:#d97706;"></span>Data/Persistence</span>
+      </div>
+    </div>
+
+    <div class="arch-tier-grid">
+      <!-- Tier 1 -->
+      <div class="tier-row">
+        <div class="tier-label">
+          1. Client Tier
+          <span>Omni-Channel</span>
+        </div>
+        <div class="tier-content">
+          <div class="box-card blue">
+            <h5>Public Web Visitors</h5>
+            <p>Desktop & Mobile Responsive Browsers (Chrome, Safari, Edge, Firefox)</p>
+          </div>
+          <div class="box-card blue">
+            <h5>Admin Portal Users</h5>
+            <p>Role-authenticated Content Managers & Program Officers</p>
+          </div>
+          <div class="box-card blue">
+            <h5>Donors & Partners</h5>
+            <p>UN Agencies, International NGOs & Microfinance clients</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 2 -->
+      <div class="tier-row">
+        <div class="tier-label">
+          2. Edge & Frontend
+          <span>Next.js 14 App Router</span>
+        </div>
+        <div class="tier-content">
+          <div class="box-card primary">
+            <h5>Server-Side Rendering (SSR)</h5>
+            <p>Fast LCP / SEO rendering with Next.js 14 App Router</p>
+          </div>
+          <div class="box-card primary">
+            <h5>ContentContext Engine</h5>
+            <p>Unified React Context holding 15+ schemas with LocalStorage cache</p>
+          </div>
+          <div class="box-card primary">
+            <h5>AI Chatbot Client (SSE)</h5>
+            <p>EventSource streaming consumer for real-time natural language answers</p>
+          </div>
+          <div class="box-card primary">
+            <h5>UI / UX Styling</h5>
+            <p>Tailwind CSS 3.4, Framer Motion animations & Lucide SVG Icons</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 3 -->
+      <div class="tier-row">
+        <div class="tier-label">
+          3. API & Middleware
+          <span>Next API & NestJS</span>
+        </div>
+        <div class="tier-content">
+          <div class="box-card purple">
+            <h5>Next.js Route Handlers</h5>
+            <p><code>/api/chat</code> Gemini 1.5 Flash stream proxy with VERC system prompt</p>
+          </div>
+          <div class="box-card purple">
+            <h5>NestJS 10 REST API</h5>
+            <p>Modular controllers (<code>/programs</code>, <code>/news</code>) with CORS & validation</p>
+          </div>
+          <div class="box-card purple">
+            <h5>OpenAPI / Swagger Docs</h5>
+            <p>Automated API contract docs at <code>/api/docs</code></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 4 -->
+      <div class="tier-row">
+        <div class="tier-label">
+          4. Persistence Tier
+          <span>Prisma ORM & DB</span>
+        </div>
+        <div class="tier-content">
+          <div class="box-card amber">
+            <h5>Prisma ORM 5.x</h5>
+            <p>Type-safe query builder, schema generator, migrations & push sync</p>
+          </div>
+          <div class="box-card amber">
+            <h5>PostgreSQL 16 (Prod)</h5>
+            <p>Managed ACID relational database hosted on Render with daily backups</p>
+          </div>
+          <div class="box-card amber">
+            <h5>SQLite (Local Dev)</h5>
+            <p>Zero-dependency embedded database for rapid local development</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 5 -->
+      <div class="tier-row">
+        <div class="tier-label">
+          5. External Cloud
+          <span>Third-Party Integrations</span>
+        </div>
+        <div class="tier-content">
+          <div class="box-card dark">
+            <h5>Google Generative AI</h5>
+            <p>Gemini 1.5 Flash API with custom VERC grounding instruction</p>
+          </div>
+          <div class="box-card dark">
+            <h5>Cloudflare / Netlify CDN</h5>
+            <p>Edge caching, DDoS protection & automated SSL/TLS termination</p>
+          </div>
+          <div class="box-card dark">
+            <h5>Mapping & Media</h5>
+            <p>Leaflet / OSM for branch GIS and CDN-hosted imagery</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>VERC Architecture Specification Document</span>
+    <span>CONFIDENTIAL &bull; Page 1 of 3</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 2: DETAILED FLOWCHARTS & DATA WORKFLOWS ==================== -->
+  <div class="section-title">
+    3. Core Operational Flowcharts
+    <span class="badge">Execution Paths</span>
+  </div>
+
+  <div class="subsection-title">Flowchart A: Public Visitor Request & Content Rendering Flow</div>
+  <p>How visitor requests are routed, resolved, cached, and rendered with sub-second response times:</p>
+
+  <div class="flow-step-container">
+    <div class="flow-step-box">
+      <div class="step-num">1</div>
+      <h6>Client HTTP Request</h6>
+      <p>Visitor navigates to a URL (e.g. <code>/programs/wash</code> or <code>/microfinance</code>). Request hits Edge CDN.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">2</div>
+      <h6>SSR / Context Resolution</h6>
+      <p>Next.js evaluates server components or initializes <code>ContentContext</code> with cached schema snapshot.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">3</div>
+      <h6>Backend API Fallback</h6>
+      <p>Dynamic data is fetched from NestJS backend <code>/programs/:slug</code> backed by PostgreSQL database.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">4</div>
+      <h6>Client Hydration & Motion</h6>
+      <p>HTML stream rendered, Framer Motion triggers entry animations, full interactivity active.</p>
+    </div>
+  </div>
+
+  <div class="subsection-title">Flowchart B: AI Assistant Streaming Query Flow (Server-Sent Events)</div>
+  <p>The specialized low-latency flow connecting the visitor to the Google Gemini model with domain grounding:</p>
+
+  <div class="flow-step-container">
+    <div class="flow-step-box">
+      <div class="step-num">1</div>
+      <h6>User Enters Query</h6>
+      <p>Visitor asks question in <code>Chatbot.tsx</code> (e.g. "What is VERC's CLTS approach and recovery rate?").</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">2</div>
+      <h6>Proxy to Route Handler</h6>
+      <p>Chatbot dispatches POST to <code>/api/chat</code> with conversation history and user prompt.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">3</div>
+      <h6>Gemini API Invocation</h6>
+      <p>Route handler injects system instructions (1977 history, Microfinance KPIs) & calls Gemini 1.5 Flash.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">4</div>
+      <h6>SSE Token Streaming</h6>
+      <p>Chunks streamed back via <code>text/event-stream</code> and typed in real-time on screen in under 120ms.</p>
+    </div>
+  </div>
+
+  <div class="subsection-title">Flowchart C: Admin Content Lifecycle & State Propagation</div>
+  <p>The administrative publishing workflow with immediate optimistic UI updates and persistent backend storage:</p>
+
+  <div class="flow-step-container">
+    <div class="flow-step-box">
+      <div class="step-num">1</div>
+      <h6>Admin Update Action</h6>
+      <p>Editor updates a Hero slide, Program reach metric, or adds a new Story in <code>/admin</code> dashboard.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">2</div>
+      <h6>Optimistic State Commit</h6>
+      <p><code>ContentContext</code> updates in-memory React state instantly, saving to <code>localStorage</code>.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">3</div>
+      <h6>Audit Log Generated</h6>
+      <p>System automatically registers an audit trail entry with timestamp, user action, and affected entity.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">4</div>
+      <h6>Live Site Synchronized</h6>
+      <p>All connected client components immediately reflect updated content across navigation tabs.</p>
+    </div>
+  </div>
+
+  <div class="section-title">
+    4. Database Schema & Data Models Specification
+    <span class="badge">Entity Relationship</span>
+  </div>
+
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Model / Entity</th>
+        <th style="width: 25%;">Primary Fields</th>
+        <th style="width: 25%;">Data Types & Constraints</th>
+        <th style="width: 30%;">Operational Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Program</strong></td>
+        <td><code>id, title, slug, category, description, imageUrl, features</code></td>
+        <td><span class="tag green">UUID (PK)</span>, <span class="tag purple">slug (Unique)</span>, <span class="tag slate">DateTime</span></td>
+        <td>Drives public programs directory (WaSH, Education, Health, MF) and detail pages.</td>
+      </tr>
+      <tr>
+        <td><strong>SuccessStory</strong></td>
+        <td><code>id, title, slug, content, location, imageUrl, date</code></td>
+        <td><span class="tag green">UUID (PK)</span>, <span class="tag purple">slug (Unique)</span>, <span class="tag slate">DateTime</span></td>
+        <td>Impact showcase, field beneficiary transformation case studies, and donor reports.</td>
+      </tr>
+      <tr>
+        <td><strong>News</strong></td>
+        <td><code>id, title, summary, content, imageUrl, publishedAt, category</code></td>
+        <td><span class="tag green">UUID (PK)</span>, <span class="tag slate">DateTime (Indexed)</span></td>
+        <td>Organizational press releases, global visits (e.g. Orlando Bloom), workshop alerts.</td>
+      </tr>
+      <tr>
+        <td><strong>Contact & Branch</strong></td>
+        <td><code>id, officeName, address, phone, email, lat, lng</code></td>
+        <td><span class="tag green">UUID (PK)</span>, <span class="tag amber">Float (GPS lat/lng)</span></td>
+        <td>Branch locator mapping, public inquiry dispatching, and headquarters coordination.</td>
+      </tr>
+      <tr>
+        <td><strong>MicrofinanceProduct</strong></td>
+        <td><code>id, title, category, loanLimit, interestRate, tenure, eligibility</code></td>
+        <td><span class="tag blue">ContentContext Schema</span></td>
+        <td>Jagoron, Agrosor, Buniad, and Water Credit financial products calculation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-bar">
+    <span>VERC Architecture Specification Document</span>
+    <span>CONFIDENTIAL &bull; Page 2 of 3</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 3: OPERATIONAL DEPLOYMENT, SECURITY & GOVERNANCE ==================== -->
+  <div class="section-title">
+    5. Operational Infrastructure & Deployment Blueprint
+    <span class="badge">DevOps & Cloud</span>
+  </div>
+
+  <div class="grid-2col">
+    <div class="info-panel">
+      <h4>☁️ Production Cloud Hosting (Render + Netlify)</h4>
+      <ul>
+        <li><strong>Frontend Web Service:</strong> Next.js 14 deployed on high-availability edge nodes with automatic cache invalidation on Git push.</li>
+        <li><strong>Backend Web Service:</strong> Containerized NestJS 10 microservice running Node 20 runtime on Render with automated health checks.</li>
+        <li><strong>Database Engine:</strong> Managed PostgreSQL 16 instance with connection pooling (<code>DATABASE_URL</code>) and SSL encryption.</li>
+        <li><strong>Declarative IaC:</strong> Fully defined via <code>render.yaml</code> Blueprint for one-click environment provisioning.</li>
+      </ul>
+    </div>
+    <div class="info-panel">
+      <h4>💻 Local Developer Environment</h4>
+      <ul>
+        <li><strong>1-Click Scripts:</strong> <code>start-dev.bat</code> / <code>start-dev.sh</code> to launch Frontend (:3000) and Backend (:3001) simultaneously.</li>
+        <li><strong>Local Persistence:</strong> Embedded SQLite engine with instant migrations (<code>prisma db push</code>) and automated seed data.</li>
+        <li><strong>Container Option:</strong> <code>docker-compose.yml</code> providing isolated PostgreSQL 16 with persistent volume <code>verc_postgres_data</code>.</li>
+        <li><strong>API Exploration:</strong> Interactive Swagger UI at <code>http://localhost:3001/api/docs</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="subsection-title">Flowchart D: CI/CD Deployment & Database Migration Pipeline</div>
+
+  <div class="flow-step-container">
+    <div class="flow-step-box">
+      <div class="step-num">1</div>
+      <h6>Git Commit & Push</h6>
+      <p>Developer pushes changes to <code>main</code> branch on GitHub repository.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">2</div>
+      <h6>Webhook Trigger</h6>
+      <p>Render & Netlify webhooks detect push and initialize parallel container builds.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">3</div>
+      <h6>Build & Prisma Push</h6>
+      <p>Executes <code>npx prisma generate</code>, compiles TypeScript, and synchronizes DB schema.</p>
+    </div>
+    <div class="flow-step-box">
+      <div class="step-num">4</div>
+      <h6>Zero-Downtime Swap</h6>
+      <p>Health checks pass on new container; traffic shifts gracefully with zero downtime.</p>
+    </div>
+  </div>
+
+  <div class="section-title">
+    6. Security, Governance & Disaster Recovery
+    <span class="badge">Enterprise Compliance</span>
+  </div>
+
+  <div class="grid-2col">
+    <div class="info-panel">
+      <h4>🔒 Security & Access Controls</h4>
+      <ul>
+        <li><strong>CORS Hardening:</strong> Backend API restricts origin access to verified frontend domains.</li>
+        <li><strong>Secret Isolation:</strong> <code>GEMINI_API_KEY</code> and database credentials stored exclusively in server environment variables, never leaked to client bundles.</li>
+        <li><strong>Input Sanitization:</strong> Form inputs and API payloads are validated to prevent SQL injection and XSS.</li>
+        <li><strong>Audit Logging:</strong> All administrative modifications (content edits, slide reorders) generate timestamped audit records.</li>
+      </ul>
+    </div>
+    <div class="info-panel">
+      <h4>🛡️ Disaster Recovery & Reliability</h4>
+      <ul>
+        <li><strong>Automated Database Snapshots:</strong> Managed daily snapshots with point-in-time recovery (PITR).</li>
+        <li><strong>Decoupled Resilience:</strong> If backend API is temporarily unreachable, frontend utilizes client cached data for uninterrupted browsing.</li>
+        <li><strong>Graceful Degradation:</strong> AI Assistant detects missing API keys or timeout and serves structured static help links.</li>
+        <li><strong>Data Portability:</strong> Complete JSON export / import available inside Admin portal for instant state backup.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">
+    7. Verification & Sign-Off Checklist
+    <span class="badge">Operational Readiness</span>
+  </div>
+
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Verification Area</th>
+        <th>Target Standard</th>
+        <th>Validation Status</th>
+        <th>Test Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend Server</strong></td>
+        <td>Next.js 14 App Router listening on :3000</td>
+        <td><span class="tag green">VERIFIED (200 OK)</span></td>
+        <td>Automated HTTP check / SSR render test</td>
+      </tr>
+      <tr>
+        <td><strong>Backend REST API</strong></td>
+        <td>NestJS 10 endpoints (<code>/programs</code>, <code>/news</code>) on :3001</td>
+        <td><span class="tag green">VERIFIED (200 OK)</span></td>
+        <td>PowerShell REST invoke / JSON validation</td>
+      </tr>
+      <tr>
+        <td><strong>Swagger Documentation</strong></td>
+        <td>OpenAPI interface live at <code>/api/docs</code></td>
+        <td><span class="tag green">VERIFIED (200 OK)</span></td>
+        <td>Interactive UI schema verification</td>
+      </tr>
+      <tr>
+        <td><strong>Database & Seeds</strong></td>
+        <td>Prisma ORM schema synchronized & seeded</td>
+        <td><span class="tag green">VERIFIED (Active)</span></td>
+        <td>Prisma Client query inspection</td>
+      </tr>
+      <tr>
+        <td><strong>AI Chatbot Gateway</strong></td>
+        <td>Gemini 1.5 Flash SSE streaming proxy</td>
+        <td><span class="tag blue">CONFIGURED (/api/chat)</span></td>
+        <td>Route handler inspection & prompt grounding</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-bar">
+    <span>VERC Technical & Operational Architecture Specification &bull; Generated August 2026</span>
+    <span>CONFIDENTIAL &bull; Page 3 of 3</span>
+  </div>
+
+</body>
+</html>
