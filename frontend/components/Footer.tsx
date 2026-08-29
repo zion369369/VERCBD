@@ -32,18 +32,19 @@ const Footer = () => {
       title: "Organization",
       links: [
         { name: "About VERC", href: "/about" },
-        { name: "Our History", href: "/about" },
-        { name: "Vision & Mission", href: "/about" },
-        { name: "Leadership Team", href: "/about" },
+        { name: "Governance & Leadership", href: "/about/organogram" },
+        { name: "Senior Staff Members", href: "/about/staff" },
+        { name: "Our Awards", href: "/about/awards" },
+        { name: "Annual Reports", href: "/about/annual-report" },
         { name: "Admin Studio", href: "/admin" },
       ]
     },
     {
       title: "Social Programs",
       links: [
-        { name: "Education", href: "/programs/education" },
-        { name: "Health & WASH", href: "/programs/wash" },
-        { name: "Livelihood", href: "/programs/livelihood" },
+        { name: "Non-Formal Education", href: "/programs/education" },
+        { name: "Health & WaSH", href: "/programs/wash" },
+        { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
         { name: "Capacity Building", href: "/programs/capacity" },
         { name: "Partnerships", href: "/partners" },
       ]
@@ -53,7 +54,7 @@ const Footer = () => {
       links: [
         { name: "Photo Gallery", href: "/resources/gallery" },
         { name: "Branch Network", href: "/resources/branches" },
-        { name: "Microfinance", href: "/microfinance" },
+        { name: "Microfinance Overview", href: "/microfinance" },
         { name: "Contact Us", href: "/contact" },
         { name: "Donate", href: "/donate" },
       ]

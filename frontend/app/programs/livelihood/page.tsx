@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   Heart, 
@@ -14,35 +15,70 @@ import {
   Zap,
   Sparkles,
   ShoppingBag,
-  Home
+  Home,
+  Sprout,
+  ShieldCheck,
+  ChevronRight,
+  Eye
 } from "lucide-react";
-import Image from "next/image";
 
 export default function LivelihoodPage() {
-  const initiatives = [
+  const [activeTab, setActiveTab] = useState<number>(0);
+
+  const galleryItems = [
     {
-      title: "Women Empowerment",
-      desc: "Creating leadership opportunities and economic independence for marginalized women through skill training and self-help groups.",
-      icon: <Users className="text-rose-500" />,
-      color: "bg-rose-50"
+      title: "Agro-Enterprise & Climate-Adaptive Farming",
+      subtitle: "Sustainable Agriculture & Organic Produce",
+      desc: "VERC provides rural women farmers with high-yield climate-resilient seeds, organic fertilizer training, and direct village-to-urban retail linkages to maximize household yield.",
+      image: "/assets/livelihood_agro.jpg",
+      fallback: "https://www.vercbd.org/images/image-10-main-2.jpg",
+      tag: "Agriculture & Agro-Processing",
+      stats: "35,000+ Farmers Empowered"
     },
     {
-      title: "Vocational Training",
-      desc: "Equipping youth with marketable skills in tailoring, electronics, and agriculture to bridge the unemployment gap.",
-      icon: <Briefcase className="text-blue-500" />,
-      color: "bg-blue-50"
+      title: "Vocational Training & Skills Development",
+      subtitle: "Youth Employment & Marketable Trades",
+      desc: "Equipping underprivileged youth and women with market-relevant trade certifications in garment manufacturing, tailoring, electrical servicing, and green tech installation.",
+      image: "/assets/livelihood_vocational.jpg",
+      fallback: "https://www.vercbd.org/images/image-7-main-1.jpg",
+      tag: "Vocational Certification",
+      stats: "12,500+ Certified Graduates"
     },
     {
-      title: "SME Support",
-      desc: "Providing seed funding and business consultancy to small-scale rural entrepreneurs.",
-      icon: <ShoppingBag className="text-emerald-500" />,
-      color: "bg-emerald-50"
+      title: "Self-Help Groups & Micro-Enterprise Growth",
+      subtitle: "Grassroots Financial Inclusion & Capital",
+      desc: "Mobilizing women into community-managed Self-Help Groups (SHGs) that cultivate collective savings habits, grant emergency safety nets, and disburse low-interest business loans.",
+      image: "/assets/livelihood_community.jpg",
+      fallback: "https://www.vercbd.org/images/ibig16.jpg",
+      tag: "Women Self-Help Groups",
+      stats: "85,000+ Active Members"
+    }
+  ];
+
+  const strategicPillars = [
+    {
+      title: "Women Economic Autonomy",
+      desc: "Fostering female financial self-reliance through seed-capital micro-grants, enterprise bookkeeping, and peer mentorship networks.",
+      icon: <Users className="text-rose-500 w-7 h-7" />,
+      color: "bg-rose-50/60 border-rose-100"
     },
     {
-      title: "Housing & Infrastructure",
-      desc: "Building resilient low-cost housing for victims of climate displacement and extreme poverty.",
-      icon: <Home className="text-amber-500" />,
-      color: "bg-amber-50"
+      title: "Agro-Value Chain & Markets",
+      desc: "Connecting rural poultry, livestock, and vegetable producers directly to regional wholesale aggregators, cutting out exploitative middlemen.",
+      icon: <Sprout className="text-emerald-500 w-7 h-7" />,
+      color: "bg-emerald-50/60 border-emerald-100"
+    },
+    {
+      title: "Youth Technical Employment",
+      desc: "Operating specialized technical training institutes with job placement matching and apprenticeship opportunities across growing industries.",
+      icon: <Briefcase className="text-blue-500 w-7 h-7" />,
+      color: "bg-blue-50/60 border-blue-100"
+    },
+    {
+      title: "Resilient Habitat & Assets",
+      desc: "Designing disaster-resilient low-cost housing and clean energy stoves to protect productive community capital against climate shocks.",
+      icon: <Home className="text-amber-500 w-7 h-7" />,
+      color: "bg-amber-50/60 border-amber-100"
     }
   ];
 
@@ -50,184 +86,268 @@ export default function LivelihoodPage() {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
   };
 
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
-      {/* 1. HERO */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gray-900 pt-24">
+      
+      {/* 1. HERO HEADER */}
+      <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <Image 
-            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
-            alt="Livelihood & Empowerment" 
-            fill 
-            className="object-cover opacity-50 scale-105"
-            priority
+          <img 
+            src="/assets/livelihood_agro.jpg" 
+            alt="Livelihood & Community Empowerment" 
+            className="w-full h-full object-cover opacity-25 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
         </div>
         
-        <div className="container-custom relative z-10 text-white text-center">
+        <div className="container-custom relative z-10 text-center max-w-4xl mx-auto space-y-6">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="max-w-4xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="space-y-6"
           >
-            <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-10 border border-brand-primary/30 text-brand-secondary">
-              Social Empowerment Program
+            {/* Breadcrumb */}
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <ChevronRight size={12} />
+              <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
+              <ChevronRight size={12} />
+              <span className="text-brand-secondary">Livelihood</span>
+            </div>
+
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/10 rounded-full text-xs font-black uppercase tracking-[0.25em] text-emerald-400 border border-emerald-500/30">
+              <TrendingUp size={14} className="text-emerald-400" /> Economic Self-Reliance
             </span>
-            <h1 className="text-6xl lg:text-9xl font-black mb-10 leading-[0.95] tracking-tighter">
-              Livelihood & <br/> <span className="text-brand-secondary">Empowerment.</span>
+            
+            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight">
+              Livelihood & <span className="text-brand-secondary">Empowerment.</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mx-auto">
-              Building resilient futures by empowering the marginalized segments of society through skill, scale, and sustainability.
+            
+            <p className="text-lg lg:text-2xl text-gray-300 font-medium max-w-3xl mx-auto leading-relaxed">
+              Transforming marginalized rural populations into self-reliant producers, entrepreneurs, and community leaders through vocational mastery, agricultural innovation, and micro-capital.
             </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/donate" className="px-8 py-4 bg-brand-secondary text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 transition-all text-sm">
+                Support a Micro-Entrepreneur
+              </Link>
+              <Link href="/contact" className="px-8 py-4 bg-white/10 text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all text-sm">
+                Partner on CSR Programs
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. PHILOSOPHY */}
-      <section className="py-32 bg-white">
+      {/* 2. REAL-WORLD FIELD GALLERY SPOTLIGHT (THE 3 IMAGES) */}
+      <section className="py-24 bg-gray-50/70 border-b border-gray-100">
         <div className="container-custom">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
-                <motion.div {...fadeIn}>
-                    <div className="flex items-center gap-3 text-brand-primary mb-6">
-                        <Heart size={24} />
-                        <h2 className="font-black uppercase tracking-widest text-xs">Our Core Focus</h2>
-                    </div>
-                    <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight tracking-tighter mb-10">
-                        Economic <br/> <span className="text-brand-primary">Resilience.</span>
+          <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Ground Realities</span>
+            <h2 className="text-3xl lg:text-5xl font-black text-gray-900 tracking-tight">
+              Empowerment in Direct Action
+            </h2>
+            <p className="text-gray-600 font-medium text-base">
+              Explore how VERC&apos;s field interventions create tangible household income and self-dignity across Bangladesh.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {galleryItems.map((item, idx) => (
+              <motion.div
+                key={idx}
+                {...fadeIn}
+                transition={{ delay: idx * 0.15 }}
+                className="bg-white rounded-[36px] overflow-hidden border border-gray-200/80 shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group"
+              >
+                {/* Image Container with Hover Zoom */}
+                <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = item.fallback;
+                    }}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
+                  
+                  {/* Floating Tag */}
+                  <span className="absolute top-5 left-5 px-3.5 py-1.5 bg-white/90 backdrop-blur-md text-gray-900 text-xs font-bold rounded-full shadow-md">
+                    {item.tag}
+                  </span>
+
+                  {/* Impact Stat Badge */}
+                  <span className="absolute bottom-4 left-5 right-5 text-white text-xs font-bold flex items-center justify-between">
+                    <span className="text-brand-secondary font-black">{item.stats}</span>
+                    <span className="flex items-center gap-1 opacity-90"><ShieldCheck size={14} className="text-emerald-400" /> Verified Field Project</span>
+                  </span>
+                </div>
+
+                {/* Card Content */}
+                <div className="p-8 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="text-xl font-black text-gray-900 mb-2 leading-snug group-hover:text-brand-primary transition-colors">
+                      {item.title}
                     </h3>
-                    <p className="text-xl text-gray-600 leading-relaxed font-medium mb-8">
-                        At VERC, we believe that true empowerment comes from economic independence. Our livelihood programs are designed to break the cycle of poverty by providing the tools, training, and capital necessary for sustainable growth.
+                    <p className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">
+                      {item.subtitle}
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        {[
-                            "Participatory Rural Appraisal (PRA)",
-                            "Community-Led Resource Mapping",
-                            "Climate-Adaptive Livelihoods",
-                            "Market Linkage Development"
-                        ].map((h, i) => (
-                            <div key={i} className="flex items-center gap-3 text-gray-700 font-bold text-sm">
-                                <CheckCircle2 size={18} className="text-brand-primary flex-shrink-0" />
-                                {h}
-                            </div>
-                        ))}
-                    </div>
-                </motion.div>
-                
-                <div className="relative">
-                    <div className="absolute -inset-4 bg-brand-primary/5 rounded-[64px] blur-3xl"></div>
-                    <div className="relative bg-gray-900 p-12 lg:p-20 rounded-[64px] text-white overflow-hidden border border-white/10 shadow-2xl">
-                        <h4 className="text-3xl font-black mb-8 tracking-tighter text-brand-secondary">Program Impact</h4>
-                        <div className="space-y-12">
-                            <div>
-                                <div className="text-5xl font-black mb-2">85,000+</div>
-                                <p className="text-gray-400 font-medium uppercase tracking-widest text-[10px]">Women Entrepreneurs Trained</p>
-                            </div>
-                            <div>
-                                <div className="text-5xl font-black mb-2">12,500+</div>
-                                <p className="text-gray-400 font-medium uppercase tracking-widest text-[10px]">Youth Placed in Vocational Jobs</p>
-                            </div>
-                            <div>
-                                <div className="text-5xl font-black mb-2">30+</div>
-                                <p className="text-gray-400 font-medium uppercase tracking-widest text-[10px]">Districts Impacted</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p className="text-sm text-gray-600 font-medium leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-black text-brand-primary uppercase tracking-wider">
+                    <span>Active Field Operation</span>
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-            </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 3. INITIATIVES GRID */}
-      <section className="py-32 bg-gray-50">
+      {/* 3. CORE STRATEGY & NUMERICAL IMPACT */}
+      <section className="py-28 bg-white">
         <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-24">
-                <div className="flex items-center justify-center gap-3 text-brand-primary mb-6">
-                    <Sparkles size={24} />
-                    <h2 className="font-black uppercase tracking-widest text-xs">Pillars of Growth</h2>
-                </div>
-                <h3 className="text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Strategic <br/> <span className="text-brand-primary">Interventions.</span></h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {initiatives.map((item, i) => (
-                    <motion.div 
-                        key={i} 
-                        {...fadeIn}
-                        transition={{ delay: i * 0.1 }}
-                        className={`${item.color} p-10 rounded-[48px] border border-transparent hover:border-brand-primary/10 hover:bg-white hover:shadow-2xl transition-all duration-500 group flex flex-col h-full`}
-                    >
-                        <div className="mb-8 w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                            {item.icon}
-                        </div>
-                        <h3 className="text-2xl font-black mb-4 text-gray-900 leading-tight">{item.title}</h3>
-                        <p className="text-gray-500 font-medium mb-10 text-sm leading-relaxed">
-                          {item.desc}
-                        </p>
-                        <button className="mt-auto inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
-                          Success Stories <ArrowRight size={14} />
-                        </button>
-                    </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            {/* Strategy Column */}
+            <motion.div {...fadeIn} className="lg:col-span-7 space-y-8">
+              <div className="space-y-4">
+                <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Sustainable Methodology</span>
+                <h2 className="text-4xl lg:text-6xl font-black text-gray-900 leading-[1.08] tracking-tight">
+                  Breaking Intergenerational <br />
+                  <span className="text-brand-primary">Poverty Cycles.</span>
+                </h2>
+              </div>
+
+              <p className="text-lg text-gray-600 font-medium leading-relaxed">
+                VERC’s livelihood development model does not rely on short-term handouts. We introduce systemic economic capacity: pairing market-tested vocational skills with ethical seed capital and institutional market linkages.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                {[
+                  "Participatory Rural Appraisal (PRA) Mapping",
+                  "Climate-Adaptive Agricultural Methods",
+                  "Collective Women Self-Help Savings (SHGs)",
+                  "Wholesale & Retail Value-Chain Integration",
+                  "Small & Medium Enterprise (SME) Incubation",
+                  "Ethical Micro-Credit with Zero Coercion"
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3 text-sm font-bold text-gray-800">
+                    <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </div>
                 ))}
-            </div>
-        </div>
-      </section>
+              </div>
 
-      {/* 4. CASE STUDY */}
-      <section className="py-40 bg-white">
-        <div className="container-custom">
-            <div className="bg-gray-900 rounded-[64px] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch border border-white/10">
-                <div className="flex-1 p-12 lg:p-24 space-y-10 text-white">
-                    <div className="flex items-center gap-3 text-brand-secondary">
-                        <Award size={20} />
-                        <h4 className="font-black uppercase tracking-widest text-xs">Empowerment Spotlight</h4>
-                    </div>
-                    <h3 className="text-4xl lg:text-6xl font-black leading-tight tracking-tighter">Transforming <br/> <span className="text-brand-secondary">Rural Crafts.</span></h3>
-                    <p className="text-xl text-gray-400 leading-relaxed font-medium">
-                        Our textile initiative in Savar has trained over 500 women in modern weaving techniques, connecting them directly with urban retail markets and doubling their household income.
-                    </p>
-                    <div className="pt-6">
-                        <button className="px-10 py-5 bg-brand-secondary text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                            Partner for Livelihoods
-                        </button>
-                    </div>
-                </div>
-                <div className="flex-1 relative min-h-[400px]">
-                    <Image 
-                        src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2026&auto=format&fit=crop" 
-                        alt="Empowerment in Action" 
-                        fill 
-                        className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-l from-gray-900 via-transparent to-transparent"></div>
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* 5. CTA */}
-      <section className="py-40 bg-brand-light">
-        <div className="container-custom text-center">
-            <motion.div {...fadeIn} className="max-w-4xl mx-auto">
-                <h3 className="text-5xl lg:text-8xl font-black text-gray-900 mb-12 leading-[1] tracking-tighter">Build a <br/> <span className="text-brand-primary">Resilient Future.</span></h3>
-                <p className="text-2xl text-gray-600 font-medium mb-16">
-                    Support VERC in creating sustainable livelihoods for the most vulnerable communities in Bangladesh.
-                </p>
-                <div className="flex flex-wrap justify-center gap-6">
-                    <button className="px-12 py-6 bg-brand-primary text-white text-xl font-black rounded-3xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                        Support a Family
-                    </button>
-                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-bold rounded-3xl border-2 border-brand-primary/10 hover:bg-brand-primary/5 transition-all">
-                        Corporate Partnership
-                    </button>
-                </div>
+              <div className="pt-4">
+                <Link href="/microfinance" className="inline-flex items-center gap-3 text-sm font-black uppercase tracking-widest text-brand-primary hover:gap-5 transition-all">
+                  Explore Microfinance & Savings Products <ArrowRight size={16} />
+                </Link>
+              </div>
             </motion.div>
+
+            {/* Impact Metric Pillar */}
+            <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="lg:col-span-5">
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-10 sm:p-12 rounded-[44px] text-white shadow-2xl space-y-8 border border-gray-800">
+                <div className="border-b border-white/10 pb-4">
+                  <span className="text-xs font-black uppercase tracking-[0.25em] text-brand-secondary">Cumulative Reach</span>
+                  <h4 className="text-2xl font-black text-white mt-1">Livelihood Milestones</h4>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <div className="text-5xl font-black text-amber-400">85,000+</div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Women Entrepreneurs Funded & Mentored</p>
+                  </div>
+
+                  <div>
+                    <div className="text-5xl font-black text-emerald-400">12,500+</div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Youth Graduated from Trade Centers</p>
+                  </div>
+
+                  <div>
+                    <div className="text-5xl font-black text-blue-400">30+</div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Districts Actively Covered Across Bangladesh</p>
+                  </div>
+
+                  <div>
+                    <div className="text-5xl font-black text-purple-400">98.4%</div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Micro-Enterprise Repayment & Sustainability Rate</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </section>
+
+      {/* 4. STRATEGIC INTERVENTIONS GRID */}
+      <section className="py-24 bg-gray-50/60 border-t border-gray-100">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-16 space-y-3">
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Intervention Matrix</span>
+            <h2 className="text-3xl lg:text-5xl font-black text-gray-900 tracking-tight">
+              Pillars of Sustainable Growth
+            </h2>
+            <p className="text-gray-600 font-medium text-base">
+              Integrated development strategies targeting multidimensional poverty.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {strategicPillars.map((pillar, i) => (
+              <motion.div
+                key={i}
+                {...fadeIn}
+                transition={{ delay: i * 0.1 }}
+                className={`${pillar.color} p-8 rounded-[36px] border bg-white shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between`}
+              >
+                <div className="space-y-4">
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                    {pillar.icon}
+                  </div>
+                  <h3 className="text-xl font-black text-gray-900 leading-snug">{pillar.title}</h3>
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">{pillar.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CALL TO ACTION */}
+      <section className="py-24 bg-brand-primary text-white relative overflow-hidden">
+        <div className="container-custom relative z-10 text-center">
+          <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-4xl lg:text-7xl font-black tracking-tight leading-tight">
+              Empower a Family. <br />
+              <span className="text-brand-secondary">Transform an Entire Community.</span>
+            </h2>
+            <p className="text-xl text-gray-200 font-medium max-w-2xl mx-auto leading-relaxed">
+              Your partnership or contribution directly equips a rural woman or youth with life-changing skills and sustainable income.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/donate" className="px-10 py-4 bg-white text-brand-primary text-lg font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-3">
+                Donate to Livelihood Fund <ArrowRight size={20} />
+              </Link>
+              <Link href="/contact" className="px-10 py-4 bg-white/10 text-white border border-white/20 text-lg font-bold rounded-2xl hover:bg-white/20 transition-all inline-block">
+                Inquire for Institutional Partnership
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 }

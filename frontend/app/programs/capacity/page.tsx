@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   Users, 
@@ -19,52 +20,46 @@ import {
   PieChart,
   HardHat,
   HeartHandshake,
-  BarChart3
+  BarChart3,
+  ChevronRight,
+  Sprout,
+  Compass,
+  Calendar,
+  Sparkles
 } from "lucide-react";
-import Image from "next/image";
-import capacityHero from "@/app/assets/capacity_building_hero.png";
 
 export default function CapacityBuildingPage() {
   const trainingFields = [
-    { name: "Water & Sanitation", icon: <HardHat size={20} /> },
-    { name: "Hygiene Promotion", icon: <ShieldCheck size={20} /> },
-    { name: "Governance", icon: <Building2 size={20} /> },
-    { name: "Gender & Equity", icon: <Globe size={20} /> },
-    { name: "Human Rights", icon: <ShieldCheck size={20} /> },
-    { name: "Child Protection", icon: <Users2 size={20} /> },
-    { name: "Climate Change", icon: <TrendingUp size={20} /> },
-    { name: "Disaster Management", icon: <ShieldCheck size={20} /> },
-    { name: "Education", icon: <BookOpen size={20} /> },
-    { name: "Micro Finance", icon: <PieChart size={20} /> },
-    { name: "SME Development", icon: <Briefcase size={20} /> },
-    { name: "Advocacy", icon: <TrendingUp size={20} /> }
+    { name: "WaSH & Hygiene Promotion", category: "Public Health", icon: <HardHat className="text-emerald-600 w-6 h-6" />, desc: "CLTS facilitation, community water safety planning, and school hygiene club mobilization." },
+    { name: "Local Governance & LGI Support", category: "Governance", icon: <Building2 className="text-blue-600 w-6 h-6" />, desc: "Union Parishad participatory budgeting, tax assessment, and transparent citizen charters." },
+    { name: "Gender Equity & Human Rights", category: "Human Rights", icon: <Globe className="text-purple-600 w-6 h-6" />, desc: "Women leadership development, prevention of gender-based violence, and legal literacy." },
+    { name: "Child Protection & Safeguarding", category: "Social Welfare", icon: <Users2 className="text-rose-600 w-6 h-6" />, desc: "Early childhood development, safe learning environments, and anti-child marriage vigilance." },
+    { name: "Climate Adaptation & Disaster Mgmt", category: "Environment", icon: <TrendingUp className="text-teal-600 w-6 h-6" />, desc: "Disaster Risk Reduction (DRR), flood-resilient infrastructure, and community early warning." },
+    { name: "Non-Formal Education Facilitation", category: "Education", icon: <BookOpen className="text-amber-600 w-6 h-6" />, desc: "Child-centered pedagogy, adult literacy curriculum, and community preschool management." },
+    { name: "Microfinance & SME Development", category: "Livelihoods", icon: <PieChart className="text-indigo-600 w-6 h-6" />, desc: "Responsible micro-credit governance, borrower protection standards, and SME bookkeeping." },
+    { name: "Advocacy & Strategic Networking", category: "Institutional", icon: <Compass className="text-cyan-600 w-6 h-6" />, desc: "Grassroots citizen advocacy, policy dialogue with government ministries, and NGO coalition." }
   ];
 
   const majorAspects = [
     {
-      title: "Project Support",
-      desc: "Provide need-based appropriate support to VERC projects internally.",
-      icon: <Target className="text-brand-primary" size={24} />
+      title: "Contractual & Custom Training Services",
+      desc: "Delivering tailored capacity-building modules on a contractual basis for UN agencies, international NGOs, government ministries, and private sector CSR partners.",
+      icon: <Briefcase className="text-blue-600 w-7 h-7" />
     },
     {
-      title: "Contractual Training",
-      desc: "Provide need-based training on contractual basis to other client organizations and individuals.",
-      icon: <Briefcase className="text-brand-primary" size={24} />
+      title: "Local Government (LGI) Strengthening",
+      desc: "Strengthening Union Parishads and Upazila administrations through participatory governance training, Minimum Condition (MMC) assessments, and transparency audits.",
+      icon: <Building2 className="text-emerald-600 w-7 h-7" />
     },
     {
-      title: "Local Govt. Strengthening",
-      desc: "Strengthening local Govt. for Sustainable Development through local NGO collaboration.",
-      icon: <Building2 className="text-brand-primary" size={24} />
+      title: "Community Facilitator Incubation",
+      desc: "Transforming grassroots natural leaders into certified development facilitators capable of mobilizing their own villages for sustainable social action.",
+      icon: <Users className="text-purple-600 w-7 h-7" />
     },
     {
-      title: "NGO Capacity Building",
-      desc: "Enhancing the capabilities of local NGOs across Bangladesh.",
-      icon: <Users className="text-brand-primary" size={24} />
-    },
-    {
-      title: "Disaster Preparedness",
-      desc: "Specialized training in Disaster Preparedness and Management.",
-      icon: <ShieldCheck className="text-brand-primary" size={24} />
+      title: "Disaster Preparedness & Climate Resilience",
+      desc: "Equipping coastal and riverine communities with practical simulation training, emergency response drills, and climate-adaptive livelihood strategies.",
+      icon: <ShieldCheck className="text-amber-600 w-7 h-7" />
     }
   ];
 
@@ -72,211 +67,253 @@ export default function CapacityBuildingPage() {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
   };
 
   return (
-    <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10">
-      {/* Immersive Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-gray-900 pt-24">
+    <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
+      
+      {/* 1. HERO HEADER */}
+      <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <Image 
-            src={capacityHero} 
-            alt="Capacity Building Program" 
-            fill 
-            className="object-cover opacity-60 scale-105"
-            priority
+          <img 
+            src="/assets/capacity_building_training.jpg" 
+            alt="VERC Capacity Building Training Workshop" 
+            className="w-full h-full object-cover opacity-30 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
         </div>
-        
-        <div className="container-custom relative z-10 text-white text-center">
+
+        <div className="container-custom relative z-10 text-center max-w-4xl mx-auto space-y-6">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="max-w-4xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="space-y-6"
           >
-            <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-10 border border-brand-primary/30 text-brand-secondary">
-              Empowerment & Growth
+            {/* Breadcrumb */}
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <ChevronRight size={12} />
+              <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
+              <ChevronRight size={12} />
+              <span className="text-brand-secondary">Capacity Building</span>
+            </div>
+
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-purple-500/10 rounded-full text-xs font-black uppercase tracking-[0.25em] text-purple-400 border border-purple-500/30">
+              <Award size={14} className="text-purple-400" /> Human & Institutional Development
             </span>
-            <h1 className="text-6xl lg:text-9xl font-black mb-10 leading-[0.95] tracking-tighter">
-              Capacity <br/> <span className="text-brand-secondary">Building.</span>
+
+            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight">
+              Capacity <span className="text-brand-secondary">Building.</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mx-auto">
-              Enhancing human potential and institutional excellence to drive sustainable development across Bangladesh.
+
+            <p className="text-lg lg:text-2xl text-gray-300 font-medium max-w-3xl mx-auto leading-relaxed">
+              Enhancing human potential, fostering participatory leadership, and developing institutional excellence across Bangladesh’s grassroots development sector since 1977.
             </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/contact" className="px-8 py-4 bg-brand-secondary text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 transition-all text-sm">
+                Book Training Facility & Modules
+              </Link>
+              <Link href="/about" className="px-8 py-4 bg-white/10 text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all text-sm">
+                Our Institutional Legacy
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Mission & Strategy */}
-      <section className="py-32 bg-white">
+      {/* 2. FEATURED WORKSHOP SPOTLIGHT & PHILOSOPHY */}
+      <section className="py-24 bg-gray-50/70 border-b border-gray-100">
         <div className="container-custom">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
-                <motion.div {...fadeIn}>
-                    <div className="flex items-center gap-3 text-brand-primary mb-6">
-                        <Lightbulb size={24} />
-                        <h2 className="font-black uppercase tracking-widest text-xs">Our Approach</h2>
-                    </div>
-                    <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight tracking-tighter mb-10">
-                        Participatory <br/> <span className="text-brand-primary">Development.</span>
-                    </h3>
-                    <p className="text-xl text-gray-600 leading-relaxed font-medium mb-8 italic">
-                        "VERC emphasizes on people’s participatory and sustainable human development and capacity building of the development actors as facilitators."
-                    </p>
-                    <p className="text-lg text-gray-500 leading-relaxed mb-10">
-                        We aim to institutionalize the lessons learnt from the development process as clearly enumerated in VERC’s Mission statement and Strategy. Our Training Section sets the goal to enhance human potential, change attitudes, and develop commitment of development actors.
-                    </p>
-                    
-                    <div className="bg-brand-light/50 p-8 rounded-3xl border border-brand-primary/5">
-                        <h4 className="font-black text-gray-900 mb-4 uppercase tracking-widest text-[10px]">Total Training Impact</h4>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-black text-brand-primary tracking-tighter">425,176</span>
-                            <span className="text-gray-500 font-bold uppercase text-xs tracking-wider">Participants Trained</span>
-                        </div>
-                    </div>
-                </motion.div>
-
-                <div className="space-y-6">
-                    <motion.div 
-                        {...fadeIn}
-                        className="p-10 bg-gray-900 text-white rounded-[48px] shadow-2xl relative overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/20 rounded-full -mr-16 -mt-16"></div>
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="p-3 bg-brand-primary/20 rounded-xl text-brand-secondary">
-                                <BarChart3 size={24} />
-                            </div>
-                            <h4 className="text-2xl font-black tracking-tight">Performance Snapshot</h4>
-                        </div>
-                        <p className="text-lg text-gray-400 font-medium leading-relaxed mb-8">
-                            During the 2011-2012 period, our section successfully imparted training to <span className="text-white font-bold">23,663 participants</span>, marking a significant milestone in our expansion.
-                        </p>
-                        <div className="flex items-center gap-2 text-brand-secondary font-black uppercase text-[10px] tracking-[0.2em]">
-                            View Annual Reports <ArrowRight size={14} />
-                        </div>
-                    </motion.div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                        {trainingFields.slice(0, 4).map((field, i) => (
-                            <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-all group">
-                                <div className="text-brand-primary mb-3 group-hover:scale-110 transition-transform">{field.icon}</div>
-                                <div className="font-bold text-gray-900 text-sm">{field.name}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* Expertise Sectors */}
-      <section className="py-32 bg-gray-50">
-        <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-24">
-                <div className="flex items-center justify-center gap-3 text-brand-primary mb-6">
-                    <Award size={24} />
-                    <h2 className="font-black uppercase tracking-widest text-xs">Fields of Expertise</h2>
-                </div>
-                <h3 className="text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Diverse Training <br/> <span className="text-brand-primary">Specializations.</span></h3>
-                <p className="text-xl text-gray-600 font-medium">
-                    Our section plays a key role in capacitating government staff, LGI representatives, and NGO professionals across a broad spectrum of development fields.
-                </p>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {trainingFields.map((field, i) => (
-                    <motion.div 
-                        key={i}
-                        {...fadeIn}
-                        transition={{ delay: i * 0.05 }}
-                        className="p-8 bg-white rounded-3xl border border-transparent hover:border-brand-primary/10 hover:shadow-xl transition-all group"
-                    >
-                        <div className="w-12 h-12 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:scale-110 transition-transform">
-                            {field.icon}
-                        </div>
-                        <h4 className="font-black text-gray-900 leading-tight group-hover:text-brand-primary transition-colors">{field.name}</h4>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
-      </section>
-
-      {/* Major Aspects of Training */}
-      <section className="py-32 bg-white">
-        <div className="container-custom">
-            <div className="flex flex-col lg:flex-row gap-24 items-center">
-                <div className="flex-1 order-2 lg:order-1">
-                    <div className="mb-16">
-                        <h3 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tighter mb-6">
-                            Major Aspects of <br/> <span className="text-brand-primary">Our Program.</span>
-                        </h3>
-                    </div>
-                    <div className="space-y-10">
-                        {majorAspects.map((aspect, i) => (
-                            <motion.div 
-                                key={i} 
-                                {...fadeIn}
-                                transition={{ delay: i * 0.1 }}
-                                className="flex gap-8 group"
-                            >
-                                <div className="flex-shrink-0 w-16 h-16 bg-brand-light rounded-2xl flex items-center justify-center group-hover:bg-brand-primary group-hover:text-white transition-all">
-                                    {aspect.icon}
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-2xl font-black text-gray-900">{aspect.title}</h4>
-                                    <p className="text-lg text-gray-500 font-medium leading-relaxed">{aspect.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-                <div className="flex-1 order-1 lg:order-2">
-                    <div className="relative">
-                        <div className="absolute -inset-4 bg-brand-primary/5 rounded-[64px] blur-3xl"></div>
-                        <div className="relative bg-gray-900 p-12 lg:p-20 rounded-[64px] text-white overflow-hidden border border-white/10 shadow-2xl">
-                            <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full -mb-32 -mr-32 blur-3xl"></div>
-                            <span className="inline-block px-4 py-2 bg-brand-primary/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-8 border border-brand-primary/30">Case Study</span>
-                            <h3 className="text-4xl font-black mb-8 leading-[1.1] tracking-tighter">Union Parishads <br/> <span className="text-brand-secondary">Performance Assessment.</span></h3>
-                            <p className="text-xl text-gray-400 font-medium leading-relaxed mb-10">
-                                Measuring the Minimum Conditions (MMCs) of Union Parishads in Narsingdi district under the project of “Performance Assessment of 155 Union Parishads in Six LIC Districts”.
-                            </p>
-                            <div className="flex items-center gap-3 font-black uppercase text-[10px] tracking-widest text-brand-secondary cursor-pointer hover:gap-5 transition-all">
-                                Read Full Project Details <ArrowRight size={14} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-40 bg-brand-light">
-        <div className="container-custom text-center">
-            <motion.div {...fadeIn} className="max-w-4xl mx-auto">
-                <div className="flex justify-center mb-10">
-                    <div className="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary">
-                        <HeartHandshake size={40} />
-                    </div>
-                </div>
-                <h3 className="text-5xl lg:text-8xl font-black text-gray-900 mb-12 leading-[1] tracking-tighter">Join the <br/> <span className="text-brand-primary">Facilitator Network.</span></h3>
-                <p className="text-2xl text-gray-600 font-medium mb-16">
-                    Our facilities are also available for other organizations to use for their own development programs.
-                </p>
-                <div className="flex flex-wrap justify-center gap-6">
-                    <button className="px-12 py-6 bg-brand-primary text-white text-xl font-black rounded-3xl shadow-[0_20px_50px_rgba(0,75,141,0.3)] hover:scale-105 active:scale-95 transition-all">
-                        Book Training Facility
-                    </button>
-                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-bold rounded-3xl border-2 border-brand-primary/10 hover:bg-brand-primary/5 transition-all">
-                        Consult with Us
-                    </button>
-                </div>
+            {/* Workshop Photo Card */}
+            <motion.div {...fadeIn} className="lg:col-span-6 relative rounded-[44px] overflow-hidden shadow-2xl group">
+              <img 
+                src="/assets/capacity_building_training.jpg" 
+                alt="Participatory Capacity Building Workshop in Session" 
+                className="w-full h-[480px] object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/85 via-gray-900/20 to-transparent"></div>
+              
+              <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 text-white space-y-1">
+                <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Interactive Training in Session</span>
+                <h4 className="text-lg font-bold">Participatory Community Appraisal & Resource Mapping Workshop</h4>
+                <p className="text-xs text-gray-300">Empowering local government representatives and community champions at VERC Training Center.</p>
+              </div>
             </motion.div>
+
+            {/* Philosophy & Approach */}
+            <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="lg:col-span-6 space-y-6">
+              <div className="space-y-3">
+                <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Participatory Methodology</span>
+                <h2 className="text-3xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tight">
+                  People-Centered <br />
+                  <span className="text-brand-primary">Human Development.</span>
+                </h2>
+              </div>
+
+              <p className="text-base lg:text-lg text-gray-600 font-medium leading-relaxed">
+                VERC’s training philosophy is rooted in participatory learning. Rather than top-down lectures, we cultivate development actors as **facilitators of change**—unlocking innate community intelligence and building collective ownership.
+              </p>
+
+              <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                Our Training Section operates modern, fully equipped residential training centers in Savar and partner regional hubs, delivering high-impact curricula for national and international development partners.
+              </p>
+
+              <div className="pt-4 grid grid-cols-2 gap-4">
+                <div className="p-5 bg-white rounded-2xl border border-gray-200 shadow-sm">
+                  <div className="text-3xl font-black text-purple-600">425,000+</div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Total Development Actors Trained</div>
+                </div>
+                <div className="p-5 bg-white rounded-2xl border border-gray-200 shadow-sm">
+                  <div className="text-3xl font-black text-blue-600">155+</div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Union Parishads Evaluated</div>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </section>
+
+      {/* 3. DIVERSE TRAINING SPECIALIZATIONS */}
+      <section className="py-28 bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-20 space-y-3">
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Curriculum Portfolio</span>
+            <h2 className="text-3xl lg:text-5xl font-black text-gray-900 tracking-tight">
+              Fields of Training Specialization
+            </h2>
+            <p className="text-gray-600 font-medium text-base">
+              Comprehensive capacity-building modules designed for field practitioners, LGI officials, and institutional staff.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trainingFields.map((field, i) => (
+              <motion.div
+                key={i}
+                {...fadeIn}
+                transition={{ delay: i * 0.06 }}
+                className="p-8 rounded-[36px] bg-gray-50/70 border border-gray-200/80 hover:bg-white hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group"
+              >
+                <div className="space-y-4">
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100 group-hover:scale-110 transition-transform">
+                    {field.icon}
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">{field.category}</span>
+                    <h4 className="text-lg font-black text-gray-900 leading-snug group-hover:text-brand-primary transition-colors mt-0.5">{field.name}</h4>
+                  </div>
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">{field.desc}</p>
+                </div>
+
+                <div className="pt-4 mt-6 border-t border-gray-200/60 flex items-center justify-between text-xs font-bold text-brand-primary">
+                  <span>Certified Module</span>
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. MAJOR ASPECTS & CASE STUDY */}
+      <section className="py-24 bg-gray-50/60 border-t border-gray-100">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            {/* Aspects List */}
+            <div className="lg:col-span-7 space-y-8">
+              <div className="space-y-3">
+                <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Institutional Capabilities</span>
+                <h3 className="text-3xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+                  Major Aspects of Our Training Operations
+                </h3>
+              </div>
+
+              <div className="space-y-6">
+                {majorAspects.map((aspect, i) => (
+                  <motion.div
+                    key={i}
+                    {...fadeIn}
+                    transition={{ delay: i * 0.1 }}
+                    className="p-6 bg-white rounded-3xl border border-gray-200 shadow-xs flex gap-5 items-start"
+                  >
+                    <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 flex-shrink-0">
+                      {aspect.icon}
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-black text-gray-900">{aspect.title}</h4>
+                      <p className="text-xs text-gray-600 font-medium leading-relaxed">{aspect.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Case Study Card */}
+            <div className="lg:col-span-5">
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-10 sm:p-12 rounded-[44px] text-white shadow-2xl space-y-6 border border-gray-800">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/10 rounded-full text-xs font-bold text-brand-secondary">
+                  <Sparkles size={14} /> Governance Case Study
+                </span>
+                
+                <h4 className="text-2xl font-black tracking-tight leading-snug">
+                  Performance Assessment of 155 Union Parishads
+                </h4>
+
+                <p className="text-xs text-gray-300 leading-relaxed font-medium">
+                  VERC conducted rigorous institutional assessments measuring the Minimum Conditions (MMCs) of Union Parishads across six low-income districts (including Narsingdi), establishing transparent citizen accountability mechanisms and improving local revenue collection.
+                </p>
+
+                <div className="pt-4 border-t border-white/10 space-y-3 text-xs">
+                  <div className="flex justify-between items-center text-gray-300">
+                    <span>Target Administrative Units:</span>
+                    <span className="font-bold text-white">155 Union Parishads</span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-300">
+                    <span>Key Focus Area:</span>
+                    <span className="font-bold text-brand-secondary">Good Governance & MMCs</span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-300">
+                    <span>Outcome:</span>
+                    <span className="font-bold text-emerald-400">Institutionalized Transparency</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CALL TO ACTION */}
+      <section className="py-24 bg-brand-primary text-white relative overflow-hidden">
+        <div className="container-custom relative z-10 text-center">
+          <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-4xl lg:text-7xl font-black tracking-tight leading-tight">
+              Partner with Bangladesh&apos;s Premier <br />
+              <span className="text-brand-secondary">Capacity-Building Facilitator.</span>
+            </h2>
+            <p className="text-xl text-gray-200 font-medium max-w-2xl mx-auto leading-relaxed">
+              Book our residential training centers in Savar or commission a customized capacity development module for your organization.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/contact" className="px-10 py-4 bg-white text-brand-primary text-lg font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-3">
+                Inquire for Training Partnership <ArrowRight size={20} />
+              </Link>
+              <Link href="/donate" className="px-10 py-4 bg-white/10 text-white border border-white/20 text-lg font-bold rounded-2xl hover:bg-white/20 transition-all inline-block">
+                Support Community Leadership
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 }
