@@ -171,6 +171,44 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+        {/* NGO Legal & Statutory Registration Details */}
+        <div className={`p-6 rounded-3xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+            <Shield size={16} style={{ color: primaryColor }} /> NGO Legal & Statutory Registration
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Societies Registration Act No.</label>
+              <input
+                type="text"
+                value={formData.registrationNumber || "FD/R-348"}
+                onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
+                className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
+                  theme === "dark"
+                    ? "bg-[#14141E] border-white/10 text-white"
+                    : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
+                }`}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">NGO Affairs Bureau Reg. No.</label>
+              <input
+                type="text"
+                value={formData.ngoAffairsBureauReg || "NGOAB-00348-1989"}
+                onChange={(e) => setFormData({ ...formData, ngoAffairsBureauReg: e.target.value })}
+                className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
+                  theme === "dark"
+                    ? "bg-[#14141E] border-white/10 text-white"
+                    : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
+                }`}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Social Media Links */}
         <div className={`p-6 rounded-3xl border space-y-4 ${
           theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"

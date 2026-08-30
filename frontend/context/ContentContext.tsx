@@ -134,6 +134,35 @@ export interface Subscriber {
   status: "Active" | "Pending" | "Unsubscribed";
 }
 
+export interface DonationRecord {
+  id: string;
+  donorName: string;
+  donorType: "Individual" | "Institutional Grant" | "Corporate CSR" | "Philanthropy";
+  amount: number;
+  currency: "BDT" | "USD" | "EUR" | "GBP";
+  program: "WaSH & Clean Water" | "Child Education" | "Mother & Child Health" | "Emergency Flood Relief" | "Microfinance Capital" | "General Humanitarian Fund";
+  date: string;
+  paymentMethod: "Direct Wire / Swift" | "Bank Transfer" | "bKash / Nagad" | "Credit Card" | "Institutional Grant Agreement";
+  receiptNumber: string;
+  status: "Completed" | "Pledged" | "Processing" | "Allocated";
+  notes?: string;
+  donorEmail?: string;
+}
+
+export interface CharityCampaign {
+  id: string;
+  title: string;
+  thematicArea: "Disaster Relief" | "Arsenic Safe Water" | "Winter Warmth" | "Child School Kit" | "Maternal Care";
+  targetAmount: string;
+  raisedAmount: string;
+  beneficiariesTarget: string;
+  status: "Active" | "Urgent" | "Completed" | "Planned";
+  deadline: string;
+  location: string;
+  imageUrl: string;
+  progress: number;
+}
+
 export interface SiteSettings {
   siteTitle: string;
   tagline: string;
@@ -151,51 +180,31 @@ export interface SiteSettings {
   youtubeUrl: string;
   totalDonationAmount: string;
   donorsCount: number;
+  registrationNumber?: string;
+  ngoAffairsBureauReg?: string;
 }
 
-export interface DashboardMetric {
-  customers: { value: number; period: string; percentage: number };
-  orders: { value: number; period: string; percentage: number };
-  cancel: { value: number; period: string; percentage: number };
-  profitIncrease: number;
-  todayBestSale: {
+export interface CharityDashboardMetric {
+  beneficiaries: { value: string; label: string; period: string; percentage: number };
+  donationsMobilized: { value: string; label: string; period: string; percentage: number };
+  activePrograms: { value: number; label: string; period: string; percentage: number };
+  microfinanceMembers: { value: string; label: string; period: string; percentage: number };
+  topFundedProgram: {
     title: string;
-    sales: number;
-    price: string;
+    beneficiaries: string;
+    fundsAllocated: string;
     imageUrl: string;
+    leadPartner: string;
   };
-  recentOrders: Array<{
-    id: string;
-    title: string;
-    timeAgo: string;
-    price: string;
-    imageUrl: string;
-  }>;
-  trendingItems: Array<{
-    id: string;
-    title: string;
-    rating: number;
-    stock: string;
-    price: string;
-    imageUrl: string;
-  }>;
-  currentVisits: Array<{
-    region: string;
+  thematicDistribution: Array<{
+    thematicArea: string;
     percentage: number;
     color: string;
   }>;
-  revenueData: Array<{
+  financialFlowData: Array<{
     month: string;
-    earning: number;
-    expenses: number;
-  }>;
-  latestCustomers: Array<{
-    id: string;
-    name: string;
-    purchases: number;
-    likes: number;
-    avatarUrl: string;
-    email: string;
+    grantsInflow: number; // in Lakh BDT
+    programExpenses: number; // in Lakh BDT
   }>;
 }
 
@@ -212,13 +221,16 @@ interface ContentContextType {
   branches: BranchOffice[];
   messages: ContactMessage[];
   subscribers: Subscriber[];
+  donations: DonationRecord[];
+  campaigns: CharityCampaign[];
   siteSettings: SiteSettings;
-  dashboardMetrics: DashboardMetric;
+  dashboardMetrics: CharityDashboardMetric;
   theme: "light" | "dark";
   setTheme: (theme: "light" | "dark") => void;
   primaryColor: string;
   setPrimaryColor: (color: string) => void;
-  // CRUD operations
+  
+  // CRUD Operations
   addHeroSlide: (slide: Omit<HeroSlide, "id">) => void;
   updateHeroSlide: (id: string, slide: Partial<HeroSlide>) => void;
   deleteHeroSlide: (id: string) => void;
@@ -266,8 +278,16 @@ interface ContentContextType {
   addSubscriber: (email: string) => void;
   deleteSubscriber: (id: string) => void;
 
+  addDonation: (donation: Omit<DonationRecord, "id">) => void;
+  updateDonation: (id: string, donation: Partial<DonationRecord>) => void;
+  deleteDonation: (id: string) => void;
+
+  addCampaign: (campaign: Omit<CharityCampaign, "id">) => void;
+  updateCampaign: (id: string, campaign: Partial<CharityCampaign>) => void;
+  deleteCampaign: (id: string) => void;
+
   updateSiteSettings: (settings: Partial<SiteSettings>) => void;
-  updateDashboardMetrics: (metrics: Partial<DashboardMetric>) => void;
+  updateDashboardMetrics: (metrics: Partial<CharityDashboardMetric>) => void;
   resetToDefaults: () => void;
 }
 
@@ -308,15 +328,15 @@ const defaultHeroSlides: HeroSlide[] = [
 ];
 
 const defaultImpactStats: ImpactStat[] = [
-  { id: "stat-1", key: "lives", label: "Lives Transformed", value: "2M+", subText: "Across all 64 districts", category: "General", iconName: "Users" },
-  { id: "stat-2", key: "districts", label: "Districts Covered", value: "30+", subText: "Active field presence", category: "General", iconName: "Globe" },
-  { id: "stat-3", key: "leaders", label: "Community Leaders", value: "1,500+", subText: "Empowered grassroot champions", category: "General", iconName: "UserCheck" },
-  { id: "stat-4", key: "legacy", label: "Legacy Years", value: "50+", subText: "Founded in 1977", category: "General", iconName: "History" },
-  { id: "stat-5", key: "branches", label: "Branch Offices", value: "136", subText: "Operating across 25 areas", category: "Microfinance", iconName: "MapPin" },
-  { id: "stat-6", key: "microfinance_amt", label: "Outstanding Microfinance", value: "Tk. 620 Crore+", subText: "Tk. 620,69,29,412 outstanding portfolio", category: "Microfinance", iconName: "Banknote" },
-  { id: "stat-7", key: "learning_centers", label: "Learning Centers", value: "300", subText: "Active community schools", category: "Education", iconName: "BookOpen" },
-  { id: "stat-8", key: "students", label: "Students Supported", value: "222", subText: "Higher education stipend recipients", category: "Education", iconName: "GraduationCap" },
-  { id: "stat-9", key: "rohingya", label: "Rohingya Response", value: "Camp 8W", subText: "Humanitarian assistance program", category: "Emergency", iconName: "HeartHandshake" }
+  { id: "stat-1", key: "lives", label: "Lives Transformed", value: "5.2M+", subText: "Across 31 districts & 106 upazilas", category: "General", iconName: "Users" },
+  { id: "stat-2", key: "districts", label: "Districts Covered", value: "31", subText: "Active field presence in 106 upazilas", category: "General", iconName: "Globe" },
+  { id: "stat-3", key: "leaders", label: "Community Champions", value: "12,500+", subText: "Empowered grassroot sanitation leaders", category: "General", iconName: "UserCheck" },
+  { id: "stat-4", key: "legacy", label: "Years of Service", value: "48+", subText: "Founded in 1977", category: "General", iconName: "History" },
+  { id: "stat-5", key: "branches", label: "Field Branch Offices", value: "136", subText: "Grassroot service delivery hubs", category: "Microfinance", iconName: "MapPin" },
+  { id: "stat-6", key: "microfinance_amt", label: "Community Credit Disbursed", value: "৳ 6.8B+", subText: "99.10% cumulative recovery rate", category: "Microfinance", iconName: "Banknote" },
+  { id: "stat-7", key: "learning_centers", label: "Active Learning Centers", value: "300+", subText: "Community-run schools for children", category: "Education", iconName: "BookOpen" },
+  { id: "stat-8", key: "students", label: "Stipend Beneficiaries", value: "14,800+", subText: "Marginalized children & youth supported", category: "Education", iconName: "GraduationCap" },
+  { id: "stat-9", key: "rohingya", label: "Humanitarian Relief", value: "Camp 8W", subText: "Emergency WaSH & child protection hub", category: "Emergency", iconName: "HeartHandshake" }
 ];
 
 const defaultPrograms: ProgramItem[] = [
@@ -333,115 +353,115 @@ const defaultPrograms: ProgramItem[] = [
       "Adult & Adolescent Literacy Groups",
       "Community School Management Models"
     ],
-    reach: "450K+",
+    reach: "450K+ Children",
     status: "Active",
     color: "bg-blue-50"
   },
   {
     id: "prog-2",
-    title: "Health & WaSH",
+    title: "Water, Sanitation & Hygiene (WaSH)",
     slug: "wash",
     category: "Health & WASH",
     description: "Pioneering Community-Led Total Sanitation (CLTS) globally and delivering arsenic-safe drinking water and hospital care.",
     imageUrl: "/assets/wash_hero.png",
     features: [
       "Community Led Total Sanitation (CLTS)",
+      "Piped Water Networks & Deep Tube Wells",
       "Mother & Child Specialized Hospitals",
-      "Arsenic Mitigation & Water Safety",
-      "School Hygiene & Menstrual Health"
+      "Arsenic Mitigation & Water Quality Testing"
     ],
-    reach: "1.2M+",
+    reach: "2.8M+ People",
     status: "Active",
     color: "bg-emerald-50"
   },
   {
     id: "prog-3",
-    title: "Livelihood & Empowerment",
-    slug: "livelihood",
-    category: "Livelihood",
-    description: "Building resilient futures through vocational training, women's empowerment, and agro-based income generation.",
-    imageUrl: "/assets/impact_hero.png",
+    title: "Health & Nutrition",
+    slug: "health",
+    category: "Health",
+    description: "Delivering affordable maternal, newborn, and primary healthcare through community clinics and hospitals in Savar and Mirsarai.",
+    imageUrl: "/assets/health_hero.png",
     features: [
-      "Skill & Vocational Training",
-      "Women Entrepreneurship Incubation",
-      "Climate Resilient Agriculture",
-      "Market Linkage Development"
+      "Savar & Mirsarai Mother & Child Hospitals",
+      "Mobile Healthcare Camps for Remote Villages",
+      "Nutritional Counseling for Pregnant Mothers",
+      "Emergency Ambulance & Diagnostic Services"
     ],
-    reach: "300K+",
+    reach: "680K+ Patients",
     status: "Active",
     color: "bg-rose-50"
   },
   {
     id: "prog-4",
-    title: "Capacity Building & Training",
-    slug: "capacity",
-    category: "Capacity Building",
-    description: "Strengthening local institutions, local government bodies, and youth leadership through training and research.",
-    imageUrl: "/assets/capacity_building_hero.png",
+    title: "Microfinance & Livelihoods",
+    slug: "microfinance",
+    category: "Economic Development",
+    description: "Empowering rural women and ultra-poor families through inclusive financial services, livestock training, and entrepreneurship capital.",
+    imageUrl: "/assets/microfinance_woman_hero.png",
     features: [
-      "Training Institute at Savar",
-      "Local Governance Empowerment",
-      "Participatory Action Research",
-      "Disaster Risk Reduction Training"
+      "Jagoron Rural Micro-Enterprise Loans",
+      "Buniad Ultra-Poor Livelihood Grant Linkage",
+      "WaterCredit Household Sanitation Financing",
+      "Seasonal Agro-Harvest Credit (Sufolon)"
     ],
-    reach: "150K+",
+    reach: "112,437 Active Members",
     status: "Active",
     color: "bg-amber-50"
   },
   {
     id: "prog-5",
-    title: "Microfinance (Jagoron & Agrosor)",
-    slug: "microfinance",
-    category: "Economic Development",
-    description: "Inclusive financial services empowering micro-entrepreneurs and marginalized women across Bangladesh.",
-    imageUrl: "/assets/microfinance_hero.png",
+    title: "Climate Change & Disaster Relief",
+    slug: "climate-disaster",
+    category: "Emergency & Climate",
+    description: "Building community resilience against seasonal monsoons, cyclones, and climate shocks with rapid emergency relief and disaster preparedness.",
+    imageUrl: "/assets/impact_hero.png",
     features: [
-      "Jagoron Rural Micro-Credit",
-      "Agrosor Enterprise Financing",
-      "Buniad Ultra-Poor Assistance",
-      "Water & Sanitation Concession Loans"
+      "Rapid Monsoon & Flood Relief Response",
+      "Cyclone-Resilient Community Infrastructure",
+      "Climate-Adaptive Floating Agriculture",
+      "Emergency Safe Water Purification Kits"
     ],
-    reach: "200K+",
+    reach: "320K+ Affected Families",
     status: "Active",
-    color: "bg-indigo-50"
+    color: "bg-teal-50"
   }
 ];
 
 const defaultNews: NewsItem[] = [
   {
     id: "news-1",
-    title: "World Bank Delegation Visits VERC Mother & Child Hospital",
-    slug: "world-bank-delegation-visit",
-    category: "Health",
-    summary: "Senior representatives appreciated VERC's community-driven maternal healthcare initiatives and state-of-the-art neonatal wards.",
-    content: "A high-level World Bank delegation visited the VERC Mother & Child Hospital in Savar. They reviewed ongoing clinical operations, emergency obstetric services, and praised the community insurance model enabling affordable healthcare for ultra-poor families.",
+    title: "UNICEF Goodwill Ambassador Orlando Bloom Visits VERC Pipe Water Project",
+    slug: "orlando-bloom-unicef-visit",
+    category: "Global Partnership",
+    summary: "Orlando Bloom inspected VERC's innovative piped water supply network, witnessing first-hand how sustainable clean water transforms coastal communities.",
+    content: "During his high-profile field mission in Bangladesh, UNICEF Goodwill Ambassador Orlando Bloom visited VERC's community-managed Pipe Water Network project. He engaged directly with women water committees and praised VERC's four-decade leadership in eradicating waterborne diseases.",
     imageUrl: "/assets/home_official_1.jpg",
     date: "2024-04-15",
-    author: "Executive Secretariat",
+    author: "VERC Communications Team",
     status: "Published"
   },
   {
     id: "news-2",
-    title: "VERC Celebrates 50+ Years of Sanitation Innovation & CLTS",
-    slug: "sanitation-innovation-anniversary",
-    category: "Sanitation",
-    summary: "International development partners joined VERC in Dhaka to celebrate the enduring legacy of Community Led Total Sanitation.",
-    content: "VERC's groundbreaking CLTS methodology pioneered in 2000 has transformed sanitation practices across 50+ countries. The milestone seminar brought together policymakers, UNICEF, WaterAid, and grassroot leaders.",
+    title: "VERC Awarded National Recognition for Pioneering CLTS in South Asia",
+    slug: "national-sanitation-award",
+    category: "Milestone",
+    summary: "Recognized for introducing the Community-Led Total Sanitation approach in 2000, now replicated in over 60 countries globally.",
+    content: "At the National Sanitation Convention in Dhaka, government officials and international delegates celebrated VERC's seminal role in inventing CLTS in Rajshahi. The model has enabled millions to access dignity, safe latrines, and improved hygiene standards.",
     imageUrl: "/assets/wash_hero.png",
     date: "2024-03-22",
-    author: "Communications Team",
+    author: "Advocacy & Policy Wing",
     status: "Published"
   },
   {
     id: "news-3",
-    title: "New Catch-Up Education Learning Centers Launched in Rajshahi",
-    slug: "rajshahi-learning-centers",
-    category: "Education",
-    summary: "Expanding community learning centers to support out-of-school and disadvantaged children in northern Bangladesh.",
-    content: "30 new community learning centers have been officially commissioned in Rajshahi division to deliver accelerated primary education with digital learning aids.",
-    imageUrl: "/assets/edu_2.png",
-    date: "2024-02-10",
-    author: "Education Wing",
+    title: "Emergency Flood Relief Distributed Across 12,000 Sylhet Households",
+    slug: "sylhet-flood-relief-distribution",
+    category: "Emergency Relief",
+    summary: "Emergency response teams delivered safe drinking water, dry food packs, and medical hygiene kits to flood-inundated families.",
+    content: "VERC field workers mobilized emergency relief trucks across Sunamganj and Sylhet sadar upazilas, distributing water purification tablets, ORS, dry food rations, and temporary emergency shelter tarpaulins to thousands of stranded villagers.",
+    imageUrl: "/assets/impact_hero.png",
+    date: "2024-02-18",
+    author: "Disaster Management Unit",
     status: "Published"
   }
 ];
@@ -450,84 +470,225 @@ const defaultStories: SuccessStory[] = [
   {
     id: "story-1",
     title: "Nilima's Journey to Financial Independence",
-    slug: "nilima-success-story",
+    slug: "nilima-journey",
     beneficiaryName: "Nilima Begum",
     location: "Kaliakoir, Gazipur",
-    story: "Married at an early age to a blind day laborer, Nilima faced extreme poverty. With VERC's livelihood training and microcredit support, she set up a small dairy farm and now pays for her children's college education.",
+    story: "Married at a young age to a visually impaired laborer, Nilima faced acute poverty. Through VERC's microfinance training and a Jagoron enterprise loan, she started an organic poultry farm. Today she employs 3 women and funds her children's schooling.",
     imageUrl: "/assets/microfinance_woman_hero.png",
-    date: "2024-01-18"
+    date: "2024-03-10"
   },
   {
     id: "story-2",
-    title: "Overcoming Arsenic with Clean Community Water",
-    slug: "overcoming-arsenic",
-    beneficiaryName: "Md. Faruk Hossain",
+    title: "Defeating Arsenic: Safe Water for Monoharganj",
+    slug: "defeating-arsenic",
+    beneficiaryName: "Faruk Hossain & Community",
     location: "Monoharganj, Cumilla",
-    story: "Faruk's village suffered from severe arsenic poisoning for decades. Through VERC's deep-tube well project and WaSH awareness committee, his entire community now enjoys 100% safe drinking water.",
+    story: "After developing severe arsenic skin lesions in 2005, Faruk thought his village was doomed. VERC installed deep community tube wells and trained local youth in water testing. The village is now completely arsenic-safe.",
     imageUrl: "/assets/wash_hero.png",
-    date: "2024-02-05"
+    date: "2024-02-14"
+  },
+  {
+    id: "story-3",
+    title: "First-Generation Graduate: Sumaiya's Dream",
+    slug: "sumaiya-first-graduate",
+    beneficiaryName: "Sumaiya Akter",
+    location: "Savar, Dhaka",
+    story: "Starting her education at a VERC non-formal learning center in 2012, Sumaiya received secondary stipends and mentoring. She recently completed her Bachelor of Education and is now a certified teacher.",
+    imageUrl: "/assets/edu_1.png",
+    date: "2024-01-25"
+  }
+];
+
+const defaultDonations: DonationRecord[] = [
+  {
+    id: "don-1",
+    donorName: "UNICEF Bangladesh",
+    donorType: "Institutional Grant",
+    amount: 12500000,
+    currency: "BDT",
+    program: "WaSH & Clean Water",
+    date: "2024-04-18",
+    paymentMethod: "Institutional Grant Agreement",
+    receiptNumber: "GRANT-2024-088",
+    status: "Allocated",
+    notes: "Phase 3 Coastal Belt Piped Water Network Project",
+    donorEmail: "dhaka.wash@unicef.org"
+  },
+  {
+    id: "don-2",
+    donorName: "Water.org Tranche II",
+    donorType: "Institutional Grant",
+    amount: 8500000,
+    currency: "BDT",
+    program: "WaSH & Clean Water",
+    date: "2024-04-12",
+    paymentMethod: "Direct Wire / Swift",
+    receiptNumber: "GRANT-2024-089",
+    status: "Completed",
+    notes: "WaterCredit household sanitation loans revolving subsidy fund",
+    donorEmail: "grants@water.org"
+  },
+  {
+    id: "don-3",
+    donorName: "Standard Chartered Bank CSR",
+    donorType: "Corporate CSR",
+    amount: 3500000,
+    currency: "BDT",
+    program: "Mother & Child Health",
+    date: "2024-04-05",
+    paymentMethod: "Bank Transfer",
+    receiptNumber: "CSR-2024-014",
+    status: "Completed",
+    notes: "Savar Mother & Child Hospital ultrasound & neonatal incubator gear",
+    donorEmail: "csr.bangladesh@sc.com"
+  },
+  {
+    id: "don-4",
+    donorName: "PKSF Social Safety Grant",
+    donorType: "Institutional Grant",
+    amount: 45000000,
+    currency: "BDT",
+    program: "Microfinance Capital",
+    date: "2024-03-28",
+    paymentMethod: "Direct Wire / Swift",
+    receiptNumber: "PKSF-2024-Q1",
+    status: "Allocated",
+    notes: "Buniad Ultra-Poor sustainable livelihood grant & asset transfer",
+    donorEmail: "operations@pksf.org.bd"
+  },
+  {
+    id: "don-5",
+    donorName: "Dr. Anisur Rahman & Family",
+    donorType: "Individual",
+    amount: 500000,
+    currency: "BDT",
+    program: "Child Education",
+    date: "2024-03-15",
+    paymentMethod: "bKash / Nagad",
+    receiptNumber: "DON-2024-512",
+    status: "Completed",
+    notes: "Higher secondary scholarship for 20 underprivileged rural girls",
+    donorEmail: "anisur.rahman.dr@gmail.com"
+  },
+  {
+    id: "don-6",
+    donorName: "GlobalGiving Flood Relief Pool",
+    donorType: "Philanthropy",
+    amount: 1800000,
+    currency: "BDT",
+    program: "Emergency Flood Relief",
+    date: "2024-02-20",
+    paymentMethod: "Direct Wire / Swift",
+    receiptNumber: "GG-2024-901",
+    status: "Completed",
+    notes: "Sunamganj Emergency Flash Flood dry food and clean water supply",
+    donorEmail: "relief@globalgiving.org"
+  }
+];
+
+const defaultCampaigns: CharityCampaign[] = [
+  {
+    id: "camp-1",
+    title: "Emergency Flood & Monsoon Relief 2024",
+    thematicArea: "Disaster Relief",
+    targetAmount: "৳ 25,00,000",
+    raisedAmount: "৳ 18,50,000",
+    beneficiariesTarget: "15,000 Households",
+    status: "Urgent",
+    deadline: "2024-06-30",
+    location: "Sylhet, Sunamganj & Feni",
+    imageUrl: "/assets/impact_hero.png",
+    progress: 74
+  },
+  {
+    id: "camp-2",
+    title: "Arsenic-Free Deep Wells for 50 Remote Villages",
+    thematicArea: "Arsenic Safe Water",
+    targetAmount: "৳ 40,00,000",
+    raisedAmount: "৳ 32,00,000",
+    beneficiariesTarget: "45,000 Villagers",
+    status: "Active",
+    deadline: "2024-08-15",
+    location: "Cumilla, Noakhali & Chandpur",
+    imageUrl: "/assets/wash_hero.png",
+    progress: 80
+  },
+  {
+    id: "camp-3",
+    title: "School Bags & Joyful Learning Kits for 5,000 Children",
+    thematicArea: "Child School Kit",
+    targetAmount: "৳ 15,00,000",
+    raisedAmount: "৳ 12,40,000",
+    beneficiariesTarget: "5,000 Rural Students",
+    status: "Active",
+    deadline: "2024-05-31",
+    location: "Savar & Rangpur",
+    imageUrl: "/assets/edu_1.png",
+    progress: 82
+  },
+  {
+    id: "camp-4",
+    title: "Maternal & Newborn Intensive Care Equipment",
+    thematicArea: "Maternal Care",
+    targetAmount: "৳ 30,00,000",
+    raisedAmount: "৳ 21,00,000",
+    beneficiariesTarget: "8,000 Mothers & Infants",
+    status: "Active",
+    deadline: "2024-07-30",
+    location: "Savar & Mirsarai Hospitals",
+    imageUrl: "/assets/home_official_1.jpg",
+    progress: 70
   }
 ];
 
 const defaultMicrofinanceProducts: MicrofinanceProduct[] = [
   {
     id: "mf-1",
-    title: "Jagoron (Rural Microcredit)",
-    category: "Core Microcredit",
+    title: "Jagoron (Rural Enterprise Loan)",
+    category: "Microcredit",
     loanLimit: "Tk. 10,000 – 1,00,000",
-    interestRate: "Declining Balance (MRA Approved)",
+    interestRate: "24% Declining (MRA Standard)",
     tenure: "12 Months (Weekly / Monthly)",
-    description: "Designed for smallholders, rural women, and marginal households to fund income-generating activities.",
-    eligibility: [
-      "Permanent resident of operational area",
-      "Age between 18 and 60 years",
-      "Member of a VERC community group"
-    ],
-    features: ["No collateral required", "Flexible weekly repayment", "Free financial literacy orientation"],
-    imageUrl: "/assets/microfinance_hero.png"
+    description: "Provides collateral-free working capital for rural smallholder trades, livestock rearing, handicrafts, and village shops.",
+    eligibility: ["Active rural women aged 18-55", "Permanent village resident", "Member of VERC grassroots samity"],
+    features: ["No physical collateral required", "Doorstep repayment collection", "Free health insurance link"],
+    imageUrl: "/assets/microfinance_woman_hero.png"
   },
   {
     id: "mf-2",
     title: "Agrosor (Micro-Enterprise Loan)",
     category: "Enterprise",
-    loanLimit: "Tk. 1,00,000 – 15,00,000",
-    interestRate: "Competitive Semi-annual rate",
-    tenure: "12 – 36 Months",
-    description: "Tailored to established entrepreneurs seeking expansion capital for shops, agro-farms, and manufacturing units.",
-    eligibility: [
-      "Minimum 2 years profitable business track record",
-      "Valid trade license / local verification",
-      "Viable cash flow forecast"
-    ],
-    features: ["Higher credit ceiling", "Doorstep advisory", "Grace period options for agriculture"],
-    imageUrl: "/assets/microfinance_woman_hero.png"
+    loanLimit: "Tk. 1,00,000 – 10,00,000",
+    interestRate: "24% Declining",
+    tenure: "12 – 24 Months",
+    description: "Designed for expanding enterprises, agro-processing units, poultry farms, and small manufacturing businesses.",
+    eligibility: ["2+ years verified trade history", "Viable business cash flow", "Physical business premises"],
+    features: ["Higher loan ceilings", "Flexible monthly installments", "Business mentorship and accounting support"],
+    imageUrl: "/assets/microfinance_hero.png"
   },
   {
     id: "mf-3",
-    title: "Buniad (Ultra Poor Program)",
+    title: "Buniad (Ultra-Poor Social Safety Program)",
     category: "Social Protection",
-    loanLimit: "Tk. 5,00,000 – 30,000",
+    loanLimit: "Tk. 5,000 – 30,000",
     interestRate: "Highly Subsidized / Special",
-    tenure: "12 Months flexible",
-    description: "Dedicated financing and livelihood mentorship for extremely disadvantaged households to escape poverty.",
-    eligibility: [
-      "Landless or asset-poor households",
-      "Female-headed vulnerable families"
-    ],
-    features: ["Asset transfer linkage", "Healthcare vouchers", "Zero registration fees"],
+    tenure: "12 – 18 Months Flexible",
+    description: "Targeted livelihood financing and grant linkages for extreme poverty, female-headed households, and disabled individuals.",
+    eligibility: ["Landless or asset-poor families", "Daily wage earner or destitute household"],
+    features: ["Zero processing fee", "Direct asset transfer linkage", "Free emergency healthcare vouchers"],
     imageUrl: "/assets/impact_hero.png"
   },
   {
     id: "mf-4",
-    title: "Sufolon (Seasonal Agricultural Loan)",
-    category: "Agriculture",
-    loanLimit: "Tk. 20,000 – 1,50,000",
-    interestRate: "Seasonal Flat/Declining",
-    tenure: "Harvest Cycle (4 – 9 Months)",
-    description: "Supports farmers with seasonal crop inputs, fertilizer, modern seeds, irrigation, and livestock fattening.",
-    eligibility: ["Cultivator or tenant farmer", "Crop calendar alignment"],
-    features: ["Bullet repayment after crop harvest", "Weather advisory updates", "Input procurement discount links"],
-    imageUrl: "/assets/home_official_1.jpg"
+    title: "WaterCredit (Sanitation & Water Loan)",
+    category: "WaSH Finance",
+    loanLimit: "Tk. 10,000 – 50,000",
+    interestRate: "Subsidized WaSH Rate",
+    tenure: "12 Months",
+    description: "Affordable financing enabling low-income families to construct hygienic sanitary latrines and install deep water tube wells.",
+    eligibility: ["Rural & peri-urban households lacking safe sanitation", "VERC community group member"],
+    features: ["Technical construction guidance", "Quality materials support", "Family health improvement"],
+    imageUrl: "/assets/wash_hero.png"
   }
 ];
 
@@ -537,8 +698,8 @@ const defaultTeamMembers: TeamMember[] = [
     name: "Md. Yakub Hossain",
     role: "Executive Director",
     email: "yakub@vercbd.org",
-    department: "Executive Management",
-    bio: "Leading VERC's strategic expansion, partnerships, and high-impact participatory development models nationwide.",
+    department: "Executive Leadership",
+    bio: "Steering VERC's strategic humanitarian roadmap, global partnerships, and community empowerment models since decades.",
     imageUrl: "/assets/education_official.jpg",
     phone: "+880 2 7745041"
   },
@@ -548,27 +709,27 @@ const defaultTeamMembers: TeamMember[] = [
     role: "Deputy Executive Director",
     email: "masudhassan@vercbd.org",
     department: "Operations & Governance",
-    bio: "Overseeing nationwide field operations, institutional capacity building, and donor program compliance.",
+    bio: "Overseeing nationwide field programs, institutional capacity building, and international donor compliance.",
     imageUrl: "/assets/education_official_2.jpg",
     phone: "+880 2 7745042"
   },
   {
     id: "team-3",
     name: "Ranada Prasad Saha",
-    role: "Director, Microfinance & Climate Change",
+    role: "Director, Microfinance & Climate Adaptation",
     email: "ranada@vercbd.org",
     department: "Microfinance",
-    bio: "Managing 136 microfinance branches and climate adaptation funds empowering over 200,000 active members.",
+    bio: "Managing 136 branch operations and climate adaptation funds empowering over 112,000 active grassroots members.",
     imageUrl: "/assets/about_official.jpg",
     phone: "+880 2 7745043"
   },
   {
     id: "team-4",
     name: "Mustafizur Rashid Mridha",
-    role: "Director, Human Resource & Administration",
+    role: "Director, HR & Administration",
     email: "mrashid@vercbd.org",
     department: "Administration",
-    bio: "Steering human resources, talent development, procurement, and institutional risk management.",
+    bio: "Directing organizational human resources, staff welfare, field logistics, and institutional governance.",
     imageUrl: "/assets/education_1.jpg",
     phone: "+880 2 7745044"
   },
@@ -577,128 +738,113 @@ const defaultTeamMembers: TeamMember[] = [
     name: "Md. Masud Royhan",
     role: "Director, Finance & Accounts",
     email: "royhan@vercbd.org",
-    department: "Finance",
-    bio: "Ensuring highest fiscal transparency, external statutory audits, and financial governance.",
+    department: "Finance & Audit",
+    bio: "Ensuring top-tier fiscal integrity, external statutory audits, and transparent donor grant reporting.",
     imageUrl: "/assets/education_2.jpg",
     phone: "+880 2 7745045"
   }
 ];
 
 const defaultPartners: PartnerItem[] = [
-  { id: "p-1", name: "Government of Bangladesh (GoB)", category: "Government", logoUrl: "/assets/gob_logo.png", websiteUrl: "https://bangladesh.gov.bd" },
-  { id: "p-2", name: "PKSF (Palli Karma-Sahayak Foundation)", category: "Government", logoUrl: "/assets/pksf_logo.png", websiteUrl: "https://pksf.org.bd" },
-  { id: "p-3", name: "Microcredit Regulatory Authority (MRA)", category: "Government", logoUrl: "/assets/mra_logo.png", websiteUrl: "https://mra.gov.bd" },
-  { id: "p-4", name: "UNICEF Bangladesh", category: "UN Agencies", logoUrl: "/assets/unicef_logo.png", websiteUrl: "https://unicef.org/bangladesh" },
-  { id: "p-5", name: "World Bank Group", category: "International NGO", logoUrl: "/assets/worldbank_logo.png", websiteUrl: "https://worldbank.org" },
-  { id: "p-6", name: "WaterAid Bangladesh", category: "International NGO", logoUrl: "/assets/wateraid_logo.png", websiteUrl: "https://wateraid.org/bd" },
-  { id: "p-7", name: "Save the Children", category: "International NGO", logoUrl: "/assets/savethechildren_logo.png", websiteUrl: "https://bangladesh.savethechildren.net" },
-  { id: "p-8", name: "USAID", category: "International NGO", logoUrl: "/assets/usaid_logo.png", websiteUrl: "https://usaid.gov/bangladesh" },
-  { id: "p-9", name: "CARE Bangladesh", category: "International NGO", logoUrl: "/assets/care_logo.png", websiteUrl: "https://carebangladesh.org" },
-  { id: "p-10", name: "Swisscontact", category: "International NGO", logoUrl: "/assets/swisscontact_logo.jpg", websiteUrl: "https://swisscontact.org" },
-  { id: "p-11", name: "Winrock International", category: "International NGO", logoUrl: "/assets/winrock_logo.png", websiteUrl: "https://winrock.org" }
+  { id: "p-1", name: "Government of Bangladesh (GoB)", category: "Government", logoUrl: "/assets/gob_logo.png", websiteUrl: "https://bangladesh.gov.bd", description: "Ministry of Local Government, Rural Development and Cooperatives" },
+  { id: "p-2", name: "PKSF (Palli Karma-Sahayak Foundation)", category: "Government", logoUrl: "/assets/pksf_logo.png", websiteUrl: "https://pksf.org.bd", description: "National apex development financing institution" },
+  { id: "p-3", name: "Microcredit Regulatory Authority (MRA)", category: "Government", logoUrl: "/assets/mra_logo.png", websiteUrl: "https://mra.gov.bd", description: "Statutory microfinance regulator" },
+  { id: "p-4", name: "UNICEF Bangladesh", category: "UN Agencies", logoUrl: "/assets/unicef_logo.png", websiteUrl: "https://unicef.org/bangladesh", description: "Global partnership in WaSH, CLTS, and child protection" },
+  { id: "p-5", name: "Water.org", category: "International NGO", logoUrl: "/assets/wateraid_logo.png", websiteUrl: "https://water.org", description: "Pioneering WaterCredit market-based sanitation access" },
+  { id: "p-6", name: "Save the Children", category: "International NGO", logoUrl: "/assets/savethechildren_logo.png", websiteUrl: "https://bangladesh.savethechildren.net", description: "Early childhood education and child rights" },
+  { id: "p-7", name: "USAID", category: "International NGO", logoUrl: "/assets/usaid_logo.png", websiteUrl: "https://usaid.gov/bangladesh", description: "Health, nutrition, and food security programs" },
+  { id: "p-8", name: "CARE Bangladesh", category: "International NGO", logoUrl: "/assets/care_logo.png", websiteUrl: "https://carebangladesh.org", description: "Community disaster risk reduction and livelihoods" }
 ];
 
 const defaultGallery: GalleryItem[] = [
-  { id: "gal-1", title: "Child-Centered Joyful Learning Session", category: "Education", imageUrl: "/assets/edu_1.png", description: "Students participating in interactive numeracy activities at Savar learning center.", date: "2024-03-15" },
+  { id: "gal-1", title: "Joyful Early Childhood Learning Session", category: "Education", imageUrl: "/assets/edu_1.png", description: "Children engaging in participatory numeracy and literacy games at Savar center.", date: "2024-03-15" },
   { id: "gal-2", title: "Community Total Sanitation Declaration", category: "WASH", imageUrl: "/assets/wash_hero.png", description: "Village leaders celebrating 100% open-defecation-free status in Rajshahi.", date: "2024-02-28" },
-  { id: "gal-3", title: "Women Entrepreneurship Fair", category: "Livelihood", imageUrl: "/assets/microfinance_woman_hero.png", description: "Handicrafts and organic agro products displayed by VERC microfinance beneficiaries.", date: "2024-01-20" },
-  { id: "gal-4", title: "Annual Development Conference 2024", category: "Events", imageUrl: "/assets/home_official_1.jpg", description: "Keynote addresses and national partner recognition banquet.", date: "2024-04-02" },
-  { id: "gal-5", title: "Early Childhood Development (ECD) Class", category: "Education", imageUrl: "/assets/edu_2.png", description: "Preschool children engaging in sensory learning and rhymes.", date: "2024-02-12" },
-  { id: "gal-6", title: "Arsenic-Free Deep Tubewell Installation", category: "WASH", imageUrl: "/assets/impact_hero.png", description: "Commissioning safe drinking water source for 500 households.", date: "2024-03-08" }
+  { id: "gal-3", title: "Women Entrepreneurship Handicrafts Display", category: "Livelihood", imageUrl: "/assets/microfinance_woman_hero.png", description: "Organic crops and handloom products created by VERC microcredit beneficiaries.", date: "2024-01-20" },
+  { id: "gal-4", title: "Orlando Bloom Inspects Piped Water Network", category: "Events", imageUrl: "/assets/home_official_1.jpg", description: "UNICEF goodwill ambassador assessing community water tap points.", date: "2024-04-02" },
+  { id: "gal-5", title: "Mother & Child Specialized Medical Checkup", category: "Health", imageUrl: "/assets/health_hero.png", description: "Free antenatal care and infant immunization camp at Mirsarai Hospital.", date: "2024-02-12" },
+  { id: "gal-6", title: "Arsenic-Free Deep Tubewell Commissioning", category: "WASH", imageUrl: "/assets/impact_hero.png", description: "Safe drinking water source inauguration serving 500 households.", date: "2024-03-08" }
 ];
 
 const defaultBranches: BranchOffice[] = [
   { id: "br-1", name: "Savar Head Office & Training Institute", district: "Dhaka", division: "Dhaka", address: "B-30, Ekhlas Uddin Khan Road, Anandapur, Savar, Dhaka-1340", phone: "+880 2 7745041", email: "savar@vercbd.org", manager: "Md. Masud Hassan", lat: 23.8488, lng: 90.2585 },
-  { id: "br-2", name: "Rajshahi Regional Office", district: "Rajshahi", division: "Rajshahi", address: "House 45, Terokhadia, Rajshahi Sadar", phone: "+880 721 771234", email: "rajshahi@vercbd.org", manager: "Shahadat Hossain", lat: 24.3745, lng: 88.6042 },
+  { id: "br-2", name: "Rajshahi Regional Operations Hub", district: "Rajshahi", division: "Rajshahi", address: "House 45, Terokhadia, Rajshahi Sadar", phone: "+880 721 771234", email: "rajshahi@vercbd.org", manager: "Shahadat Hossain", lat: 24.3745, lng: 88.6042 },
   { id: "br-3", name: "Chattogram & Mirsarai Center", district: "Chattogram", division: "Chattogram", address: "Mirsarai Hospital Road, Mirsarai, Chattogram", phone: "+880 31 654321", email: "ctg@vercbd.org", manager: "Kamrul Islam", lat: 22.7758, lng: 91.5746 },
-  { id: "br-4", name: "Rangpur Field Office", district: "Rangpur", division: "Rangpur", address: "Dhap Engineer Para, Rangpur City", phone: "+880 521 63980", email: "rangpur@vercbd.org", manager: "Aminul Islam", lat: 25.7439, lng: 89.2752 },
-  { id: "br-5", name: "Cox's Bazar Emergency Hub", district: "Cox's Bazar", division: "Chattogram", address: "Kolatoli Road, Cox's Bazar", phone: "+880 341 62100", email: "coxsbazar@vercbd.org", manager: "Farzana Akter", lat: 21.4272, lng: 91.9846 }
+  { id: "br-4", name: "Rangpur Field Operations Office", district: "Rangpur", division: "Rangpur", address: "Dhap Engineer Para, Rangpur City", phone: "+880 521 63980", email: "rangpur@vercbd.org", manager: "Aminul Islam", lat: 25.7439, lng: 89.2752 },
+  { id: "br-5", name: "Cox's Bazar Humanitarian Response Hub", district: "Cox's Bazar", division: "Chattogram", address: "Kolatoli Road, Cox's Bazar", phone: "+880 341 62100", email: "coxsbazar@vercbd.org", manager: "Farzana Akter", lat: 21.4272, lng: 91.9846 }
 ];
 
 const defaultMessages: ContactMessage[] = [
-  { id: "msg-1", name: "Sarah Jenkins", email: "sarah.j@globalaid.org", phone: "+1 415 890 1234", subject: "Partnership Inquiry: WASH Scalability", message: "We would like to explore collaborative funding for CLTS programs in underserved coastal belts. Could we schedule an introductory call?", date: "2024-04-20 10:30 AM", status: "Unread" },
-  { id: "msg-2", name: "Tariqul Islam", email: "tariqul.dhaka@gmail.com", phone: "+880 1711 002233", subject: "Donation Confirmation & Tax Receipt", message: "I made an online donation of Tk 50,000 for the child education stipend program. Kindly provide the formal acknowledgement.", date: "2024-04-18 04:15 PM", status: "Read" },
-  { id: "msg-3", name: "Anika Rahman", email: "anika.r@univ.edu.bd", subject: "Research Access Request on CLTS Data", message: "I am a PhD researcher conducting a study on community sanitation models. I would like permission to review historical field documentation.", date: "2024-04-12 02:40 PM", status: "Replied" }
+  { id: "msg-1", name: "Sarah Jenkins (UN Water)", email: "sarah.j@unwater.org", phone: "+1 415 890 1234", subject: "Partnership Inquiry: Scaling WaSH in Coastal Districts", message: "We are finalizing our 2024-2026 climate resilience grant allocations and would like to invite VERC to submit a full technical proposal for coastal piped water.", date: "2024-04-20 10:30 AM", status: "Unread" },
+  { id: "msg-2", name: "Tariqul Islam (Donor)", email: "tariqul.dhaka@gmail.com", phone: "+880 1711 002233", subject: "Donation Confirmation & Tax Exemption Receipt", message: "I transferred Tk 50,000 for the child education stipend fund via bank transfer. Kindly email the official NGO tax exemption certificate.", date: "2024-04-18 04:15 PM", status: "Read" },
+  { id: "msg-3", name: "Dr. Anika Rahman", email: "anika.r@univ.edu.bd", subject: "Academic Research Access on VERC CLTS Genesis", message: "I am conducting a doctoral study on the global propagation of CLTS since 2000. Could I access historical field documentation at the Savar archive?", date: "2024-04-12 02:40 PM", status: "Replied" }
 ];
 
 const defaultSubscribers: Subscriber[] = [
-  { id: "sub-1", email: "rahim.khan@example.com", joinedDate: "2024-04-20", status: "Active" },
-  { id: "sub-2", email: "sarah.j@impact.org", joinedDate: "2024-04-18", status: "Active" },
+  { id: "sub-1", email: "donor.relations@unicef.org", joinedDate: "2024-04-20", status: "Active" },
+  { id: "sub-2", email: "sarah.j@impactfund.org", joinedDate: "2024-04-18", status: "Active" },
   { id: "sub-3", email: "community.lead@vercbd.org", joinedDate: "2024-04-10", status: "Active" },
-  { id: "sub-4", email: "donor.relations@aidfund.org", joinedDate: "2024-03-28", status: "Active" },
-  { id: "sub-5", email: "tanvir.ahmed@dhaka.net", joinedDate: "2024-03-15", status: "Pending" }
+  { id: "sub-4", email: "tariqul.dhaka@gmail.com", joinedDate: "2024-03-28", status: "Active" },
+  { id: "sub-5", email: "field.officer@water.org", joinedDate: "2024-03-15", status: "Active" }
 ];
 
 const defaultSiteSettings: SiteSettings = {
   siteTitle: "VERC | Village Education Resource Center",
-  tagline: "Transforming Destinies Through Community Empowerment Since 1977",
+  tagline: "Empowering Marginalized Communities & Transforming Destinies Since 1977",
   logoUrl: "/assets/logo.png",
   primaryColor: "#004B8D",
   secondaryColor: "#00AEEF",
-  email: "info@vercbd.org",
-  supportEmail: "support@vercbd.org",
+  email: "verc@bangla.net",
+  supportEmail: "info@vercbd.org",
   phone: "+880 2 7745041",
-  hotline: "+880 1711 556677",
+  hotline: "+880 2223371216",
   address: "B-30, Ekhlas Uddin Khan Road, Anandapur, Savar, Dhaka-1340, Bangladesh",
   facebookUrl: "https://facebook.com/vercbd",
   twitterUrl: "https://twitter.com/vercbd",
   linkedinUrl: "https://linkedin.com/company/vercbd",
   youtubeUrl: "https://youtube.com/vercbd",
-  totalDonationAmount: "$45,200",
-  donorsCount: 320
+  totalDonationAmount: "৳ 1,620,000,000",
+  donorsCount: 420,
+  registrationNumber: "FD/R-348",
+  ngoAffairsBureauReg: "NGOAB-00348-1989"
 };
 
-const defaultDashboardMetrics: DashboardMetric = {
-  customers: { value: 320, period: "During 2 Month", percentage: 75 },
-  orders: { value: 500, period: "During 1 Month", percentage: 65 },
-  cancel: { value: 20, period: "During 3 Month", percentage: 35 },
-  profitIncrease: 70,
-  todayBestSale: {
-    title: "Diamond T-Shirt",
-    sales: 120,
-    price: "$45",
-    imageUrl: "/assets/home_official_1.jpg"
+const defaultDashboardMetrics: CharityDashboardMetric = {
+  beneficiaries: { value: "5.24M+", label: "Beneficiaries Reached", period: "Cumulative Since Inception", percentage: 88 },
+  donationsMobilized: { value: "৳ 1.62B", label: "Grants & Donations", period: "Fiscal Year 2023-2024", percentage: 92 },
+  activePrograms: { value: 5, label: "Core Thematic Programs", period: "31 Districts & 106 Upazilas", percentage: 100 },
+  microfinanceMembers: { value: "112,437", label: "Active Group Members", period: "99.10% Recovery Rate", percentage: 99 },
+  topFundedProgram: {
+    title: "Water, Sanitation & Hygiene (WaSH)",
+    beneficiaries: "2.8 Million People",
+    fundsAllocated: "৳ 42.5 Crore ($3.8M)",
+    imageUrl: "/assets/wash_hero.png",
+    leadPartner: "UNICEF & Water.org"
   },
-  recentOrders: [
-    { id: "ord-1", title: "Smart Watch", timeAgo: "2 minutes ago", price: "$50", imageUrl: "/assets/edu_1.png" },
-    { id: "ord-2", title: "Phone Lenses", timeAgo: "3 minutes ago", price: "$30", imageUrl: "/assets/wash_hero.png" },
-    { id: "ord-3", title: "Minimalist Wallet", timeAgo: "8 minutes ago", price: "$28", imageUrl: "/assets/impact_hero.png" },
-    { id: "ord-4", title: "Car vacume", timeAgo: "15 minutes ago", price: "$90", imageUrl: "/assets/capacity_building_hero.png" }
+  thematicDistribution: [
+    { thematicArea: "WaSH & Sanitation", percentage: 42.5, color: "#004B8D" },
+    { thematicArea: "Non-Formal Education", percentage: 24.8, color: "#00AEEF" },
+    { thematicArea: "Health & Nutrition", percentage: 18.2, color: "#F56565" },
+    { thematicArea: "Microfinance & Livelihoods", percentage: 14.5, color: "#FFA756" }
   ],
-  trendingItems: [
-    { id: "trend-1", title: "Laptop Batteries", rating: 4, stock: "In stock > 500", price: "$40", imageUrl: "/assets/microfinance_hero.png" },
-    { id: "trend-2", title: "Wireless Charger", rating: 4, stock: "In stock < 100", price: "$30", imageUrl: "/assets/edu_3.png" }
-  ],
-  currentVisits: [
-    { region: "America", percentage: 28.4, color: "#FFA756" },
-    { region: "Africa", percentage: 9.2, color: "#4FD1C5" },
-    { region: "Europe", percentage: 34.7, color: "#F56565" },
-    { region: "Asia", percentage: 27.7, color: "#6C5DD3" }
-  ],
-  revenueData: [
-    { month: "Jan", earning: 180, expenses: -90 },
-    { month: "Feb", earning: 230, expenses: -130 },
-    { month: "Mar", earning: 310, expenses: -190 },
-    { month: "April", earning: 190, expenses: -110 },
-    { month: "May", earning: 130, expenses: -80 },
-    { month: "Jun", earning: 260, expenses: -170 },
-    { month: "Jul", earning: 120, expenses: -70 },
-    { month: "Aug", earning: 150, expenses: -90 },
-    { month: "Sep", earning: 160, expenses: -100 },
-    { month: "Oct", earning: 220, expenses: -140 },
-    { month: "Nov", earning: 330, expenses: -200 },
-    { month: "Dec", earning: 180, expenses: -110 }
-  ],
-  latestCustomers: [
-    { id: "c-1", name: "Harry Joe", purchases: 20, likes: 120, avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80", email: "harry@example.com" },
-    { id: "c-2", name: "Martha June", purchases: 10, likes: 140, avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80", email: "martha@example.com" },
-    { id: "c-3", name: "Michal Clerk", purchases: 30, likes: 160, avatarUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop&q=80", email: "michal@example.com" }
+  financialFlowData: [
+    { month: "Jan", grantsInflow: 380, programExpenses: 340 },
+    { month: "Feb", grantsInflow: 420, programExpenses: 390 },
+    { month: "Mar", grantsInflow: 560, programExpenses: 480 },
+    { month: "Apr", grantsInflow: 490, programExpenses: 430 },
+    { month: "May", grantsInflow: 410, programExpenses: 380 },
+    { month: "Jun", grantsInflow: 650, programExpenses: 590 },
+    { month: "Jul", grantsInflow: 320, programExpenses: 310 },
+    { month: "Aug", grantsInflow: 450, programExpenses: 400 },
+    { month: "Sep", grantsInflow: 480, programExpenses: 440 },
+    { month: "Oct", grantsInflow: 530, programExpenses: 490 },
+    { month: "Nov", grantsInflow: 720, programExpenses: 660 },
+    { month: "Dec", grantsInflow: 580, programExpenses: 520 }
   ]
 };
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
-const STORAGE_KEY = "vercbd_cms_content_v2";
+const STORAGE_KEY = "vercbd_charity_cms_v3";
 
 export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(defaultHeroSlides);
@@ -713,9 +859,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [branches, setBranches] = useState<BranchOffice[]>(defaultBranches);
   const [messages, setMessages] = useState<ContactMessage[]>(defaultMessages);
   const [subscribers, setSubscribers] = useState<Subscriber[]>(defaultSubscribers);
+  const [donations, setDonations] = useState<DonationRecord[]>(defaultDonations);
+  const [campaigns, setCampaigns] = useState<CharityCampaign[]>(defaultCampaigns);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSiteSettings);
-  const [dashboardMetrics, setDashboardMetrics] = useState<DashboardMetric>(defaultDashboardMetrics);
+  const [dashboardMetrics, setDashboardMetrics] = useState<CharityDashboardMetric>(defaultDashboardMetrics);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [primaryColor, setPrimaryColor] = useState<string>("#004B8D");
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load from LocalStorage on mount
@@ -736,9 +885,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (parsed.branches) setBranches(parsed.branches);
         if (parsed.messages) setMessages(parsed.messages);
         if (parsed.subscribers) setSubscribers(parsed.subscribers);
+        if (parsed.donations) setDonations(parsed.donations);
+        if (parsed.campaigns) setCampaigns(parsed.campaigns);
         if (parsed.siteSettings) setSiteSettings(parsed.siteSettings);
         if (parsed.dashboardMetrics) setDashboardMetrics(parsed.dashboardMetrics);
         if (parsed.theme) setTheme(parsed.theme);
+        if (parsed.primaryColor) setPrimaryColor(parsed.primaryColor);
       }
     } catch (e) {
       console.warn("Could not load stored content from localStorage:", e);
@@ -760,13 +912,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Sync dynamic theme colors with CSS variables across the whole app
   useEffect(() => {
     if (typeof document !== "undefined") {
-      const primary = siteSettings.primaryColor || "#004B8D";
+      const primary = primaryColor || siteSettings.primaryColor || "#004B8D";
       const secondary = siteSettings.secondaryColor || "#00AEEF";
       document.documentElement.style.setProperty("--brand-primary", primary);
       document.documentElement.style.setProperty("--brand-secondary", secondary);
       document.documentElement.style.setProperty("--primary-color", primary);
     }
-  }, [siteSettings.primaryColor, siteSettings.secondaryColor]);
+  }, [primaryColor, siteSettings.primaryColor, siteSettings.secondaryColor]);
 
   // Save to LocalStorage whenever content changes
   useEffect(() => {
@@ -785,9 +937,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         branches,
         messages,
         subscribers,
+        donations,
+        campaigns,
         siteSettings,
         dashboardMetrics,
-        theme
+        theme,
+        primaryColor
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch (e) {
@@ -806,9 +961,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     branches,
     messages,
     subscribers,
+    donations,
+    campaigns,
     siteSettings,
     dashboardMetrics,
     theme,
+    primaryColor,
     isLoaded
   ]);
 
@@ -868,20 +1026,20 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setMicrofinanceProducts(prev => [...prev, { ...product, id: `mf-${Date.now()}` }]);
   };
   const updateMicrofinanceProduct = (id: string, product: Partial<MicrofinanceProduct>) => {
-    setMicrofinanceProducts(prev => prev.map(p => p.id === id ? { ...p, ...product } : p));
+    setMicrofinanceProducts(prev => prev.map(m => m.id === id ? { ...m, ...product } : m));
   };
   const deleteMicrofinanceProduct = (id: string) => {
-    setMicrofinanceProducts(prev => prev.filter(p => p.id !== id));
+    setMicrofinanceProducts(prev => prev.filter(m => m.id !== id));
   };
 
   const addTeamMember = (member: Omit<TeamMember, "id">) => {
     setTeamMembers(prev => [...prev, { ...member, id: `team-${Date.now()}` }]);
   };
   const updateTeamMember = (id: string, member: Partial<TeamMember>) => {
-    setTeamMembers(prev => prev.map(m => m.id === id ? { ...m, ...member } : m));
+    setTeamMembers(prev => prev.map(t => t.id === id ? { ...t, ...member } : t));
   };
   const deleteTeamMember = (id: string) => {
-    setTeamMembers(prev => prev.filter(m => m.id !== id));
+    setTeamMembers(prev => prev.filter(t => t.id !== id));
   };
 
   const addPartner = (partner: Omit<PartnerItem, "id">) => {
@@ -915,14 +1073,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const addMessage = (msg: Omit<ContactMessage, "id" | "date" | "status">) => {
-    const dateStr = new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
-    const newMsg: ContactMessage = {
+    const newMessage: ContactMessage = {
       ...msg,
       id: `msg-${Date.now()}`,
-      date: dateStr,
+      date: new Date().toLocaleString(),
       status: "Unread"
     };
-    setMessages(prev => [newMsg, ...prev]);
+    setMessages(prev => [newMessage, ...prev]);
   };
   const updateMessageStatus = (id: string, status: ContactMessage["status"]) => {
     setMessages(prev => prev.map(m => m.id === id ? { ...m, status } : m));
@@ -932,21 +1089,52 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const addSubscriber = (email: string) => {
-    const existing = subscribers.find(s => s.email.toLowerCase() === email.toLowerCase());
-    if (!existing) {
-      const today = new Date().toISOString().split("T")[0];
-      setSubscribers(prev => [{ id: `sub-${Date.now()}`, email, joinedDate: today, status: "Active" }, ...prev]);
-    }
+    if (subscribers.some(s => s.email.toLowerCase() === email.toLowerCase())) return;
+    const newSub: Subscriber = {
+      id: `sub-${Date.now()}`,
+      email,
+      joinedDate: new Date().toISOString().split("T")[0],
+      status: "Active"
+    };
+    setSubscribers(prev => [newSub, ...prev]);
   };
   const deleteSubscriber = (id: string) => {
     setSubscribers(prev => prev.filter(s => s.id !== id));
+  };
+
+  const addDonation = (donation: Omit<DonationRecord, "id">) => {
+    const newDonation: DonationRecord = {
+      ...donation,
+      id: `don-${Date.now()}`
+    };
+    setDonations(prev => [newDonation, ...prev]);
+  };
+  const updateDonation = (id: string, donation: Partial<DonationRecord>) => {
+    setDonations(prev => prev.map(d => d.id === id ? { ...d, ...donation } : d));
+  };
+  const deleteDonation = (id: string) => {
+    setDonations(prev => prev.filter(d => d.id !== id));
+  };
+
+  const addCampaign = (campaign: Omit<CharityCampaign, "id">) => {
+    const newCamp: CharityCampaign = {
+      ...campaign,
+      id: `camp-${Date.now()}`
+    };
+    setCampaigns(prev => [newCamp, ...prev]);
+  };
+  const updateCampaign = (id: string, campaign: Partial<CharityCampaign>) => {
+    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, ...campaign } : c));
+  };
+  const deleteCampaign = (id: string) => {
+    setCampaigns(prev => prev.filter(c => c.id !== id));
   };
 
   const updateSiteSettings = (settings: Partial<SiteSettings>) => {
     setSiteSettings(prev => ({ ...prev, ...settings }));
   };
 
-  const updateDashboardMetrics = (metrics: Partial<DashboardMetric>) => {
+  const updateDashboardMetrics = (metrics: Partial<CharityDashboardMetric>) => {
     setDashboardMetrics(prev => ({ ...prev, ...metrics }));
   };
 
@@ -963,11 +1151,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setBranches(defaultBranches);
     setMessages(defaultMessages);
     setSubscribers(defaultSubscribers);
+    setDonations(defaultDonations);
+    setCampaigns(defaultCampaigns);
     setSiteSettings(defaultSiteSettings);
     setDashboardMetrics(defaultDashboardMetrics);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {}
+    setPrimaryColor("#004B8D");
+    setTheme("light");
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   return (
@@ -985,14 +1175,14 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         branches,
         messages,
         subscribers,
+        donations,
+        campaigns,
         siteSettings,
         dashboardMetrics,
         theme,
         setTheme,
-        primaryColor: siteSettings.primaryColor || "#004B8D",
-        setPrimaryColor: (color: string) => {
-          setSiteSettings(prev => ({ ...prev, primaryColor: color }));
-        },
+        primaryColor,
+        setPrimaryColor,
         addHeroSlide,
         updateHeroSlide,
         deleteHeroSlide,
@@ -1028,6 +1218,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         deleteMessage,
         addSubscriber,
         deleteSubscriber,
+        addDonation,
+        updateDonation,
+        deleteDonation,
+        addCampaign,
+        updateCampaign,
+        deleteCampaign,
         updateSiteSettings,
         updateDashboardMetrics,
         resetToDefaults

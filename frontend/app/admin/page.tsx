@@ -3,26 +3,45 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { 
+  Heart, 
   Users, 
-  ShoppingBag, 
-  XCircle, 
-  MoreHorizontal, 
-  Star, 
-  Mail, 
-  ArrowUpRight, 
+  BookOpen, 
+  BarChart2, 
   TrendingUp, 
-  Sparkles,
-  Edit2,
-  BookOpen,
-  Newspaper,
-  CreditCard,
-  HeartHandshake
+  Sparkles, 
+  Edit2, 
+  ArrowUpRight, 
+  MoreHorizontal, 
+  ShieldCheck, 
+  DollarSign, 
+  Building2, 
+  Target, 
+  Clock, 
+  CheckCircle2, 
+  MapPin, 
+  Globe, 
+  Receipt,
+  MessageSquare,
+  AlertTriangle,
+  Plus
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
 export default function AdminDashboardPage() {
-  const { theme, primaryColor, dashboardMetrics, programs, news, stories, microfinanceProducts } = useContent();
-  const [selectedMonth, setSelectedMonth] = useState("Month");
+  const { 
+    theme, 
+    primaryColor, 
+    dashboardMetrics, 
+    programs, 
+    news, 
+    stories, 
+    donations, 
+    campaigns, 
+    messages, 
+    branches 
+  } = useContent();
+
+  const [selectedPeriod, setSelectedPeriod] = useState("Month");
 
   // SVG Circular Donut Ring for KPI Cards
   const DonutRing = ({ percentage, color }: { percentage: number; color: string }) => {
@@ -62,104 +81,13 @@ export default function AdminDashboardPage() {
     );
   };
 
-  // Semi-circle gauge for Profit Increase
-  const GaugeMeter = ({ percentage }: { percentage: number }) => {
-    const radius = 70;
-    const circumference = Math.PI * radius;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-    return (
-      <div className="relative flex flex-col items-center justify-center w-full pt-4 pb-2">
-        <svg width="180" height="100" viewBox="0 0 180 100" className="overflow-visible">
-          {/* Background semi circle */}
-          <path
-            d="M 20 90 A 70 70 0 0 1 160 90"
-            fill="none"
-            stroke={theme === "dark" ? "#2B2A3D" : "#E5E7EB"}
-            strokeWidth="14"
-            strokeLinecap="round"
-          />
-          {/* Ticks */}
-          {[0, 20, 40, 60, 80, 100].map((tick, i) => {
-            const angle = (i * 180) / 5;
-            const rad = (angle * Math.PI) / 180;
-            const x1 = 90 - 55 * Math.cos(rad);
-            const y1 = 90 - 55 * Math.sin(rad);
-            const x2 = 90 - 48 * Math.cos(rad);
-            const y2 = 90 - 48 * Math.sin(rad);
-            return (
-              <line
-                key={tick}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke={theme === "dark" ? "#4A4960" : "#9CA3AF"}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            );
-          })}
-          {/* Animated gradient progress arc */}
-          <path
-            d="M 20 90 A 70 70 0 0 1 160 90"
-            fill="none"
-            stroke="url(#profitGradient)"
-            strokeWidth="14"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            className="transition-all duration-1000 ease-out"
-          />
-          <defs>
-            <linearGradient id="profitGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={primaryColor} />
-              <stop offset="70%" stopColor={primaryColor} stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#FFA756" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Center Percentage */}
-        <div className="absolute bottom-2 text-center">
-          <div className="text-2xl font-black tracking-tight" style={{ color: primaryColor }}>
-            {percentage}%
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Pie Chart for Current Visits
-  const PieChartWidget = () => {
+  // Pie Chart for Thematic Area Distribution
+  const ThematicPieChart = () => {
     return (
       <div className="flex flex-col items-center">
         <div className="relative w-40 h-40 flex items-center justify-center my-2">
-          {/* Custom SVG Pie */}
           <svg width="150" height="150" viewBox="0 0 42 42" className="transform -rotate-90">
-            {/* Europe: 34.7% (Pink) */}
-            <circle
-              cx="21"
-              cy="21"
-              r="15.91549430918954"
-              fill="transparent"
-              stroke="#F56565"
-              strokeWidth="10"
-              strokeDasharray="34.7 65.3"
-              strokeDashoffset="0"
-            />
-            {/* America: 28.4% (Orange) */}
-            <circle
-              cx="21"
-              cy="21"
-              r="15.91549430918954"
-              fill="transparent"
-              stroke="#FFA756"
-              strokeWidth="10"
-              strokeDasharray="28.4 71.6"
-              strokeDashoffset="-34.7"
-            />
-            {/* Asia: 27.7% (Dynamic Primary Color) */}
+            {/* WaSH: 42.5% (Primary Dark Blue) */}
             <circle
               cx="21"
               cy="21"
@@ -167,43 +95,72 @@ export default function AdminDashboardPage() {
               fill="transparent"
               stroke={primaryColor}
               strokeWidth="10"
-              strokeDasharray="27.7 72.3"
-              strokeDashoffset="-63.1"
+              strokeDasharray="42.5 57.5"
+              strokeDashoffset="0"
             />
-            {/* Africa: 9.2% (Cyan) */}
+            {/* Education: 24.8% (Cyan) */}
             <circle
               cx="21"
               cy="21"
               r="15.91549430918954"
               fill="transparent"
-              stroke="#4FD1C5"
+              stroke="#00AEEF"
               strokeWidth="10"
-              strokeDasharray="9.2 90.8"
-              strokeDashoffset="-90.8"
+              strokeDasharray="24.8 75.2"
+              strokeDashoffset="-42.5"
+            />
+            {/* Health: 18.2% (Rose) */}
+            <circle
+              cx="21"
+              cy="21"
+              r="15.91549430918954"
+              fill="transparent"
+              stroke="#F56565"
+              strokeWidth="10"
+              strokeDasharray="18.2 81.8"
+              strokeDashoffset="-67.3"
+            />
+            {/* Microfinance: 14.5% (Amber) */}
+            <circle
+              cx="21"
+              cy="21"
+              r="15.91549430918954"
+              fill="transparent"
+              stroke="#FFA756"
+              strokeWidth="10"
+              strokeDasharray="14.5 85.5"
+              strokeDashoffset="-85.5"
             />
           </svg>
 
           {/* Slices Labels Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-[10px] font-extrabold text-white bg-black/40 px-1 rounded backdrop-blur-xs">
-              34.7%
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col text-center">
+            <span className="text-[11px] font-black text-gray-900 dark:text-white">
+              4 Core
+            </span>
+            <span className="text-[9px] text-gray-400 font-semibold uppercase">
+              Thematic Sectors
             </span>
           </div>
         </div>
 
         {/* Legend dots */}
-        <div className="flex items-center justify-center gap-3 text-[10px] font-semibold text-gray-600 dark:text-gray-400 flex-wrap mt-2">
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#FFA756]"></span> America
+        <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-2 w-full px-2">
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: primaryColor }}></span>
+            <span className="truncate">WaSH (42.5%)</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#4FD1C5]"></span> Africa
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#00AEEF] flex-shrink-0"></span>
+            <span className="truncate">Education (24.8%)</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#F56565]"></span> Europe
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#F56565] flex-shrink-0"></span>
+            <span className="truncate">Health (18.2%)</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }}></span> Asia
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#FFA756] flex-shrink-0"></span>
+            <span className="truncate">Livelihoods (14.5%)</span>
           </div>
         </div>
       </div>
@@ -212,230 +169,206 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Quick Access Action Bar */}
-      <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-3xl border gap-4 transition-all ${
+      {/* Top Banner: Humanitarian Mission Control & Quick Launcher */}
+      <div className={`p-6 rounded-3xl border transition-all ${
         theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
       }`}>
-        <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-2xl flex items-center justify-center"
-            style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}
-          >
-            <Sparkles size={18} />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">Content Management Studio</h3>
-            <p className="text-[11px] text-gray-500 dark:text-gray-400">All changes made in this admin panel update the live website immediately.</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap">
-          <Link
-            href="/admin/hero"
-            style={{ backgroundColor: primaryColor }}
-            className="px-3.5 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
-          >
-            <Edit2 size={12} /> Edit Hero Banners
-          </Link>
-          <Link
-            href="/admin/programs"
-            className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all"
-          >
-            Programs ({programs.length})
-          </Link>
-          <Link
-            href="/admin/news"
-            className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all"
-          >
-            News & Stories ({news.length})
-          </Link>
-        </div>
-      </div>
-
-      {/* Row 1: Top 3 Metric Cards + Today Best Sale Card (Exact match to Reference Image) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Card 1: Customers */}
-        <div className={`p-6 rounded-3xl border transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Customers</div>
-              <div className="text-3xl font-extrabold" style={{ color: primaryColor }}>
-                {dashboardMetrics.customers.value}
-              </div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
-                {dashboardMetrics.customers.period}
-              </div>
-            </div>
-            <DonutRing percentage={dashboardMetrics.customers.percentage} color={primaryColor} />
-          </div>
-        </div>
-
-        {/* Card 2: Orders */}
-        <div className={`p-6 rounded-3xl border transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Orders</div>
-              <div className="text-3xl font-extrabold" style={{ color: primaryColor }}>
-                {dashboardMetrics.orders.value}
-              </div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
-                {dashboardMetrics.orders.period}
-              </div>
-            </div>
-            <DonutRing percentage={dashboardMetrics.orders.percentage} color={primaryColor} />
-          </div>
-        </div>
-
-        {/* Card 3: Cancel */}
-        <div className={`p-6 rounded-3xl border transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Cancel</div>
-              <div className="text-3xl font-extrabold" style={{ color: primaryColor }}>
-                {dashboardMetrics.cancel.value}
-              </div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
-                {dashboardMetrics.cancel.period}
-              </div>
-            </div>
-            <DonutRing percentage={dashboardMetrics.cancel.percentage} color="#FFA756" />
-          </div>
-        </div>
-
-        {/* Card 4: Today Best Sale */}
-        <div className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
-        }`}>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-gray-900 dark:text-white">Today Best Sale</span>
-            <button className="text-gray-400 hover:text-gray-600">
-              <MoreHorizontal size={16} />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3.5 mt-2">
-            <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
-              <img
-                src={dashboardMetrics.todayBestSale.imageUrl}
-                alt="Product"
-                className="w-full h-full object-cover"
-              />
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-xs flex-shrink-0"
+              style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}
+            >
+              <Heart size={24} className="fill-current" />
             </div>
             <div>
-              <div className="text-xs font-extrabold text-gray-900 dark:text-white">
-                {dashboardMetrics.todayBestSale.title}
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg font-black text-gray-900 dark:text-white">
+                  VERC Humanitarian Mission Control
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                  31 Districts &bull; 106 Upazilas
+                </span>
               </div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">
-                {dashboardMetrics.todayBestSale.sales} Sales
-              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                Real-time dashboard managing programs, institutional grants, beneficiary transformations, and emergency relief operations across Bangladesh.
+              </p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/admin/donations"
+              style={{ backgroundColor: primaryColor }}
+              className="px-3.5 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 hover:opacity-90 cursor-pointer"
+            >
+              <Plus size={14} /> Record Grant / Donation
+            </Link>
+            <Link
+              href="/admin/programs"
+              className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+            >
+              <BookOpen size={14} /> Programs ({programs.length})
+            </Link>
+            <Link
+              href="/admin/news"
+              className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+            >
+              News & Visits ({news.length})
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Row 2: Revenue Report (Left) + Latest Customer & Profit Increase (Right) */}
+      {/* Row 1: Top 4 Charity KPI Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Card 1: Beneficiaries */}
+        <div className={`p-6 rounded-3xl border transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Total Beneficiaries</div>
+              <div className="text-3xl font-black" style={{ color: primaryColor }}>
+                {dashboardMetrics.beneficiaries.value}
+              </div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                {dashboardMetrics.beneficiaries.period}
+              </div>
+            </div>
+            <DonutRing percentage={dashboardMetrics.beneficiaries.percentage} color={primaryColor} />
+          </div>
+        </div>
+
+        {/* Card 2: Donations & Grants Mobilized */}
+        <div className={`p-6 rounded-3xl border transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Grants & Donations</div>
+              <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
+                {dashboardMetrics.donationsMobilized.value}
+              </div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                {dashboardMetrics.donationsMobilized.period}
+              </div>
+            </div>
+            <DonutRing percentage={dashboardMetrics.donationsMobilized.percentage} color="#10B981" />
+          </div>
+        </div>
+
+        {/* Card 3: Active Programs */}
+        <div className={`p-6 rounded-3xl border transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Active Programs</div>
+              <div className="text-3xl font-black text-blue-600 dark:text-blue-400">
+                {dashboardMetrics.activePrograms.value} Thematic
+              </div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                {dashboardMetrics.activePrograms.period}
+              </div>
+            </div>
+            <DonutRing percentage={dashboardMetrics.activePrograms.percentage} color="#3B82F6" />
+          </div>
+        </div>
+
+        {/* Card 4: Microfinance Members & Recovery */}
+        <div className={`p-6 rounded-3xl border transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-gray-500 dark:text-gray-400">Grassroots Members</div>
+              <div className="text-3xl font-black text-amber-600 dark:text-amber-400">
+                {dashboardMetrics.microfinanceMembers.value}
+              </div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                {dashboardMetrics.microfinanceMembers.period}
+              </div>
+            </div>
+            <DonutRing percentage={dashboardMetrics.microfinanceMembers.percentage} color="#FFA756" />
+          </div>
+        </div>
+      </div>
+
+      {/* Row 2: Financial Deployment Flow (Left) + Thematic Distribution (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (Span 2): Revenue Report Dual Bar Chart */}
+        {/* Left Column: Dual Bar Financial Grants & Ground Expenses */}
         <div className={`lg:col-span-2 p-6 rounded-3xl border transition-all ${
           theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
         }`}>
-          {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">Revenue Report</h2>
+            <div>
+              <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">
+                Humanitarian Grants Inflow vs Program Expenses
+              </h2>
+              <p className="text-[11px] text-gray-400">Values represented in Lakh BDT (৳)</p>
+            </div>
 
-            <div className="flex items-center gap-6">
-              {/* Legend */}
-              <div className="flex items-center gap-4 text-xs font-semibold">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: primaryColor }}></span>
-                  <span className="text-gray-600 dark:text-gray-400">Earning</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-[#FFA756]"></span>
-                  <span className="text-gray-600 dark:text-gray-400">Expenses</span>
-                </div>
+            <div className="flex items-center gap-4 text-xs font-semibold">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: primaryColor }}></span>
+                <span className="text-gray-600 dark:text-gray-400">Grants Inflow</span>
               </div>
-
-              {/* Month Dropdown */}
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className={`text-xs font-bold px-3 py-1.5 rounded-xl border outline-none cursor-pointer ${
-                  theme === "dark" ? "bg-[#14141E] border-white/10 text-gray-300" : "bg-[#F8F9FE] border-gray-300 text-gray-800"
-                }`}
-              >
-                <option value="Month">Month</option>
-                <option value="Year">Year</option>
-                <option value="Quarter">Quarter</option>
-              </select>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#10B981]"></span>
+                <span className="text-gray-600 dark:text-gray-400">Program Deployed</span>
+              </div>
             </div>
           </div>
 
-          {/* Dual Bar Chart Layout */}
+          {/* Dual Bar Chart */}
           <div className="relative h-64 flex flex-col justify-between pt-4">
-            {/* Grid Horizontal Guide Lines */}
             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-gray-400 font-medium">
               <div className="border-b border-gray-200 dark:border-white/5 w-full flex justify-between">
-                <span>+300</span>
+                <span>800L</span>
               </div>
               <div className="border-b border-gray-200 dark:border-white/5 w-full flex justify-between">
-                <span>+200</span>
+                <span>600L</span>
               </div>
               <div className="border-b border-gray-200 dark:border-white/5 w-full flex justify-between">
-                <span>+100</span>
+                <span>400L</span>
               </div>
               <div className="border-b border-gray-300 dark:border-white/10 w-full flex justify-between">
-                <span>0</span>
-              </div>
-              <div className="border-b border-gray-200 dark:border-white/5 w-full flex justify-between">
-                <span>-100</span>
+                <span>200L</span>
               </div>
               <div className="w-full flex justify-between">
-                <span>-200</span>
+                <span>0L</span>
               </div>
             </div>
 
             {/* Bars Area */}
-            <div className="relative h-full flex items-center justify-between px-8 z-10">
-              {dashboardMetrics.revenueData.map((item) => {
-                const positiveHeight = (item.earning / 350) * 80;
-                const negativeHeight = (Math.abs(item.expenses) / 350) * 80;
+            <div className="relative h-full flex items-end justify-between px-6 z-10">
+              {dashboardMetrics.financialFlowData.map((item) => {
+                const inflowHeight = (item.grantsInflow / 800) * 180;
+                const expenseHeight = (item.programExpenses / 800) * 180;
 
                 return (
-                  <div key={item.month} className="flex flex-col items-center h-full justify-center group relative cursor-pointer">
-                    {/* Top Bar (Earning - Dynamic Primary Color) */}
-                    <div className="h-[90px] flex items-end">
+                  <div key={item.month} className="flex flex-col items-center justify-end h-full group relative cursor-pointer">
+                    <div className="flex items-end gap-1.5">
+                      {/* Inflow Bar */}
                       <div
-                        style={{ height: `${positiveHeight}px`, backgroundColor: primaryColor }}
-                        className="w-2.5 rounded-full transition-all duration-300 shadow-sm opacity-90 group-hover:opacity-100"
+                        style={{ height: `${inflowHeight}px`, backgroundColor: primaryColor }}
+                        className="w-2.5 rounded-t-md transition-all duration-300 shadow-sm opacity-90 group-hover:opacity-100"
+                      ></div>
+                      {/* Expenses Bar */}
+                      <div
+                        style={{ height: `${expenseHeight}px` }}
+                        className="w-2.5 rounded-t-md bg-[#10B981] group-hover:bg-[#059669] transition-all duration-300 shadow-sm"
                       ></div>
                     </div>
 
-                    {/* Zero Line Spacer */}
-                    <div className="h-[2px] w-full"></div>
-
-                    {/* Bottom Bar (Expenses - Orange) */}
-                    <div className="h-[70px] flex items-start">
-                      <div
-                        style={{ height: `${negativeHeight}px` }}
-                        className="w-2.5 rounded-full bg-[#FFA756] group-hover:bg-[#e69040] transition-all duration-300 shadow-sm"
-                      ></div>
-                    </div>
-
-                    {/* Month Label */}
                     <span className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-2 group-hover:font-bold transition-colors">
                       {item.month}
                     </span>
 
                     {/* Tooltip on Hover */}
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
-                      Earning: ${item.earning} | Exp: ${Math.abs(item.expenses)}
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
+                      Inflow: ৳{item.grantsInflow}L | Deployed: ৳{item.programExpenses}L
                     </div>
                   </div>
                 );
@@ -444,144 +377,156 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Right Column: Latest Customer & Profit Increase */}
+        {/* Right Column: Thematic Allocation & Flagship Program Card */}
         <div className="space-y-6">
-          {/* Latest Customer Card */}
+          {/* Thematic Allocation Pie */}
           <div className={`p-6 rounded-3xl border transition-all ${
             theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
           }`}>
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white mb-4">Latest Customer</h3>
-            <div className="space-y-3.5">
-              {dashboardMetrics.latestCustomers.map((cust) => (
-                <div key={cust.id} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
-                      <img src={cust.avatarUrl} alt={cust.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-extrabold text-gray-900 dark:text-white">{cust.name}</div>
-                      <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
-                        {cust.purchases} Purchases | {cust.likes} Likes
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => alert(`Opening messenger with ${cust.name} (${cust.email})`)}
-                    style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer"
-                  >
-                    <Mail size={14} />
-                  </button>
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">
+                Thematic Reach Breakdown
+              </h3>
+              <span className="text-[10px] text-gray-400 font-semibold">2024 Cycle</span>
             </div>
+            <ThematicPieChart />
           </div>
 
-          {/* Profit Increase Card */}
-          <div className={`p-6 rounded-3xl border transition-all ${
+          {/* Flagship Program Highlight */}
+          <div className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
             theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
           }`}>
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white">Profit Increase</h3>
-              <button className="text-gray-400 hover:text-gray-600">
-                <MoreHorizontal size={16} />
-              </button>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                <Target size={14} className="text-blue-500" /> Flagship Program
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">
+                Pioneering
+              </span>
             </div>
-            <GaugeMeter percentage={dashboardMetrics.profitIncrease} />
+
+            <div className="flex items-center gap-3.5 mt-2">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
+                <img
+                  src={dashboardMetrics.topFundedProgram.imageUrl}
+                  alt="Program"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <div className="text-xs font-extrabold text-gray-900 dark:text-white">
+                  {dashboardMetrics.topFundedProgram.title}
+                </div>
+                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  {dashboardMetrics.topFundedProgram.beneficiaries} Reached
+                </div>
+                <div className="text-[10px] text-gray-400 font-medium">
+                  Partners: {dashboardMetrics.topFundedProgram.leadPartner}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Row 3: Recent Order + Trending Items + Current Visit (Exact match to Reference Image) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Card 1: Recent Order */}
-        <div className={`p-6 rounded-3xl border transition-all ${
+      {/* Row 3: Recent Grants & Donations Stream (Left) + Active Emergency Appeals (Right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Span 2): Recent Donations Stream */}
+        <div className={`lg:col-span-2 p-6 rounded-3xl border transition-all ${
           theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
         }`}>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Recent order</h3>
+            <div className="flex items-center gap-2">
+              <Heart size={16} className="text-rose-500 fill-current" />
+              <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+                Recent Grants & Contributions
+              </h3>
+            </div>
             <Link
-              href="/admin/microfinance"
-              style={{ color: primaryColor }}
-              className="text-xs font-bold hover:underline"
+              href="/admin/donations"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
             >
-              See All
+              View All Grants ({donations.length}) <ArrowUpRight size={13} />
             </Link>
           </div>
 
-          <div className="space-y-3.5">
-            {dashboardMetrics.recentOrders.map((order) => (
-              <div key={order.id} className="flex items-center justify-between">
+          <div className="divide-y divide-gray-100 dark:divide-white/5">
+            {donations.slice(0, 4).map((d) => (
+              <div key={d.id} className="py-3.5 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gray-100 overflow-hidden flex items-center justify-center flex-shrink-0 border border-gray-200">
-                    <img src={order.imageUrl} alt={order.title} className="w-full h-full object-cover" />
+                  <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-white/5 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    {d.donorType === "Institutional Grant" ? <Building2 size={16} /> : <Heart size={16} />}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">{order.title}</div>
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{order.timeAgo}</div>
+                    <div className="font-extrabold text-xs text-gray-900 dark:text-white">
+                      {d.donorName}
+                    </div>
+                    <div className="text-[10px] text-gray-400 flex items-center gap-1.5">
+                      <span>{d.program}</span> &bull; <span>{d.date}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="text-xs font-extrabold" style={{ color: primaryColor }}>
-                  {order.price}
+
+                <div className="text-right">
+                  <div className="font-black text-xs text-gray-900 dark:text-white">
+                    {d.currency === "BDT" ? "৳ " : "$ "}{d.amount.toLocaleString()}
+                  </div>
+                  <span className="text-[9px] px-2 py-0.2 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                    {d.status}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Card 2: Trending Items */}
+        {/* Right Column: Active Emergency Relief Appeals */}
         <div className={`p-6 rounded-3xl border transition-all ${
           theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
         }`}>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Trending items</h3>
+            <div className="flex items-center gap-2">
+              <AlertTriangle size={16} className="text-amber-500" />
+              <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+                Emergency Appeals
+              </h3>
+            </div>
             <Link
-              href="/admin/programs"
-              style={{ color: primaryColor }}
-              className="text-xs font-bold hover:underline"
+              href="/admin/donations"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
             >
-              See All
+              Manage
             </Link>
           </div>
 
           <div className="space-y-4">
-            {dashboardMetrics.trendingItems.map((item) => (
-              <div key={item.id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden flex items-center justify-center flex-shrink-0 border border-gray-200">
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+            {campaigns.slice(0, 3).map((camp) => (
+              <div key={camp.id} className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 space-y-2">
+                <div className="flex justify-between items-start gap-2">
+                  <div className="font-bold text-xs text-gray-900 dark:text-white truncate">
+                    {camp.title}
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-xs font-bold text-gray-900 dark:text-white">{item.title}</div>
-                    <div className="flex items-center gap-0.5 text-[#FFA756]">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={11}
-                          fill={i < item.rating ? "#FFA756" : "none"}
-                          stroke="#FFA756"
-                        />
-                      ))}
-                    </div>
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{item.stock}</div>
-                  </div>
+                  <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${
+                    camp.status === "Urgent" ? "bg-rose-100 text-rose-800" : "bg-blue-100 text-blue-800"
+                  }`}>
+                    {camp.status}
+                  </span>
                 </div>
-                <div className="text-sm font-extrabold" style={{ color: primaryColor }}>
-                  {item.price}
+
+                <div className="w-full h-2 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    style={{ width: `${camp.progress}%`, backgroundColor: primaryColor }}
+                    className="h-full rounded-full"
+                  ></div>
+                </div>
+
+                <div className="flex justify-between text-[10px] text-gray-500 dark:text-gray-400 font-semibold">
+                  <span>Raised: <strong>{camp.raisedAmount}</strong></span>
+                  <span>Target: {camp.targetAmount}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Card 3: Current Visit */}
-        <div className={`p-6 rounded-3xl border transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
-        }`}>
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Current visit</h3>
-          </div>
-          <PieChartWidget />
         </div>
       </div>
     </div>
