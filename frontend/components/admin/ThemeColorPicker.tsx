@@ -88,7 +88,7 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
             setPrimaryColor(defaultCol);
             updateSiteSettings({ primaryColor: defaultCol });
           }}
-          className="text-[10px] text-gray-500 hover:text-gray-800 dark:hover:text-white flex items-center gap-1 font-semibold cursor-pointer"
+          className="text-xs text-gray-500 hover:text-gray-800 dark:hover:text-white flex items-center gap-1 font-medium cursor-pointer"
           title="Reset to default VERC Blue"
         >
           <RefreshCw size={11} /> Reset
@@ -97,8 +97,8 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
 
       {/* Preset Swatches */}
       <div>
-        <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
-          Curated Brand Presets
+        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
+          Curated Presets
         </label>
         <div className="grid grid-cols-3 gap-2">
           {PRESET_PALETTES.map((preset) => {
@@ -115,7 +115,7 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
                 }}
                 className={`flex items-center gap-2 p-2 rounded-xl border text-left transition-all cursor-pointer ${
                   isSelected
-                    ? "border-gray-900 dark:border-white ring-2 shadow-sm font-bold"
+                    ? "border-gray-900 dark:border-white ring-2 shadow-sm font-semibold"
                     : "border-gray-200 dark:border-white/10 hover:border-gray-400 bg-gray-50/50 dark:bg-white/5"
                 }`}
               >
@@ -126,10 +126,10 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
                   {isSelected && <Check size={10} className="stroke-[3]" />}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-gray-900 dark:text-white truncate">
+                  <div className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                     {preset.name.split(" ")[0]}
                   </div>
-                  <div className="text-[9px] text-gray-400 font-mono">{preset.hex}</div>
+                  <div className="text-xs text-gray-400 font-mono">{preset.hex}</div>
                 </div>
               </button>
             );
@@ -139,8 +139,8 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
 
       {/* Custom Color Input & HTML5 Color Picker */}
       <div className="space-y-2 pt-2 border-t border-gray-100 dark:border-white/5">
-        <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-          Custom Color / Paste Hex Code
+        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+          Custom Color / Hex
         </label>
 
         <div className="flex items-center gap-2">
@@ -160,21 +160,24 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
             />
           </div>
 
-          {/* Hex Text Input */}
           <div className="relative flex-1">
             <input
               type="text"
               value={hexInput}
               onChange={(e) => {
-                setHexInput(e.target.value);
-                handleApplyHex(e.target.value);
+                const val = e.target.value;
+                setHexInput(val);
+                if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                  setCustomError("");
+                  setPrimaryColor(val);
+                  updateSiteSettings({ primaryColor: val });
+                } else if (val.length === 7) {
+                  setCustomError("Invalid hex format. Use #RRGGBB");
+                }
               }}
               placeholder="#004B8D"
-              className={`w-full px-3 py-2 text-xs font-mono font-bold rounded-xl border outline-none ${
-                theme === "dark"
-                  ? "bg-[#14141E] border-white/10 text-white"
-                  : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-              }`}
+              className="w-full pl-3 pr-3 py-2 text-xs rounded-xl border border-gray-300 dark:border-white/10 bg-white dark:bg-[#14141E] text-gray-900 dark:text-white font-mono font-medium outline-none focus:border-gray-500"
+              maxLength={7}
             />
           </div>
 
@@ -188,23 +191,23 @@ export const ThemeColorPicker: React.FC<ThemeColorPickerProps> = ({
           </button>
         </div>
 
-        {customError && <p className="text-[11px] text-red-500 font-semibold">{customError}</p>}
+        {customError && <p className="text-xs text-red-500 font-medium">{customError}</p>}
       </div>
 
       {/* Live Preview Demonstration */}
-      <div className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200/80 dark:border-white/5 space-y-2">
-        <div className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase">Live UI Preview</div>
+      <div className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200/80 dark:border-white/5 space-y-2">
+        <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Live Preview</div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
             style={{ backgroundColor: primaryColor }}
-            className="px-3 py-1.5 rounded-lg text-white font-bold text-[11px] shadow-sm flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg text-white font-semibold text-xs shadow-sm flex items-center gap-1"
           >
             <Sparkles size={11} /> Primary Button
           </button>
           <span
             style={{ color: primaryColor }}
-            className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-white dark:bg-[#14141E] border border-gray-200/60 dark:border-white/10 shadow-xs"
+            className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white dark:bg-[#14141E] border border-gray-200/60 dark:border-white/10 shadow-xs"
           >
             Accent Badge
           </span>

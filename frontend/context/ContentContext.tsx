@@ -912,10 +912,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Sync dynamic theme colors with CSS variables across the whole app
   useEffect(() => {
     if (typeof document !== "undefined") {
+      const hexToRgbString = (hex: string, fallback: string) => {
+        if (!hex) return fallback;
+        let c = hex.replace("#", "").trim();
+        if (c.length === 3) c = c.split("").map((x) => x + x).join("");
+        if (c.length !== 6) return fallback;
+        const num = parseInt(c, 16);
+        if (isNaN(num)) return fallback;
+        return `${(num >> 16) & 255} ${(num >> 8) & 255} ${num & 255}`;
+      };
+
       const primary = primaryColor || siteSettings.primaryColor || "#004B8D";
       const secondary = siteSettings.secondaryColor || "#00AEEF";
+      const primaryRgb = hexToRgbString(primary, "0 75 141");
+      const secondaryRgb = hexToRgbString(secondary, "0 174 239");
+
       document.documentElement.style.setProperty("--brand-primary", primary);
+      document.documentElement.style.setProperty("--brand-primary-rgb", primaryRgb);
       document.documentElement.style.setProperty("--brand-secondary", secondary);
+      document.documentElement.style.setProperty("--brand-secondary-rgb", secondaryRgb);
       document.documentElement.style.setProperty("--primary-color", primary);
     }
   }, [primaryColor, siteSettings.primaryColor, siteSettings.secondaryColor]);
@@ -1132,6 +1147,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateSiteSettings = (settings: Partial<SiteSettings>) => {
     setSiteSettings(prev => ({ ...prev, ...settings }));
+    if (settings.primaryColor) {
+      setPrimaryColor(settings.primaryColor);
+    }
   };
 
   const updateDashboardMetrics = (metrics: Partial<CharityDashboardMetric>) => {

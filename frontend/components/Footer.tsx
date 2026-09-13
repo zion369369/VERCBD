@@ -36,7 +36,6 @@ const Footer = () => {
         { name: "Senior Staff Members", href: "/about/staff" },
         { name: "Our Awards", href: "/about/awards" },
         { name: "Annual Reports", href: "/about/annual-report" },
-        { name: "Admin Studio", href: "/admin" },
       ]
     },
     {

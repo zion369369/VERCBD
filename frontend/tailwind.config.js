@@ -10,15 +10,16 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          primary: "#004B8D",
-          secondary: "#00AEEF",
+          primary: "rgb(var(--brand-primary-rgb, 0 75 141) / <alpha-value>)",
+          secondary: "rgb(var(--brand-secondary-rgb, 0 174 239) / <alpha-value>)",
           accent: "#FBB03B",
           dark: "#1A1A1A",
           light: "#F8F9FA",
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ["'Valley Sans'", 'Inter', '-apple-system', 'sans-serif'],
+        valley: ["'Valley Sans'", 'sans-serif'],
       },
     },
   },

@@ -90,56 +90,51 @@ export default function AdminProgramsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
       {/* Header Actions */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <BookOpen style={{ color: primaryColor }} /> Social Programs Management
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Create, edit, and publish development programs, core operational models, and upload program banners.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Programs
+          </h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
         >
-          <Plus size={16} /> Add Program
+          <Plus size={15} /> Add Program
         </button>
       </div>
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
           <input
             type="text"
-            placeholder="Search programs by name or description..."
+            placeholder="Search programs..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-11 pr-4 py-2.5 rounded-2xl text-xs outline-none border transition-all ${
+            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs outline-none border transition-all ${
               theme === "dark"
-                ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500"
-                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm font-medium"
+                ? "bg-[#181824] border-white/10 text-white placeholder-gray-500"
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-2xs font-medium"
             }`}
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
           {["All", "Education", "Health & WASH", "Livelihood", "Capacity Building", "Economic Development"].map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               style={selectedCategory === cat ? { backgroundColor: primaryColor, color: '#fff' } : {}}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
-                  ? "shadow-sm"
+                  ? "shadow-xs"
                   : theme === "dark"
-                  ? "bg-[#1A1926] text-gray-400 hover:text-white"
+                  ? "bg-[#181824] text-gray-400 hover:text-white border border-white/5"
                   : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
               }`}
             >
@@ -151,19 +146,19 @@ export default function AdminProgramsPage() {
 
       {/* Programs Table */}
       <div className={`rounded-3xl border overflow-hidden transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        theme === "dark" ? "bg-[#181824] border-white/5" : "bg-white border-gray-200/80 shadow-xs"
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className={`border-b text-[11px] font-extrabold uppercase tracking-wider ${
-              theme === "dark" ? "bg-[#14141E] border-white/5 text-gray-400" : "bg-gray-50 border-gray-200 text-gray-700"
+            <thead className={`border-b text-xs font-semibold ${
+              theme === "dark" ? "bg-white/[0.02] border-white/5 text-gray-400" : "bg-gray-50/60 border-gray-100 text-gray-500"
             }`}>
               <tr>
-                <th className="py-4 px-6">Program</th>
-                <th className="py-4 px-6">Category</th>
-                <th className="py-4 px-6">Beneficiary Reach</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6 text-right">Actions</th>
+                <th className="py-3.5 px-6">Program</th>
+                <th className="py-3.5 px-6">Category</th>
+                <th className="py-3.5 px-6">Beneficiary Reach</th>
+                <th className="py-3.5 px-6">Status</th>
+                <th className="py-3.5 px-6 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-xs">
@@ -172,30 +167,20 @@ export default function AdminProgramsPage() {
                   {/* Program Info */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-white/10 overflow-hidden flex-shrink-0 border border-gray-200">
+                      <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 overflow-hidden flex-shrink-0 border border-gray-200 dark:border-white/10">
                         <img
                           src={prog.imageUrl}
                           alt={prog.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                         />
                       </div>
-                      <div className="space-y-1 max-w-md">
-                        <div className="font-extrabold text-sm text-gray-900 dark:text-white">
+                      <div className="space-y-0.5 max-w-md">
+                        <div className="font-bold text-sm text-gray-900 dark:text-white">
                           {prog.title}
                         </div>
-                        <p className="text-gray-600 dark:text-gray-400 text-xs line-clamp-1 font-medium">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">
                           {prog.description}
                         </p>
-                        <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                          {(prog.features || []).slice(0, 2).map((feat, i) => (
-                            <span
-                              key={i}
-                              className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded font-semibold text-gray-700 dark:text-gray-300 border border-gray-200/60 dark:border-white/5"
-                            >
-                              ✓ {feat}
-                            </span>
-                          ))}
-                        </div>
                       </div>
                     </div>
                   </td>
@@ -204,27 +189,27 @@ export default function AdminProgramsPage() {
                   <td className="py-4 px-6">
                     <span
                       style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                      className="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide inline-block"
+                      className="px-2.5 py-1 rounded-full text-xs font-semibold inline-block"
                     >
                       {prog.category}
                     </span>
                   </td>
 
                   {/* Reach */}
-                  <td className="py-4 px-6 font-bold text-gray-800 dark:text-gray-200">
+                  <td className="py-4 px-6 font-semibold text-gray-800 dark:text-gray-200">
                     {prog.reach}
                   </td>
 
                   {/* Status */}
                   <td className="py-4 px-6">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 ${
                         prog.status === "Active"
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
-                          : "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+                          : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                       }`}
                     >
-                      <span className={`w-2 h-2 rounded-full ${prog.status === "Active" ? "bg-emerald-600" : "bg-amber-600"}`}></span>
+                      <span className={`w-1.5 h-1.5 rounded-full ${prog.status === "Active" ? "bg-emerald-500" : "bg-gray-400"}`}></span>
                       {prog.status}
                     </span>
                   </td>

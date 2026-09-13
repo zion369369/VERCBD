@@ -126,36 +126,31 @@ export default function AdminNewsPage() {
   const filteredStories = stories.filter(s => s.title.toLowerCase().includes(searchTerm.toLowerCase()) || s.beneficiaryName.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
       {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Newspaper style={{ color: primaryColor }} /> News, Press & Success Stories
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Publish press releases, community impact stories, and field achievements with photo galleries.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            News & Stories
+          </h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {activeTab === "news" ? (
             <button
               onClick={openCreateNewsModal}
               style={{ backgroundColor: primaryColor }}
-              className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+              className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
             >
-              <Plus size={16} /> Publish News Article
+              <Plus size={15} /> Publish Article
             </button>
           ) : (
             <button
               onClick={openCreateStoryModal}
               style={{ backgroundColor: primaryColor }}
-              className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+              className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
             >
-              <Plus size={16} /> Add Success Story
+              <Plus size={15} /> Add Story
             </button>
           )}
         </div>
@@ -164,45 +159,41 @@ export default function AdminNewsPage() {
       {/* Tabs & Search */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Tab switcher */}
-        <div className={`flex p-1 rounded-2xl w-full sm:w-auto border ${
-          theme === "dark" ? "bg-white/5 border-white/5" : "bg-gray-100 border-gray-200"
-        }`}>
+        <div className="bg-gray-200/70 dark:bg-white/10 p-1 rounded-2xl flex items-center gap-1 w-full sm:w-auto">
           <button
             onClick={() => setActiveTab("news")}
-            style={activeTab === "news" ? { color: primaryColor } : {}}
-            className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "news" 
-                ? "bg-white dark:bg-[#1A1926] shadow-sm font-extrabold" 
+                ? "bg-white dark:bg-[#1E1E24] text-gray-950 dark:text-white shadow-xs font-bold" 
                 : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             }`}
           >
-            <Newspaper size={15} /> News & Articles ({news.length})
+            Articles ({news.length})
           </button>
           <button
             onClick={() => setActiveTab("stories")}
-            style={activeTab === "stories" ? { color: primaryColor } : {}}
-            className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "stories" 
-                ? "bg-white dark:bg-[#1A1926] shadow-sm font-extrabold" 
+                ? "bg-white dark:bg-[#1E1E24] text-gray-950 dark:text-white shadow-xs font-bold" 
                 : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             }`}
           >
-            <Heart size={15} /> Success Stories ({stories.length})
+            Stories ({stories.length})
           </button>
         </div>
 
         {/* Search */}
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
           <input
             type="text"
             placeholder="Search items..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-11 pr-4 py-2.5 rounded-2xl text-xs outline-none border transition-all ${
+            className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs outline-none border transition-all ${
               theme === "dark" 
-                ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500" 
-                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm font-medium"
+                ? "bg-[#181824] border-white/10 text-white placeholder-gray-500" 
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-2xs font-medium"
             }`}
           />
         </div>
@@ -214,36 +205,36 @@ export default function AdminNewsPage() {
           {filteredNews.map((item) => (
             <div
               key={item.id}
-              className={`p-6 rounded-3xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6 group ${
-                theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+              className={`p-5 rounded-3xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-5 group ${
+                theme === "dark" ? "bg-[#181824] border-white/5 shadow-xs" : "bg-white border-gray-200/80 shadow-xs"
               }`}
             >
-              <div className="flex items-center gap-5 flex-1 min-w-0">
-                <div className="w-20 h-20 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/10 overflow-hidden flex-shrink-0 border border-gray-200 dark:border-white/10">
                   <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 </div>
-                <div className="space-y-1.5 min-w-0">
+                <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span
                       style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                      className="px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold uppercase"
+                      className="px-2 py-0.5 rounded-full text-xs font-semibold"
                     >
                       {item.category}
                     </span>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold flex items-center gap-1">
+                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1">
                       <Calendar size={12} /> {item.date}
                     </span>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400">By {item.author}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${
-                      item.status === "Published" ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-700"
+                    <span className="text-xs text-gray-400">By {item.author}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      item.status === "Published" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300" : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                     }`}>
                       {item.status}
                     </span>
                   </div>
-                  <h3 className="text-sm font-extrabold text-gray-900 dark:text-white truncate">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 font-medium">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
                     {item.summary}
                   </p>
                 </div>
@@ -292,7 +283,7 @@ export default function AdminNewsPage() {
                   <div>
                     <h3 className="text-base font-extrabold text-gray-900 dark:text-white">{story.title}</h3>
                     <p className="text-xs font-bold" style={{ color: primaryColor }}>{story.beneficiaryName}</p>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400">{story.location} • {story.date}</span>
+                    <span className="text-xs text-gray-400">{story.location} • {story.date}</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium line-clamp-3">

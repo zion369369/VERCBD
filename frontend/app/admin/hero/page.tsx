@@ -62,35 +62,28 @@ export default function AdminHeroPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Sparkles style={{ color: primaryColor }} /> Homepage Hero Banners
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage the hero slides, banner headlines, and button destinations shown at the top of the homepage.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Banners</h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
         >
-          <Plus size={16} /> Add Hero Slide
+          <Plus size={16} /> Add Slide
         </button>
       </div>
 
       {/* Hero Slides Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {heroSlides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`rounded-3xl border overflow-hidden transition-all group ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+            className={`rounded-2xl border overflow-hidden transition-all group ${
+              theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
             }`}
           >
             {/* Banner Preview Frame */}
@@ -103,25 +96,25 @@ export default function AdminHeroPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent"></div>
               <div
                 style={{ backgroundColor: primaryColor }}
-                className="absolute top-3 left-3 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-md"
+                className="absolute top-3 left-3 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md"
               >
-                Slide #{index + 1}
+                Slide {index + 1}
               </div>
 
               <div className="absolute bottom-3 left-4 right-4 text-white">
-                <div className="text-base font-extrabold leading-tight">
+                <div className="text-base font-bold leading-tight">
                   {slide.title} <span className="text-[#00AEEF]">{slide.highlightText}</span>
                 </div>
               </div>
             </div>
 
             {/* Details */}
-            <div className="p-5 space-y-4">
-              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed font-medium">
+            <div className="p-5 space-y-3.5">
+              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
                 {slide.subtitle}
               </p>
 
-              <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/5 text-[11px] font-bold">
+              <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/5 text-xs font-semibold">
                 <span
                   style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
                   className="px-2.5 py-1 rounded-lg"
@@ -136,8 +129,8 @@ export default function AdminHeroPage() {
               <div className="flex justify-between items-center pt-2">
                 <button
                   onClick={() => openEditModal(slide)}
-                  style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90"
+                  style={{ color: primaryColor }}
+                  className="flex items-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer hover:opacity-80"
                 >
                   <Edit2 size={13} /> Edit Slide
                 </button>
@@ -149,10 +142,10 @@ export default function AdminHeroPage() {
                         deleteHeroSlide(slide.id);
                       }
                     }}
-                    className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                    className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
                     title="Delete Slide"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 )}
               </div>

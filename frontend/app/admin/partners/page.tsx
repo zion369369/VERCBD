@@ -53,42 +53,37 @@ export default function AdminPartnersPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
       {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <HeartHandshake style={{ color: primaryColor }} /> Development Partners & Donors
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage partner organizations, logos, categories, and institutional website links.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Partners
+          </h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
         >
-          <Plus size={16} /> Add Partner Organization
+          <Plus size={15} /> Add Partner
         </button>
       </div>
 
       {/* Partners Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {partners.map((partner) => (
           <div
             key={partner.id}
-            className={`p-6 rounded-3xl border transition-all flex flex-col justify-between group ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+            className={`p-5 rounded-3xl border transition-all flex flex-col justify-between group ${
+              theme === "dark" ? "bg-[#181824] border-white/5 shadow-xs" : "bg-white border-gray-200/80 shadow-xs"
             }`}
           >
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span
                   style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                  className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase"
+                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
                 >
                   {partner.category}
                 </span>

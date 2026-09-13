@@ -1,10 +1,54 @@
+@font-face {
+  font-family: 'Valley Sans';
+  src: url('/fonts/ValleySans-Variable.woff2') format('woff2-variations'),
+       url('/fonts/ValleySans-Regular.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Valley Sans';
+  src: url('/fonts/ValleySans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Valley Sans';
+  src: url('/fonts/ValleySans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Valley Sans';
+  src: url('/fonts/ValleySans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Valley Sans';
+  src: url('/fonts/ValleySans-Bold.woff2') format('woff2');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   --brand-primary: #004B8D;
+  --brand-primary-rgb: 0 75 141;
   --brand-secondary: #00AEEF;
+  --brand-secondary-rgb: 0 174 239;
+  --primary-color: #004B8D;
 }
 
 body {

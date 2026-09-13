@@ -19,28 +19,21 @@ export default function AdminMessagesPage() {
   const activeMessage = messages.find((m) => m.id === selectedMessageId);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Mail style={{ color: primaryColor }} /> Contact Inquiries & Feedback Inbox
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Messages received through the public Contact page form across all departments.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Inquiries</h1>
         </div>
 
         <div className="flex items-center gap-2">
           <span
             style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold"
+            className="px-3 py-1 rounded-full text-xs font-semibold"
           >
             {messages.filter(m => m.status === "Unread").length} Unread
           </span>
-          <span className="px-3.5 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl text-xs font-bold">
+          <span className="px-3 py-1 bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded-full text-xs font-semibold">
             {messages.length} Total
           </span>
         </div>
@@ -49,8 +42,8 @@ export default function AdminMessagesPage() {
       {/* Inbox Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Messages List */}
-        <div className={`p-4 rounded-3xl border space-y-4 transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-4 rounded-2xl border space-y-3 transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
@@ -59,8 +52,8 @@ export default function AdminMessagesPage() {
               placeholder="Search inquiries..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-9 pr-3 py-2 rounded-xl text-xs outline-none border font-medium ${
-                theme === "dark" ? "bg-[#14141E] border-white/10 text-white" : "bg-gray-50 border-gray-200 text-gray-900"
+              className={`w-full pl-9 pr-3 py-2 rounded-xl text-xs outline-none border transition-all ${
+                theme === "dark" ? "bg-[#14141E] border-white/10 text-white placeholder-gray-500" : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400"
               }`}
             />
           </div>
@@ -74,7 +67,7 @@ export default function AdminMessagesPage() {
                   if (msg.status === "Unread") updateMessageStatus(msg.id, "Read");
                 }}
                 style={selectedMessageId === msg.id ? { borderColor: primaryColor, backgroundColor: `${primaryColor}10` } : {}}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                   selectedMessageId === msg.id
                     ? "shadow-xs"
                     : theme === "dark"
@@ -83,24 +76,24 @@ export default function AdminMessagesPage() {
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className={`text-xs font-bold truncate ${
-                    msg.status === "Unread" ? "text-gray-900 dark:text-white font-extrabold" : "text-gray-600 dark:text-gray-300"
+                  <span className={`text-xs font-semibold truncate ${
+                    msg.status === "Unread" ? "text-gray-900 dark:text-white font-bold" : "text-gray-600 dark:text-gray-300"
                   }`}>
                     {msg.name}
                   </span>
-                  <span className="text-[10px] text-gray-500 font-semibold">{msg.date}</span>
+                  <span className="text-xs text-gray-400">{msg.date}</span>
                 </div>
 
-                <div className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                <div className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                   {msg.subject}
                 </div>
 
-                <p className="text-[11px] text-gray-600 dark:text-gray-400 line-clamp-1 mt-1 font-medium">
+                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-1">
                   {msg.message}
                 </p>
 
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-white/5">
-                  <span className="text-[10px] font-bold" style={{ color: primaryColor }}>General Inquiry</span>
+                  <span className="text-xs font-medium" style={{ color: primaryColor }}>General Inquiry</span>
                   {msg.status === "Unread" && (
                     <span className="w-2 h-2 bg-pink-500 rounded-full"></span>
                   )}
@@ -111,16 +104,16 @@ export default function AdminMessagesPage() {
         </div>
 
         {/* Right Column: Message Detail Reading Pane */}
-        <div className={`lg:col-span-2 p-8 rounded-3xl border transition-all ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`lg:col-span-2 p-6 rounded-2xl border transition-all ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
           {activeMessage ? (
             <div className="space-y-6">
               {/* Message Header */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-gray-100 dark:border-white/5">
                 <div>
-                  <h3 className="text-lg font-black text-gray-900 dark:text-white">{activeMessage.subject}</h3>
-                  <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{activeMessage.subject}</h3>
+                  <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span className="flex items-center gap-1"><User size={13} /> {activeMessage.name}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1"><Mail size={13} /> {activeMessage.email}</span>
@@ -137,38 +130,38 @@ export default function AdminMessagesPage() {
                         setSelectedMessageId(null);
                       }
                     }}
-                    className="p-2 text-gray-400 hover:text-red-500 rounded-xl transition-all cursor-pointer"
+                    className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-all cursor-pointer"
                     title="Delete Message"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 </div>
               </div>
 
               {/* Message Body */}
-              <div className="space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-gray-400">Inquiry Content</div>
-                <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-xs text-gray-800 dark:text-gray-200 leading-relaxed font-medium whitespace-pre-wrap">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold uppercase tracking-wider text-gray-400">Inquiry Content</div>
+                <div className="p-5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-xs text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
                   {activeMessage.message}
                 </div>
               </div>
 
               {/* Reply Box */}
-              <div className="pt-6 border-t border-gray-100 dark:border-white/5 space-y-3">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300">Direct Email Response</div>
+              <div className="pt-5 border-t border-gray-100 dark:border-white/5 space-y-3">
+                <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">Direct Response</div>
                 <a
                   href={`mailto:${activeMessage.email}?subject=Re: ${encodeURIComponent(activeMessage.subject)} - VERC Response`}
                   style={{ backgroundColor: primaryColor }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer hover:opacity-90"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer hover:opacity-90"
                 >
-                  <Mail size={14} /> Open Email Client to Reply ({activeMessage.email})
+                  <Mail size={14} /> Open Email ({activeMessage.email})
                 </a>
               </div>
             </div>
           ) : (
             <div className="h-96 flex flex-col items-center justify-center text-center space-y-3 text-gray-400">
-              <Mail size={40} className="stroke-[1.5]" />
-              <p className="text-xs font-medium">Select a message from the left to view details.</p>
+              <Mail size={36} className="stroke-[1.5]" />
+              <p className="text-xs font-normal">Select a message from the left to view details.</p>
             </div>
           )}
         </div>

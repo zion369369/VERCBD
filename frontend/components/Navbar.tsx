@@ -174,13 +174,6 @@ const Navbar = () => {
             )}
 
             <div className="hidden lg:flex items-center space-x-3">
-              <Link
-                href="/admin"
-                style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                className="text-xs font-bold px-3 py-2 rounded-xl transition-colors"
-              >
-                Admin Studio
-              </Link>
               <Link href="/donate" className="btn-primary shadow-lg shadow-brand-primary/20">
                 {isHomePage ? t("nav_donate") : "Donate"}
               </Link>

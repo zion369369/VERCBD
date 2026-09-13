@@ -121,7 +121,41 @@ const translations: Record<Language, Record<string, string>> = {
     footer_quick_links: "Quick Links",
     footer_programs: "Core Programs",
     footer_headquarters: "Headquarters",
-    footer_rights: "All Rights Reserved. Village Education Resource Center (VERC)."
+    footer_rights: "All Rights Reserved. Village Education Resource Center (VERC).",
+
+    // Admin Navigation & NGO Management
+    admin_nav_overview: "Overview",
+    admin_nav_donations: "Donations",
+    admin_nav_programs: "Programs",
+    admin_nav_impact: "Impact",
+    admin_nav_news: "News & Stories",
+    admin_nav_partners: "Partners",
+    admin_nav_microfinance: "Microfinance",
+    admin_nav_branches: "Branches",
+    admin_nav_gallery: "Gallery",
+    admin_nav_team: "Team",
+    admin_nav_hero: "Banners",
+    admin_nav_messages: "Inquiries",
+    admin_nav_subscribers: "Supporters",
+    admin_nav_settings: "Settings",
+    admin_nav_users: "Users & Roles",
+
+    // Admin Common & Actions
+    admin_suite_badge: "NGO Operations Center",
+    admin_charity_management: "Humanitarian Operations",
+    admin_view_live: "View Public Website",
+    admin_record_donation: "Record Grant / Donation",
+    admin_add_program: "Add Field Program",
+    admin_switch_lang: "Global Language Switcher",
+    admin_switch_lang_desc: "Changes language for both Admin Suite and Public Website",
+    admin_english: "English",
+    admin_bangla: "বাংলা",
+    admin_logout: "Sign Out",
+    admin_authorized: "Authorized Access",
+    admin_role_superadmin: "Super Admin",
+    admin_status_live: "Active",
+    admin_filter_all: "All Modules",
+    admin_registered_ngo: "Reg: NGOAB #138 | MRA #00923 | Soc. Act XXI 1860"
   },
   bn: {
     // Navigation
@@ -232,7 +266,41 @@ const translations: Record<Language, Record<string, string>> = {
     footer_quick_links: "দ্রুত লিঙ্ক",
     footer_programs: "প্রধান কর্মসূচি",
     footer_headquarters: "প্রধান কার্যালয়",
-    footer_rights: "সর্বস্বত্ব সংরক্ষিত। ভিলেজ এডুকেশন রিসোর্স সেন্টার (ভার্ক)।"
+    footer_rights: "সর্বস্বত্ব সংরক্ষিত। ভিলেজ এডুকেশন রিসোর্স সেন্টার (ভার্ক)।",
+
+    // Admin Navigation & NGO Management
+    admin_nav_overview: "সারসংক্ষেপ",
+    admin_nav_donations: "অনুদান",
+    admin_nav_programs: "কর্মসূচি",
+    admin_nav_impact: "প্রভাব",
+    admin_nav_news: "সংবাদ",
+    admin_nav_partners: "অংশীদার",
+    admin_nav_microfinance: "ক্ষুদ্রঋণ",
+    admin_nav_branches: "শাখা",
+    admin_nav_gallery: "গ্যালারি",
+    admin_nav_team: "টিম",
+    admin_nav_hero: "ব্যানার",
+    admin_nav_messages: "বার্তা",
+    admin_nav_subscribers: "সমর্থক",
+    admin_nav_settings: "সেটিংস",
+    admin_nav_users: "ইউজার ও ভূমিকা",
+
+    // Admin Common & Actions
+    admin_suite_badge: "এনজিও অপারেশন সেন্টার",
+    admin_charity_management: "মানবিক কার্যক্রম ব্যবস্থাপনা",
+    admin_view_live: "মূল ওয়েবসাইট দেখুন",
+    admin_record_donation: "অনুদান এন্ট্রি করুন",
+    admin_add_program: "নতুন কর্মসূচি যোগ করুন",
+    admin_switch_lang: "সার্বিক ওয়েবসাইট ও এডমিন ভাষা",
+    admin_switch_lang_desc: "এডমিন প্যানেল এবং মূল ওয়েবসাইট উভয়ের ভাষা পরিবর্তিত হবে",
+    admin_english: "English",
+    admin_bangla: "বাংলা",
+    admin_logout: "লগআউট",
+    admin_authorized: "অনুমোদিত কর্মকর্তা",
+    admin_role_superadmin: "সুপার এডমিন",
+    admin_status_live: "সক্রিয়",
+    admin_filter_all: "সকল মডিউল",
+    admin_registered_ngo: "রেজিঃ এনজিও বিষয়ক ব্যুরো ১৩৮ | এমআরএ ০০৯২৩"
   }
 };
 

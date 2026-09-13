@@ -59,65 +59,58 @@ export default function AdminTeamPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Users style={{ color: primaryColor }} /> Leadership Team & Senior Staff Members
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage the Executive Director, board members, and department heads displayed on the About and Impact pages.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Team</h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
         >
-          <Plus size={16} /> Add Team Member
+          <Plus size={16} /> Add Member
         </button>
       </div>
 
       {/* Team Members Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {teamMembers.map((member) => (
           <div
             key={member.id}
-            className={`p-6 rounded-3xl border transition-all flex flex-col justify-between group ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+            className={`p-5 rounded-2xl border transition-all flex flex-col justify-between group ${
+              theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
             }`}
           >
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 border-2 border-gray-200 shadow-sm">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200 shadow-sm">
                     <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <span
                       style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase"
+                      className="px-2 py-0.5 rounded-md text-xs font-semibold"
                     >
                       {member.department}
                     </span>
-                    <h3 className="text-base font-extrabold text-gray-900 dark:text-white mt-0.5">
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white mt-1">
                       {member.name}
                     </h3>
-                    <p className="text-xs font-bold" style={{ color: primaryColor }}>
+                    <p className="text-xs font-medium" style={{ color: primaryColor }}>
                       {member.role}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium">
+              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed">
                 {member.bio}
               </p>
 
-              <div className="space-y-1 pt-3 border-t border-gray-100 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-medium">
+              <div className="space-y-1.5 pt-3 border-t border-gray-100 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                   <Mail size={13} className="text-gray-400" />
                   <span className="truncate">{member.email}</span>
@@ -135,9 +128,9 @@ export default function AdminTeamPage() {
               <button
                 onClick={() => openEditModal(member)}
                 style={{ color: primaryColor }}
-                className="flex items-center gap-1 text-xs font-bold transition-colors cursor-pointer hover:underline"
+                className="flex items-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer hover:opacity-80"
               >
-                <Edit2 size={13} /> Edit Profile
+                <Edit2 size={13} /> Edit
               </button>
 
               {teamMembers.length > 1 && (

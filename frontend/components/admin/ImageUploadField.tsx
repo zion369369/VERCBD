@@ -162,7 +162,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               <p className="text-xs font-bold text-gray-800 dark:text-gray-200">
                 Click to upload <span className="text-gray-500 font-normal">or drag & drop</span>
               </p>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">PNG, JPG, WebP, SVG up to 10MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-normal">PNG, JPG, WebP, SVG up to 10MB</p>
             </div>
           </div>
         )}
@@ -193,9 +193,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                       }}
                     />
                   </div>
-                  <div className="text-[10px] font-bold text-gray-800 dark:text-gray-200 truncate">{preset.name}</div>
+                  <div className="text-xs font-medium text-gray-800 dark:text-gray-200 truncate">{preset.name}</div>
                   {value === preset.url && (
-                    <div className="absolute top-1 right-1 w-4 h-4 bg-[#6C5DD3] rounded-full text-white flex items-center justify-center text-[10px]">
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-[#6C5DD3] rounded-full text-white flex items-center justify-center text-xs">
                       <Check size={10} />
                     </div>
                   )}
@@ -243,11 +243,11 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-bold text-gray-900 dark:text-white truncate">
+              <div className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                 {value.startsWith("data:") ? "Uploaded Image (Local File)" : value.split("/").pop()}
               </div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate font-medium">{value}</div>
-              <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5 flex items-center gap-1">
+              <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{value}</div>
+              <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5 flex items-center gap-1">
                 <Check size={12} /> Ready for Frontend
               </div>
             </div>
@@ -263,7 +263,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         )}
       </div>
 
-      {displayText && <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">{displayText}</p>}
+      {displayText && <p className="text-xs text-gray-500 dark:text-gray-400">{displayText}</p>}
     </div>
   );
 };

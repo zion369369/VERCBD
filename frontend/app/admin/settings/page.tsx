@@ -23,18 +23,11 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-4xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Globe style={{ color: primaryColor }} /> Website Configuration & Branding
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Configure site title, organizational contact details, primary theme color, official logo, and social media handles.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Settings</h1>
         </div>
 
         <button
@@ -45,7 +38,7 @@ export default function AdminSettingsPage() {
               setFormData(siteSettings);
             }
           }}
-          className="px-4 py-2 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          className="px-3.5 py-2 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
         >
           <RotateCcw size={14} /> Reset Defaults
         </button>
@@ -53,28 +46,28 @@ export default function AdminSettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Theme Color Studio (Embedded Full Feature) */}
-        <div className={`p-6 rounded-3xl border space-y-4 ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
           <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-white/5">
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-              <Palette size={16} style={{ color: primaryColor }} /> Theme Color & Brand Accent
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <Palette size={16} style={{ color: primaryColor }} /> Theme Color
             </h3>
-            <span className="text-[11px] font-bold text-gray-500">Live Global Synchronization</span>
+            <span className="text-xs text-gray-400">Live Sync</span>
           </div>
 
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Select a curated NGO color preset, pick from the color spectrum, or paste any HEX color code. This changes all primary buttons, active highlights, gauges, and accents across both the admin studio and public frontend.
+            Select a brand preset or customize any hex accent color across both the admin portal and public website.
           </p>
 
           <ThemeColorPicker variant="embedded" />
         </div>
 
         {/* Branding & Logo */}
-        <div className={`p-6 rounded-3xl border space-y-4 ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
-          <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <Sparkles size={16} style={{ color: primaryColor }} /> Brand Identity & Logo
           </h3>
 
@@ -87,7 +80,7 @@ export default function AdminSettingsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Site Title</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Site Title</label>
               <input
                 type="text"
                 required
@@ -95,20 +88,20 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setFormData({ ...formData, siteTitle: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white focus:border-purple-400"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Tagline</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Tagline</label>
               <input
                 type="text"
                 value={formData.tagline}
                 onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white focus:border-purple-400"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
@@ -117,16 +110,16 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Contact Information */}
-        <div className={`p-6 rounded-3xl border space-y-4 ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
-          <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <Phone size={16} style={{ color: primaryColor }} /> Public Contact Channels
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">General Inquiries Email</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">General Inquiries Email</label>
               <input
                 type="email"
                 required
@@ -134,13 +127,13 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Main Helpline Phone</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Main Helpline Phone</label>
               <input
                 type="text"
                 required
@@ -148,7 +141,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
@@ -156,7 +149,7 @@ export default function AdminSettingsPage() {
           </div>
 
           <div>
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Head Office Address</label>
+            <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Head Office Address</label>
             <input
               type="text"
               required
@@ -164,7 +157,7 @@ export default function AdminSettingsPage() {
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                 theme === "dark"
-                  ? "bg-[#14141E] border-white/10 text-white"
+                  ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                   : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
               }`}
             />
@@ -172,36 +165,36 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* NGO Legal & Statutory Registration Details */}
-        <div className={`p-6 rounded-3xl border space-y-4 ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
-          <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-            <Shield size={16} style={{ color: primaryColor }} /> NGO Legal & Statutory Registration
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Shield size={16} style={{ color: primaryColor }} /> NGO Legal Registration
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Societies Registration Act No.</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Societies Registration Act No.</label>
               <input
                 type="text"
                 value={formData.registrationNumber || "FD/R-348"}
                 onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">NGO Affairs Bureau Reg. No.</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">NGO Affairs Bureau Reg. No.</label>
               <input
                 type="text"
                 value={formData.ngoAffairsBureauReg || "NGOAB-00348-1989"}
                 onChange={(e) => setFormData({ ...formData, ngoAffairsBureauReg: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
@@ -210,62 +203,62 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Social Media Links */}
-        <div className={`p-6 rounded-3xl border space-y-4 ${
-          theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
         }`}>
-          <h3 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-            <Share2 size={16} style={{ color: primaryColor }} /> Official Social Media Handles
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Share2 size={16} style={{ color: primaryColor }} /> Social Media Channels
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Facebook URL</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Facebook URL</label>
               <input
                 type="url"
                 value={formData.facebookUrl}
                 onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">LinkedIn URL</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">LinkedIn URL</label>
               <input
                 type="url"
                 value={formData.linkedinUrl}
                 onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">YouTube URL</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">YouTube URL</label>
               <input
                 type="url"
                 value={formData.youtubeUrl}
                 onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Twitter / X URL</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-1">Twitter / X URL</label>
               <input
                 type="url"
                 value={formData.twitterUrl}
                 onChange={(e) => setFormData({ ...formData, twitterUrl: e.target.value })}
                 className={`w-full px-4 py-2.5 text-xs rounded-xl border outline-none font-medium ${
                   theme === "dark"
-                    ? "bg-[#14141E] border-white/10 text-white"
+                    ? "bg-[#14141E] border-white/10 text-white focus:border-white/20"
                     : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                 }`}
               />
@@ -274,21 +267,21 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Save Bar */}
-        <div className="flex items-center justify-between p-4 bg-white dark:bg-[#1A1926] rounded-3xl border border-gray-200 dark:border-white/5 shadow-sm">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-[#1A1926] rounded-2xl border border-gray-200 dark:border-white/10 shadow-sm">
           {savedSuccess ? (
-            <div className="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
+            <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
               <Check size={16} /> Site configuration saved successfully!
             </div>
           ) : (
-            <div className="text-xs text-gray-500 font-medium">Changes take effect immediately across the entire website.</div>
+            <div className="text-xs text-gray-500">Changes take effect immediately across the website.</div>
           )}
 
           <button
             type="submit"
             style={{ backgroundColor: primaryColor }}
-            className="px-6 py-2.5 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+            className="px-5 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
           >
-            <Save size={15} /> Save Site Settings
+            <Save size={15} /> Save Settings
           </button>
         </div>
       </form>

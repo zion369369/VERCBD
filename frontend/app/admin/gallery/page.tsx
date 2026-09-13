@@ -62,57 +62,48 @@ export default function AdminGalleryPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <ImageIcon style={{ color: primaryColor }} /> Media & Photo Gallery
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Upload and organize field photography, community initiatives, and official event coverage.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Gallery</h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
         >
-          <Plus size={16} /> Upload Photo
+          <Plus size={16} /> Add Media
         </button>
       </div>
 
       {/* Filter and Search */}
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
             placeholder="Search gallery photos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-11 pr-4 py-2.5 rounded-2xl text-xs outline-none border transition-all ${
+            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs outline-none border transition-all ${
               theme === "dark" 
-                ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500" 
-                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm font-medium"
+                ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500 focus:border-white/20" 
+                : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm focus:border-gray-300"
             }`}
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 p-1 bg-gray-100 dark:bg-white/5 rounded-xl">
           {["All", "Education", "WASH", "Microfinance", "Health", "Climate"].map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               style={selectedCategory === cat ? { backgroundColor: primaryColor, color: '#fff' } : {}}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? "shadow-sm"
-                  : theme === "dark"
-                  ? "bg-[#1A1926] text-gray-400 hover:text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                  : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
               {cat}
@@ -122,12 +113,12 @@ export default function AdminGalleryPage() {
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredGallery.map((item) => (
           <div
             key={item.id}
-            className={`rounded-3xl border overflow-hidden transition-all group flex flex-col justify-between ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+            className={`rounded-2xl border overflow-hidden transition-all group flex flex-col justify-between ${
+              theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
             }`}
           >
             <div>
@@ -140,22 +131,22 @@ export default function AdminGalleryPage() {
                 />
                 <span
                   style={{ backgroundColor: primaryColor }}
-                  className="absolute top-3 left-3 px-2.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase text-white shadow-sm"
+                  className="absolute top-3 left-3 px-2 py-0.5 rounded-md text-xs font-semibold text-white shadow-sm"
                 >
                   {item.category}
                 </span>
               </div>
 
-              <div className="p-4 space-y-1">
-                <h3 className="text-xs font-extrabold text-gray-900 dark:text-white truncate">
+              <div className="p-4 space-y-1.5">
+                <h3 className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                   {item.title}
                 </h3>
                 {item.description && (
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 font-medium">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
                     {item.description}
                   </p>
                 )}
-                <div className="text-[10px] text-gray-400 font-semibold pt-1">{item.date}</div>
+                <div className="text-xs text-gray-400 pt-0.5">{item.date}</div>
               </div>
             </div>
 
@@ -163,7 +154,7 @@ export default function AdminGalleryPage() {
               <button
                 onClick={() => openEditModal(item)}
                 style={{ color: primaryColor }}
-                className="flex items-center gap-1 text-xs font-bold transition-colors cursor-pointer hover:underline"
+                className="flex items-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer hover:opacity-80"
               >
                 <Edit2 size={13} /> Edit
               </button>

@@ -24,75 +24,70 @@ export default function AdminSubscribersPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {/* Apple-style Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <Mail style={{ color: primaryColor }} /> Newsletter Subscribers List
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage stakeholders, donors, and community members subscribed to the monthly newsletter.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Supporters</h1>
         </div>
 
         <button
           onClick={exportCSV}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
         >
-          <Download size={15} /> Export CSV List
+          <Download size={15} /> Export CSV
         </button>
       </div>
 
       {/* Search & Stats Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
           <input
             type="text"
             placeholder="Search email address..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-11 pr-4 py-2.5 rounded-2xl text-xs outline-none border font-medium ${
-              theme === "dark" ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500" : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm"
+            className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs outline-none border transition-all ${
+              theme === "dark" ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500 focus:border-white/20" : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm focus:border-gray-300"
             }`}
           />
         </div>
 
-        <div className="text-xs font-bold text-gray-600 dark:text-gray-400">
-          Total Subscribers: <span className="font-black" style={{ color: primaryColor }}>{subscribers.length}</span>
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          Total Subscribers: <span className="font-semibold text-gray-900 dark:text-white">{subscribers.length}</span>
         </div>
       </div>
 
       {/* Subscribers Table */}
-      <div className={`rounded-3xl border overflow-hidden transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm"
+      <div className={`rounded-2xl border overflow-hidden transition-all ${
+        theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-white/5 text-[11px] font-extrabold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/5">
-                <th className="py-4 px-6">Subscriber Email</th>
-                <th className="py-4 px-6">Subscribed Date</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6 text-right">Actions</th>
+              <tr className={`border-b text-xs font-semibold ${
+                theme === "dark" ? "bg-white/[0.02] border-white/10 text-gray-400" : "bg-gray-50/50 border-gray-200 text-gray-500"
+              }`}>
+                <th className="py-3.5 px-6">Subscriber Email</th>
+                <th className="py-3.5 px-6">Subscribed Date</th>
+                <th className="py-3.5 px-6">Status</th>
+                <th className="py-3.5 px-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-medium">
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
               {filteredSubscribers.map((sub) => (
                 <tr key={sub.id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
-                  <td className="py-4 px-6 font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <td className="py-4 px-6 font-medium text-gray-900 dark:text-white flex items-center gap-2.5">
                     <Mail size={14} style={{ color: primaryColor }} /> {sub.email}
                   </td>
-                  <td className="py-4 px-6 text-gray-600 dark:text-gray-400 font-medium">
+                  <td className="py-4 px-6 text-gray-600 dark:text-gray-400">
                     {sub.joinedDate}
                   </td>
                   <td className="py-4 px-6">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800">
-                      <CheckCircle2 size={11} /> Active
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">

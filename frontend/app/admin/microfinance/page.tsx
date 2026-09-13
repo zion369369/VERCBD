@@ -81,49 +81,44 @@ export default function AdminMicrofinancePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
       {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <CreditCard style={{ color: primaryColor }} /> Microfinance Products & Financial Services
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage loan packages (Jagoron, Agrosor, Buniad, Sufolon), credit ceilings, tenure, and eligibility criteria.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Microfinance
+          </h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
         >
-          <Plus size={16} /> Add Loan Product
+          <Plus size={15} /> Add Loan Product
         </button>
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {microfinanceProducts.map((prod) => (
           <div
             key={prod.id}
             className={`rounded-3xl border overflow-hidden transition-all flex flex-col justify-between group ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+              theme === "dark" ? "bg-[#181824] border-white/5 shadow-xs" : "bg-white border-gray-200/80 shadow-xs"
             }`}
           >
             {/* Top Bar with Dynamic Primary Accent */}
-            <div className="h-2 w-full" style={{ backgroundColor: primaryColor }}></div>
+            <div className="h-1.5 w-full" style={{ backgroundColor: primaryColor }}></div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <span
                   style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                  className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide"
+                  className="px-2.5 py-1 rounded-full text-xs font-semibold"
                 >
                   {prod.category}
                 </span>
-                <span className="text-xs font-black" style={{ color: primaryColor }}>
+                <span className="text-xs font-bold" style={{ color: primaryColor }}>
                   {prod.tenure}
                 </span>
               </div>

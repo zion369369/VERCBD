@@ -55,49 +55,44 @@ export default function AdminImpactPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
       {/* Header */}
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 rounded-3xl border transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/5 shadow-sm text-white" : "bg-white border-gray-200 shadow-sm text-gray-900"
-      }`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <BarChart2 style={{ color: primaryColor }} /> Key Impact Statistics & Metrics
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-            Manage the primary impact metrics displayed on the Homepage, About page, and Impact report.
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Impact
+          </h1>
         </div>
         <button
           onClick={openCreateModal}
           style={{ backgroundColor: primaryColor }}
-          className="px-5 py-2.5 text-white rounded-2xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:opacity-90"
+          className="px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:opacity-95"
         >
-          <Plus size={16} /> Add Impact Metric
+          <Plus size={15} /> Add Impact Metric
         </button>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {impactStats.map((stat) => (
           <div
             key={stat.id}
-            className={`p-6 rounded-3xl border transition-all flex flex-col justify-between group ${
-              theme === "dark" ? "bg-[#1A1926] border-white/5" : "bg-white border-gray-200 shadow-sm hover:shadow-md"
+            className={`p-5 rounded-3xl border transition-all flex flex-col justify-between group ${
+              theme === "dark" ? "bg-[#181824] border-white/5 shadow-xs" : "bg-white border-gray-200/80 shadow-xs"
             }`}
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span
                   style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                  className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase"
+                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
                 >
                   {stat.category || "General"}
                 </span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => openEditModal(stat)}
-                    className="p-1.5 text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
                   >
                     <Edit2 size={14} />
                   </button>
@@ -118,19 +113,19 @@ export default function AdminImpactPage() {
 
               <div>
                 <div
-                  className="text-3xl font-black tracking-tight group-hover:scale-105 transition-transform"
+                  className="text-2xl sm:text-3xl font-extrabold tracking-tight"
                   style={{ color: primaryColor }}
                 >
                   {stat.value}
                 </div>
-                <div className="text-sm font-extrabold text-gray-900 dark:text-white mt-1">
+                <div className="text-xs font-bold text-gray-900 dark:text-white mt-1">
                   {stat.label}
                 </div>
               </div>
             </div>
 
             {stat.subText && (
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
+              <p className="text-xs text-gray-400 font-medium mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
                 {stat.subText}
               </p>
             )}
