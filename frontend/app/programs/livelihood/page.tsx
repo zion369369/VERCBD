@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Heart, 
   Users, 
@@ -23,32 +23,45 @@ import {
 } from "lucide-react";
 
 export default function LivelihoodPage() {
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroSlides = [
+    { url: "/assets/livelihood_slide_1.jpg", fallback: "https://www.vercbd.org/images/image-10-main-2.jpg", title: "Agro-Enterprise & Farming" },
+    { url: "/assets/livelihood_slide_2.jpg", fallback: "https://www.vercbd.org/images/image-10-main-3.jpg", title: "Vocational Skills & Micro-Business" },
+    { url: "/assets/livelihood_slide_3.jpg", fallback: "https://www.vercbd.org/images/ibig16.jpg", title: "Women Self-Help Groups (SHGs)" }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   const galleryItems = [
     {
       title: "Agro-Enterprise & Climate-Adaptive Farming",
       subtitle: "Sustainable Agriculture & Organic Produce",
       desc: "VERC provides rural women farmers with high-yield climate-resilient seeds, organic fertilizer training, and direct village-to-urban retail linkages to maximize household yield.",
-      image: "/assets/livelihood_agro.jpg",
+      image: "/assets/livelihood_slide_1.jpg",
       fallback: "https://www.vercbd.org/images/image-10-main-2.jpg",
       tag: "Agriculture & Agro-Processing",
       stats: "35,000+ Farmers Empowered"
     },
     {
-      title: "Vocational Training & Skills Development",
+      title: "Vocational Training & Micro-Enterprise",
       subtitle: "Youth Employment & Marketable Trades",
       desc: "Equipping underprivileged youth and women with market-relevant trade certifications in garment manufacturing, tailoring, electrical servicing, and green tech installation.",
-      image: "/assets/livelihood_vocational.jpg",
-      fallback: "https://www.vercbd.org/images/image-7-main-1.jpg",
+      image: "/assets/livelihood_slide_2.jpg",
+      fallback: "https://www.vercbd.org/images/image-10-main-3.jpg",
       tag: "Vocational Certification",
       stats: "12,500+ Certified Graduates"
     },
     {
-      title: "Self-Help Groups & Micro-Enterprise Growth",
+      title: "Self-Help Groups & Financial Inclusion",
       subtitle: "Grassroots Financial Inclusion & Capital",
       desc: "Mobilizing women into community-managed Self-Help Groups (SHGs) that cultivate collective savings habits, grant emergency safety nets, and disburse low-interest business loans.",
-      image: "/assets/livelihood_community.jpg",
+      image: "/assets/livelihood_slide_3.jpg",
       fallback: "https://www.vercbd.org/images/ibig16.jpg",
       tag: "Women Self-Help Groups",
       stats: "85,000+ Active Members"
@@ -92,15 +105,44 @@ export default function LivelihoodPage() {
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
       
-      {/* 1. HERO HEADER */}
+      {/* 1. HERO HEADER WITH ANIMATED SLIDESHOW */}
       <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/assets/livelihood_agro.jpg" 
-            alt="Livelihood & Community Empowerment" 
-            className="w-full h-full object-cover opacity-25 scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 0.8, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <img 
+                src={heroSlides[currentSlide].url} 
+                alt={heroSlides[currentSlide].title} 
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = heroSlides[currentSlide].fallback;
+                }}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          {/* Reduced contrast gradient: bright, crisp photo visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-gray-950/35 to-gray-950/85"></div>
+
+          {/* Slide Indicator Dots */}
+          <div className="absolute bottom-8 right-8 z-20 flex gap-2">
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i)}
+                className={`h-1.5 transition-all duration-300 rounded-full ${
+                  i === currentSlide ? "w-8 bg-brand-secondary" : "w-2 bg-white/40"
+                }`}
+                title={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
         
         <div className="container-custom relative z-10 text-center max-w-4xl mx-auto space-y-6">
@@ -111,7 +153,7 @@ export default function LivelihoodPage() {
             className="space-y-6"
           >
             {/* Breadcrumb */}
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <ChevronRight size={12} />
               <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
@@ -119,15 +161,15 @@ export default function LivelihoodPage() {
               <span className="text-brand-secondary">Livelihood</span>
             </div>
 
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/10 rounded-full text-xs font-black uppercase tracking-[0.25em] text-emerald-400 border border-emerald-500/30">
-              <TrendingUp size={14} className="text-emerald-400" /> Economic Self-Reliance
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500/20 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-[0.25em] text-emerald-300 border border-emerald-500/40">
+              <TrendingUp size={14} className="text-emerald-300" /> Economic Self-Reliance
             </span>
             
-            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight">
+            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
               Livelihood & <span className="text-brand-secondary">Empowerment.</span>
             </h1>
             
-            <p className="text-lg lg:text-2xl text-gray-300 font-medium max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg lg:text-2xl text-gray-100 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               Transforming marginalized rural populations into self-reliant producers, entrepreneurs, and community leaders through vocational mastery, agricultural innovation, and micro-capital.
             </p>
 

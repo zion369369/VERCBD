@@ -75,8 +75,8 @@ const translations: Record<Language, Record<string, string>> = {
     focus_subtitle: "Addressing the most critical needs of rural and marginalized communities through integrated development approaches.",
     explore_program: "Explore Program",
 
-    prog_edu_title: "Non-Formal Education",
-    prog_edu_desc: "Providing innovative learning models, early childhood development, and adult literacy for marginalized children and communities.",
+    prog_edu_title: "Life Skill Education",
+    prog_edu_desc: "Providing inclusive learning opportunities, early childhood development, foundational literacy, and life skills for out-of-school learners.",
     
     prog_wash_title: "Health & WaSH",
     prog_wash_desc: "Pioneering Community-Led Total Sanitation (CLTS) globally and delivering arsenic-safe drinking water and hospital care.",
@@ -220,8 +220,8 @@ const translations: Record<Language, Record<string, string>> = {
     focus_subtitle: "সমন্বিত উন্নয়ন পদ্ধতির মাধ্যমে গ্রামীণ ও সুবিধাবঞ্চিত মানুষের মৌলিক চাহিদা পূরণ।",
     explore_program: "বিস্তারিত দেখুন",
 
-    prog_edu_title: "অনানুষ্ঠানিক শিক্ষা (NFE)",
-    prog_edu_desc: "শিশু বিকাশ কেন্দ্র, বয়স্ক শিক্ষা এবং প্রান্তিক শিশুদের জন্য মানসম্মত প্রাথমিক অনানুষ্ঠানিক শিক্ষা প্রদান।",
+    prog_edu_title: "লাইফ স্কিল এডুকেশন",
+    prog_edu_desc: "সুবিধাবঞ্চিত শিশুদের জন্য অন্তর্ভুক্তিমূলক শিক্ষা, শিশু বিকাশ কেন্দ্র এবং জীবনমুখী দক্ষতা উন্নয়ন কর্মসূচি।",
     
     prog_wash_title: "স্বাস্থ্য ও ওয়াশ (CLTS)",
     prog_wash_desc: "কমিউনিটি চালিত স্যানিটেশনে (CLTS) বিশ্বে অগ্রণী ভূমিকা এবং আর্সেনিকমুক্ত নিরাপদ পানি ও হাসপাতালে সেবা প্রদান।",

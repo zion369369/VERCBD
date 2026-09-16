@@ -173,6 +173,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {programs.slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
+              const programEmojis = ["📚", "💧", "🌾", "🎯"];
               return (
                 <motion.div 
                   key={item.id} 
@@ -180,8 +181,8 @@ export default function Home() {
                   transition={{ delay: i * 0.1 }}
                   className={`${item.color || "bg-blue-50"} p-8 lg:p-10 rounded-[40px] border border-transparent hover:border-gray-200 hover:bg-white hover:shadow-2xl transition-all duration-500 group flex flex-col h-full`}
                 >
-                  <div className="mb-8 w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform overflow-hidden">
-                    <img src={item.imageUrl} alt={progInfo.title} className="w-full h-full object-cover" />
+                  <div className="mb-8 w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform text-3xl border border-gray-100 select-none">
+                    <span>{programEmojis[i] || "🌱"}</span>
                   </div>
                   <h3 className={`text-2xl font-black mb-4 text-gray-900 ${language === "bn" ? "leading-snug tracking-normal" : "leading-tight"}`}>{progInfo.title}</h3>
                   <p className="text-gray-600 font-medium mb-8 text-sm leading-relaxed line-clamp-3">

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   Banknote, 
@@ -200,13 +201,14 @@ export default function MicrofinanceProductsPage() {
                 <p className="text-2xl text-brand-light font-medium mb-16">
                     Join thousands of successful entrepreneurs who have transformed their lives through VERC's microfinance support.
                 </p>
-                <div className="flex flex-wrap justify-center gap-6">
-                    <button className="px-12 py-6 bg-white text-brand-primary text-xl font-black rounded-3xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                        Check Eligibility
-                    </button>
-                    <button className="px-12 py-6 bg-transparent border-2 border-white/20 text-white text-xl font-bold rounded-3xl hover:bg-white/10 transition-all">
-                        Find Nearest Branch
-                    </button>
+                <div className="flex justify-center">
+                    <Link 
+                        href="/microfinance/process#eligibility"
+                        className="inline-flex items-center gap-3 px-12 py-6 bg-white text-brand-primary text-xl font-black rounded-3xl shadow-xl hover:scale-105 active:scale-95 transition-all"
+                    >
+                        <span>Check Eligibility</span>
+                        <ArrowRight size={22} />
+                    </Link>
                 </div>
             </motion.div>
         </div>

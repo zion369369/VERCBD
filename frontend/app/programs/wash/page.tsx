@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -27,6 +27,20 @@ import {
 
 export default function CombinedWashHealthPage() {
   const [activeTab, setActiveTab] = useState<"wash" | "health">("wash");
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const washSlides = [
+    { url: "/assets/wash_slide_1.jpg", fallback: "https://www.vercbd.org/images/watsan-1-thumb.jpg", title: "Community Safe Water Tap" },
+    { url: "/assets/wash_slide_2.jpg", fallback: "https://www.vercbd.org/images/watsan-2-thumb.jpg", title: "Sanitation & Hygiene Infrastructure" },
+    { url: "/assets/wash_slide_3.jpg", fallback: "https://www.vercbd.org/images/watsan-3-thumb.jpg", title: "CLTS Community Mobilization" }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % washSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [washSlides.length]);
 
   const washPillars = [
     {
@@ -91,15 +105,44 @@ export default function CombinedWashHealthPage() {
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
       
-      {/* 1. HERO HEADER */}
+      {/* 1. HERO HEADER WITH ANIMATED SLIDESHOW & BRIGHT VISIBILITY */}
       <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/assets/wash_clean_water.jpg" 
-            alt="Health, Clean Water & Sanitation" 
-            className="w-full h-full object-cover opacity-35 scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 0.8, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <img 
+                src={washSlides[currentSlide].url} 
+                alt={washSlides[currentSlide].title} 
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = washSlides[currentSlide].fallback;
+                }}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          {/* Reduced contrast gradient: bright, crisp photo visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-gray-950/35 to-gray-950/85"></div>
+
+          {/* Slide Indicator Dots */}
+          <div className="absolute bottom-8 right-8 z-20 flex gap-2">
+            {washSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i)}
+                className={`h-1.5 transition-all duration-300 rounded-full ${
+                  i === currentSlide ? "w-8 bg-brand-secondary" : "w-2 bg-white/40"
+                }`}
+                title={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="container-custom relative z-10 text-center max-w-4xl mx-auto space-y-6">
@@ -110,7 +153,7 @@ export default function CombinedWashHealthPage() {
             className="space-y-6"
           >
             {/* Breadcrumb */}
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <ChevronRight size={12} />
               <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
@@ -118,16 +161,16 @@ export default function CombinedWashHealthPage() {
               <span className="text-brand-secondary">Health & WaSH</span>
             </div>
 
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-xs font-black uppercase tracking-[0.25em] text-blue-400 border border-blue-500/30">
-              <Droplets size={14} className="text-blue-400" /> Integrated Social Health & Sanitation
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-[0.25em] text-blue-300 border border-blue-500/40">
+              <Droplets size={14} className="text-blue-300" /> Integrated Social Health & Sanitation
             </span>
 
-            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight">
+            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
               Health, Water & <br />
               <span className="text-brand-secondary">Sanitation.</span>
             </h1>
 
-            <p className="text-lg lg:text-2xl text-gray-300 font-medium max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg lg:text-2xl text-gray-100 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               Pioneers of Community-Led Total Sanitation (CLTS), delivering arsenic-safe piped drinking water, and operating subsidized Mother & Child hospitals across Bangladesh.
             </p>
 

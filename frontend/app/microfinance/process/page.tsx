@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   UserPlus, 
@@ -14,7 +15,8 @@ import {
   Users,
   Target,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  MapPin
 } from "lucide-react";
 import Image from "next/image";
 
@@ -102,7 +104,7 @@ export default function MicrofinanceProcessPage() {
       </section>
 
       {/* 2. ELIGIBILITY */}
-      <section className="py-32 bg-white">
+      <section id="eligibility" className="py-32 bg-white scroll-mt-24">
         <div className="container-custom">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
                 <motion.div {...fadeIn}>
@@ -198,13 +200,15 @@ export default function MicrofinanceProcessPage() {
                     <p className="text-xl text-gray-600 font-medium leading-relaxed">
                         Need more information about our process or specific loan products? Our team is available at every branch office to guide you.
                     </p>
-                    <div className="pt-8 flex flex-wrap justify-center lg:justify-start gap-6">
-                        <button className="px-10 py-5 bg-brand-primary text-white font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                            Talk to an Officer
-                        </button>
-                        <button className="px-10 py-5 bg-white text-brand-primary border border-brand-primary/10 font-bold rounded-2xl hover:bg-brand-primary/5 transition-all">
-                            Find Branch Network
-                        </button>
+                    <div className="pt-8 flex justify-center lg:justify-start">
+                        <Link 
+                            href="/resources/branches"
+                            className="inline-flex items-center gap-3 px-10 py-5 bg-brand-primary text-white font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all"
+                        >
+                            <MapPin size={20} />
+                            <span>Find Branch Network</span>
+                            <ArrowRight size={18} />
+                        </Link>
                     </div>
                 </div>
                 <div className="flex-1 w-full relative">
