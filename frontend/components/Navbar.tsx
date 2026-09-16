@@ -53,7 +53,7 @@ const Navbar = () => {
       href: "/programs/education",
       children: [
         { name: "Life Skill Education", href: "/programs/education" },
-        { name: "Health, Water & Sanitation", href: "/programs/wash" },
+        { name: "WASH", href: "/programs/wash" },
         { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
         { name: "Capacity Building", href: "/programs/capacity" },
       ],

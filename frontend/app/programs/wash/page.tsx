@@ -158,7 +158,7 @@ export default function CombinedWashHealthPage() {
               <ChevronRight size={12} />
               <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
               <ChevronRight size={12} />
-              <span className="text-brand-secondary">Health & WaSH</span>
+              <span className="text-brand-secondary">WASH</span>
             </div>
 
             <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-[0.25em] text-blue-300 border border-blue-500/40">
@@ -166,8 +166,8 @@ export default function CombinedWashHealthPage() {
             </span>
 
             <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
-              Health, Water & <br />
-              <span className="text-brand-secondary">Sanitation.</span>
+              Water, Sanitation & <br />
+              <span className="text-brand-secondary">Hygiene (WASH).</span>
             </h1>
 
             <p className="text-lg lg:text-2xl text-gray-100 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
