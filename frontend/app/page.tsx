@@ -296,13 +296,12 @@ export default function Home() {
       <section className="py-32 relative bg-gray-50">
         <div className="container-custom">
             <div className="bg-white rounded-[56px] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch border border-gray-100">
-                <div className="flex-1 relative h-[360px] lg:h-auto">
+                <div className="flex-1 relative h-[360px] lg:h-auto min-h-[380px]">
                     <img 
-                        src="/assets/microfinance_woman_hero.png" 
+                        src="/assets/community_success_hero.png" 
                         alt="Community Success" 
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/40 to-transparent"></div>
                 </div>
                 <div className="flex-1 p-10 lg:p-20 space-y-8">
                     <div className="flex items-center gap-3 text-brand-secondary">
