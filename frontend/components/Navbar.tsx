@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, Globe, ExternalLink } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -177,6 +177,15 @@ const Navbar = () => {
               <Link href="/donate" className="btn-primary shadow-lg shadow-brand-primary/20">
                 {isHomePage ? t("nav_donate") : "Donate"}
               </Link>
+              <a
+                href="https://bdjobs.com/h/company-insight/28456"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2 rounded-md font-bold text-sm border-2 border-brand-primary/25 text-brand-primary hover:bg-brand-primary hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm hover:shadow-md"
+              >
+                <span>Career</span>
+                <ExternalLink size={13} />
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
@@ -221,13 +230,25 @@ const Navbar = () => {
                 )}
               </div>
             ))}
-            <Link
-              href="/donate"
-              onClick={() => setIsOpen(false)}
-              className="block text-center btn-primary mt-4"
-            >
-              {isHomePage ? t("nav_donate") : "Donate"}
-            </Link>
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <Link
+                href="/donate"
+                onClick={() => setIsOpen(false)}
+                className="block text-center btn-primary"
+              >
+                {isHomePage ? t("nav_donate") : "Donate"}
+              </Link>
+              <a
+                href="https://bdjobs.com/h/company-insight/28456"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-md font-bold text-sm border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all text-center"
+              >
+                <span>Career</span>
+                <ExternalLink size={13} />
+              </a>
+            </div>
           </div>
         </div>
       )}
