@@ -12,6 +12,7 @@ export interface PermissionModule {
 
 export const ALL_ADMIN_MODULES: PermissionModule[] = [
   { id: "overview", name: "Overview", path: "/admin", description: "Executive dashboard and key indicators.", category: "Core Operations" },
+  { id: "about", name: "About Us CMS", path: "/admin/about", description: "Certifications, annual reports, awards, organogram, and core values.", category: "Programs & Impact" },
   { id: "donations", name: "Donations", path: "/admin/donations", description: "Grants, donations, and wire receipts.", category: "Core Operations" },
   { id: "programs", name: "Programs", path: "/admin/programs", description: "Core humanitarian initiatives.", category: "Programs & Impact" },
   { id: "impact", name: "Impact", path: "/admin/impact", description: "Community reach and progress.", category: "Programs & Impact" },
@@ -91,7 +92,7 @@ const defaultRoles: Role[] = [
     name: "Program Director",
     description: "Oversees humanitarian programs, field impact, success stories, field branches, and documentary gallery.",
     isSystem: false,
-    allowedPaths: ["/admin", "/admin/programs", "/admin/impact", "/admin/news", "/admin/gallery", "/admin/team", "/admin/branches", "/admin/messages"]
+    allowedPaths: ["/admin", "/admin/about", "/admin/programs", "/admin/impact", "/admin/news", "/admin/gallery", "/admin/team", "/admin/branches", "/admin/messages"]
   },
   {
     id: "role-finance",

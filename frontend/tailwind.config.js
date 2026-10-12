@@ -18,8 +18,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["'Valley Sans'", 'Inter', '-apple-system', 'sans-serif'],
-        valley: ["'Valley Sans'", 'sans-serif'],
+        sans: ["'Google Sans'", "'Product Sans'", 'Inter', '-apple-system', 'sans-serif'],
+        display: ["'Google Sans Display'", "'Google Sans'", 'sans-serif'],
+        valley: ["'Google Sans'", "'Valley Sans'", 'sans-serif'],
       },
     },
   },

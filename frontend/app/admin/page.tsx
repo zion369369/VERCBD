@@ -13,26 +13,19 @@ import {
   MessageSquare,
   KeyRound,
   Activity,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  CreditCard,
+  Sparkles,
+  ExternalLink,
+  BarChart2
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 
-export default function AdminDashboardPage() {
-  const { 
-    theme, 
-    primaryColor, 
-    dashboardMetrics, 
-    programs, 
-    messages, 
-    donations,
-    branches 
-  } = useContent();
-
-  const { language, t } = useLanguage();
-  const { hasPermission } = useAuth();
-
+// Isolated Live Clock component to avoid triggering parent dashboard re-renders every 1,000ms
+const LiveDhakaClock = React.memo(function LiveDhakaClock() {
   const [dhakaTime, setDhakaTime] = useState("");
 
   useEffect(() => {
@@ -57,6 +50,28 @@ export default function AdminDashboardPage() {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  return (
+    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
+      <Clock size={14} />
+      <span>{dhakaTime || "Dhaka, Bangladesh"}</span>
+    </div>
+  );
+});
+
+export default function AdminDashboardPage() {
+  const { 
+    theme, 
+    primaryColor, 
+    dashboardMetrics, 
+    programs, 
+    messages, 
+    donations,
+    branches 
+  } = useContent();
+
+  const { language, t } = useLanguage();
+  const { hasPermission } = useAuth();
 
   // Clean SVG Circular Donut Ring for KPI Cards
   const DonutRing = ({ percentage, color }: { percentage: number; color: string }) => {
@@ -183,10 +198,7 @@ export default function AdminDashboardPage() {
       }`}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
-              <Clock size={14} />
-              <span>{dhakaTime || "Dhaka, Bangladesh"}</span>
-            </div>
+            <LiveDhakaClock />
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               {language === "bn" ? "ভার্ক অপারেশন সেন্টার" : "VERC Operations Dashboard"}
             </h1>
@@ -297,6 +309,92 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <DonutRing percentage={85} color="#F59E0B" />
+        </div>
+      </div>
+
+      {/* 2.5 Quick CMS Hub: Direct Page-Wise & Section-Wise Management */}
+      <div className={`p-6 rounded-3xl border transition-all ${
+        theme === "dark" ? "bg-[#181824] border-white/5 shadow-xs" : "bg-white border-gray-200/80 shadow-xs"
+      }`}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-3 border-b border-gray-100 dark:border-white/5">
+          <div>
+            <h2 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+              <Activity size={16} style={{ color: primaryColor }} />
+              <span>Page-Wise & Section-Wise Content Manager</span>
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              Instantly create, edit, upload, or delete content shown across every page of the public site.
+            </p>
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+            Live Sync Active
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <Link
+            href="/admin/about"
+            className={`p-4 rounded-2xl border transition-all group hover:scale-[1.02] ${
+              theme === "dark" ? "bg-white/5 border-white/5 hover:bg-white/10" : "bg-gray-50/80 border-gray-200/60 hover:bg-white hover:shadow-xs"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <ShieldCheck size={16} />
+              </span>
+              <ArrowRight size={14} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="text-xs font-bold text-gray-900 dark:text-white">About Us CMS Hub</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Legal, Reports, Awards & Organogram</p>
+          </Link>
+
+          <Link
+            href="/admin/microfinance"
+            className={`p-4 rounded-2xl border transition-all group hover:scale-[1.02] ${
+              theme === "dark" ? "bg-white/5 border-white/5 hover:bg-white/10" : "bg-gray-50/80 border-gray-200/60 hover:bg-white hover:shadow-xs"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <CreditCard size={16} />
+              </span>
+              <ArrowRight size={14} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Microfinance & Credit</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Loan Products & 4-Step Process</p>
+          </Link>
+
+          <Link
+            href="/admin/programs"
+            className={`p-4 rounded-2xl border transition-all group hover:scale-[1.02] ${
+              theme === "dark" ? "bg-white/5 border-white/5 hover:bg-white/10" : "bg-gray-50/80 border-gray-200/60 hover:bg-white hover:shadow-xs"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                <BookOpen size={16} />
+              </span>
+              <ArrowRight size={14} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Thematic Programs</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Education, WaSH, Health & Livelihood</p>
+          </Link>
+
+          <Link
+            href="/admin/hero"
+            className={`p-4 rounded-2xl border transition-all group hover:scale-[1.02] ${
+              theme === "dark" ? "bg-white/5 border-white/5 hover:bg-white/10" : "bg-gray-50/80 border-gray-200/60 hover:bg-white hover:shadow-xs"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <Sparkles size={16} />
+              </span>
+              <ArrowRight size={14} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="text-xs font-bold text-gray-900 dark:text-white">Homepage Banners</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Carousel Slides, CTAs & Appeals</p>
+          </Link>
         </div>
       </div>
 

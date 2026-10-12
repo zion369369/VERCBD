@@ -1,0 +1,43 @@
+# ==========================================================================
+#  /home/vercbd/public_html/.htaccess
+# ==========================================================================
+#  IMPORTANT
+#  cPanel writes a "CLOUDLINUX PASSENGER CONFIGURATION" block into this file
+#  when you create the Node.js app. It looks like this:
+#
+#    # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+#    PassengerAppRoot "/home/vercbd/website"
+#    PassengerBaseURI "/"
+#    PassengerNodejs "/home/vercbd/nodevenv/website/20/bin/node"
+#    PassengerAppType node
+#    PassengerStartupFile server.js
+#    # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+#
+#  KEEP THAT BLOCK. Paste the rules below UNDERNEATH it.
+#  If the block is not in the file, the Node.js app is not attached to this
+#  domain — fix that in cPanel > Setup Node.js App before anything else.
+#
+#  NEVER put a "RewriteRule ... [P]" proxy rule in this file. mod_proxy is not
+#  available on this account, so every proxied request returns
+#  "503 Service Unavailable" — that is exactly what broke the site.
+# ==========================================================================
+
+# Do not let a leftover index.html / index.php from the old site shadow the
+# Node.js app on the homepage.
+DirectoryIndex disabled
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS.
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Long-lived caching for the hashed build output, if you keep a copy of
+# .next/static in public_html. Harmless if you do not.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|ttf|otf|png|jpe?g|gif|webp|avif|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

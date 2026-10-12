@@ -4,40 +4,56 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Mail, Linkedin, Globe, Users, Briefcase, Award, ShieldCheck, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { useContent } from "@/context/ContentContext";
 
 export default function StaffPage() {
-  const leadership = [
+  const { teamMembers } = useContent();
+
+  const fallbackLeadership = [
     { 
+      id: "lead-1",
       name: "Yakub Hossain", 
       role: "Executive Director", 
-      image: "https://www.vercbd.org/images/yakub.jpg",
-      tier: "top"
+      imageUrl: "https://www.vercbd.org/images/yakub.jpg",
+      tier: "top",
+      bio: ""
     },
     { 
+      id: "lead-2",
       name: "Md. Masud Hassan", 
       role: "Deputy Executive Director", 
-      image: "https://www.vercbd.org/images/Masud.jpg",
-      tier: "top"
+      imageUrl: "https://www.vercbd.org/images/Masud.jpg",
+      tier: "top",
+      bio: ""
     }
   ];
 
-  const directors = [
+  const fallbackDirectors = [
     { 
+      id: "dir-1",
       name: "Ranada Prasad Saha", 
       role: "Director, Microfinance", 
-      image: "https://www.vercbd.org/images/Ranada.jpg" 
+      imageUrl: "https://www.vercbd.org/images/Ranada.jpg" 
     },
     { 
+      id: "dir-2",
       name: "Mustafizur Rashid Mridha", 
       role: "Director, HR & Admin", 
-      image: "https://www.vercbd.org/images/rashid.jpg" 
+      imageUrl: "https://www.vercbd.org/images/rashid.jpg" 
     },
     { 
+      id: "dir-3",
       name: "Md. Masud Royhan", 
       role: "Director, Finance", 
-      image: "https://www.vercbd.org/images/Royhan5.jpg" 
+      imageUrl: "https://www.vercbd.org/images/Royhan5.jpg" 
     }
   ];
+
+  const dynamicLeadership = (teamMembers || []).filter(m => m.tier === "Executive" || m.department === "Executive Leadership");
+  const dynamicDirectors = (teamMembers || []).filter(m => m.tier === "Director" || (m.tier !== "Executive" && (m.role.toLowerCase().includes("director") || m.department.toLowerCase().includes("director"))));
+
+  const leadership = dynamicLeadership.length > 0 ? dynamicLeadership : fallbackLeadership;
+  const directors = dynamicDirectors.length > 0 ? dynamicDirectors : fallbackDirectors;
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -77,7 +93,7 @@ export default function StaffPage() {
                         className="group relative flex flex-col lg:flex-row items-center gap-10 bg-white p-10 rounded-[64px] border border-gray-100 shadow-[0_30px_60px_rgba(0,0,0,0.04)] hover:shadow-2xl transition-all duration-700"
                     >
                         <div className="relative w-48 h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden flex-shrink-0 shadow-2xl group-hover:scale-105 transition-transform duration-700 border-4 border-gray-50">
-                            <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                            <img src={(member as any).imageUrl || (member as any).image || "/assets/education_official.jpg"} alt={member.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 text-center lg:text-left space-y-4">
                             <h3 className="text-3xl font-black text-gray-900 tracking-tight">{member.name}</h3>
@@ -101,13 +117,13 @@ export default function StaffPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {directors.map((member, i) => (
                     <motion.div 
-                        key={i}
+                        key={member.id || i}
                         {...fadeIn}
                         transition={{ delay: i * 0.1 }}
                         className="group bg-white p-8 rounded-[56px] border border-gray-100 hover:border-brand-primary/20 hover:shadow-xl transition-all duration-500"
                     >
                         <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden mb-8 shadow-md group-hover:scale-105 transition-transform duration-700 border-2 border-gray-50">
-                            <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                            <img src={(member as any).imageUrl || (member as any).image || "/assets/about_official.jpg"} alt={member.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="space-y-2 text-center">
                             <h4 className="text-xl font-black text-gray-900 tracking-tight">{member.name}</h4>

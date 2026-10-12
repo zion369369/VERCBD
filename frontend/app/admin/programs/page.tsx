@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Search, Filter, BookOpen, Check, Layers, ArrowUpRight, X } from "lucide-react";
 import { useContent, ProgramItem } from "@/context/ContentContext";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function AdminProgramsPage() {
   const { programs, addProgram, updateProgram, deleteProgram, primaryColor, theme } = useContent();
@@ -304,18 +305,12 @@ export default function AdminProgramsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1.5">Program Overview / Summary</label>
-                <textarea
-                  rows={3}
-                  required
+                <RichTextEditor
+                  label="Program Details & Overview"
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe program goals, key initiatives, and impact..."
-                  className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                    theme === "dark"
-                      ? "bg-[#14141E] border-white/10 text-white"
-                      : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                  }`}
+                  onChange={(html) => setFormData({ ...formData, description: html })}
+                  placeholder="Describe program goals, key initiatives, and community impact..."
+                  minHeight="160px"
                 />
               </div>
 

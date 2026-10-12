@@ -7,11 +7,12 @@ import Image from "next/image";
 import Link from "next/link";
 import aboutHero from "@/app/assets/about_official.jpg";
 import { useContent } from "@/context/ContentContext";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function AboutPage() {
-  const { teamMembers, impactStats } = useContent();
+  const { teamMembers, impactStats, aboutContent } = useContent();
 
-  const coreValues = [
+  const fallbackCoreValues = [
     { title: "Participation & Ownership", desc: "Ensuring community involvement in every stage of development.", color: "bg-blue-50" },
     { title: "Respect", desc: "Upholding the dignity and rights of every individual we serve.", color: "bg-green-50" },
     { title: "Environment Friendliness", desc: "Integrating sustainable practices into all our projects.", color: "bg-emerald-50" },
@@ -20,6 +21,10 @@ export default function AboutPage() {
     { title: "Good Governance", desc: "Maintaining transparency, accountability, and ethical standards.", color: "bg-slate-50" },
     { title: "Equality", desc: "Providing equal opportunities for marginalized segments of society.", color: "bg-rose-50" },
   ];
+
+  const coreValues = (aboutContent?.coreValues && aboutContent.coreValues.length > 0)
+    ? aboutContent.coreValues
+    : fallbackCoreValues;
 
   const primaryStats = impactStats.slice(0, 4);
 
@@ -113,7 +118,9 @@ export default function AboutPage() {
                         <div className="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-colors">
                             <TrendingUp size={24} />
                         </div>
-                        <h4 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">{stat.value}</h4>
+                        <h4 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">
+                          <AnimatedCounter value={stat.value} duration={1.2} />
+                        </h4>
                         <p className="text-[12px] font-black uppercase tracking-widest text-gray-400">{stat.label}</p>
                     </motion.div>
                 ))}

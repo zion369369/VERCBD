@@ -21,9 +21,21 @@ import {
   BadgeCheck
 } from "lucide-react";
 import Link from "next/link";
+import { useContent } from "@/context/ContentContext";
 
 export default function LegalAffiliationPage() {
-  const certifications = [
+  const { legalCertifications } = useContent();
+
+  const getCertIcon = (cat: string) => {
+    switch (cat) {
+      case "Statutory": return <Building2 className="text-blue-600" size={24} />;
+      case "Microfinance": return <Landmark className="text-indigo-600" size={24} />;
+      case "Tax & Compliance": return <FileCheck className="text-amber-600" size={24} />;
+      case "Audit & Governance": return <ShieldCheck className="text-emerald-600" size={24} />;
+      default: return <FileText className="text-brand-primary" size={24} />;
+    }
+  };
+  const defaultCertifications = [
     { 
       title: "NGO Affairs Bureau Registration", 
       authority: "Prime Minister's Office, Government of Bangladesh",
@@ -75,6 +87,10 @@ export default function LegalAffiliationPage() {
       link: "https://www.vercbd.org/images/tin.pdf"
     },
   ];
+
+  const certificationsToDisplay = (legalCertifications && legalCertifications.length > 0) 
+    ? legalCertifications 
+    : defaultCertifications;
 
   const institutionalPolicies = [
     { 
@@ -218,9 +234,9 @@ export default function LegalAffiliationPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {certifications.map((cert, i) => (
+            {certificationsToDisplay.map((cert, i) => (
               <motion.div 
-                key={i}
+                key={cert.id || i}
                 {...fadeIn}
                 transition={{ delay: i * 0.08 }}
                 className="bg-white rounded-2xl border border-gray-200 p-7 shadow-sm hover:shadow-md hover:border-brand-primary/30 transition-all flex flex-col justify-between"
@@ -228,7 +244,7 @@ export default function LegalAffiliationPage() {
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center">
-                      {cert.icon}
+                      {(cert as any).icon || getCertIcon((cert as any).category || "Statutory")}
                     </div>
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                       <Check size={12} strokeWidth={3} />

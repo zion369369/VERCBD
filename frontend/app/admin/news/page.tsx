@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Calendar, Newspaper, Heart, Search, Filter, CheckCircle2, X } from "lucide-react";
 import { useContent, NewsItem, SuccessStory } from "@/context/ContentContext";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function AdminNewsPage() {
   const { news, stories, addNews, updateNews, deleteNews, addStory, updateStory, deleteStory, primaryColor, theme } = useContent();
@@ -527,18 +528,12 @@ export default function AdminNewsPage() {
               />
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1.5">Full Story Narrative</label>
-                <textarea
-                  rows={4}
-                  required
+                <RichTextEditor
+                  label="Full Story Narrative & Context"
                   value={storyForm.story}
-                  onChange={(e) => setStoryForm({ ...storyForm, story: e.target.value })}
+                  onChange={(html) => setStoryForm({ ...storyForm, story: html })}
                   placeholder="Detail the challenges faced, the VERC intervention, and the long-term impact..."
-                  className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                    theme === "dark"
-                      ? "bg-[#14141E] border-white/10 text-white"
-                      : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                  }`}
+                  minHeight="180px"
                 />
               </div>
 

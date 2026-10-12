@@ -81,6 +81,7 @@ const Navbar = () => {
       children: [
         { name: "Photo & Video Gallery", href: "/resources/gallery" },
         { name: "Branch Network", href: "/resources/branches" },
+        { name: "Careers & Openings", href: "/careers" },
         { name: "Contact Us", href: "/contact" },
       ],
     },
@@ -89,29 +90,30 @@ const Navbar = () => {
   return (
     <nav className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100 h-24 flex items-center">
       <div className="container-custom w-full">
-        <div className="flex items-center h-full">
+        <div className="flex items-center justify-between h-full w-full gap-2 sm:gap-4">
           {/* Logo - Left aligned slot */}
-          <div className="flex-1 flex justify-start">
-            <Link href="/" className="flex items-center gap-2">
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex items-center py-1 flex-shrink-0">
               <img
                 src={siteSettings.logoUrl || "/assets/logo.png"}
                 alt="VERC Logo"
-                className="h-16 w-auto object-contain"
+                className="h-14 sm:h-16 md:h-18 w-auto object-contain flex-shrink-0"
+                style={{ maxHeight: "68px", width: "auto" }}
               />
             </Link>
           </div>
 
           {/* Desktop Nav - Centered slot */}
-          <div className="hidden lg:flex justify-center">
-            <div className="flex items-center space-x-6 xl:space-x-8">
+          <div className="hidden lg:flex items-center justify-center flex-1 px-2 xl:px-4">
+            <div className="flex items-center space-x-3 xl:space-x-6">
               {navigation.map((item) => (
                 <div key={item.name} className="relative group">
                   <Link
                     href={item.href}
-                    className="nav-link flex items-center gap-1 py-4 font-bold text-gray-800 hover:text-brand-primary"
+                    className="nav-link flex items-center gap-1 py-4 text-[13.5px] xl:text-[15px] font-bold text-gray-800 hover:text-brand-primary whitespace-nowrap"
                   >
                     {item.name}
-                    {item.children && <ChevronDown size={14} />}
+                    {item.children && <ChevronDown size={14} className="opacity-70 group-hover:opacity-100 transition-opacity" />}
                   </Link>
                   {item.children && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-64 bg-white border border-gray-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-b-2xl overflow-hidden">
@@ -132,16 +134,16 @@ const Navbar = () => {
           </div>
 
           {/* Utility Nav - Right aligned slot */}
-          <div className="flex-1 flex justify-end items-center space-x-3 xl:space-x-5">
+          <div className="flex-shrink-0 flex items-center space-x-2 xl:space-x-3">
             {/* BRAC-style Dropdown Language Switcher (Exclusively visible on Home page) */}
             {isHomePage && (
               <div className="relative" ref={langDropdownRef}>
                 <button
                   onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-gray-800 hover:text-brand-primary transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 py-2 text-sm font-semibold text-gray-800 hover:text-brand-primary transition-colors cursor-pointer"
                 >
                   <span>{language === "en" ? "English" : "বাংলা"}</span>
-                  {isLangDropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {isLangDropdownOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                 </button>
 
                 {isLangDropdownOpen && (
@@ -173,15 +175,18 @@ const Navbar = () => {
               </div>
             )}
 
-            <div className="hidden lg:flex items-center space-x-3">
-              <Link href="/donate" className="btn-primary shadow-lg shadow-brand-primary/20">
+            <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
+              <Link
+                href="/donate"
+                className="btn-primary shadow-md shadow-brand-primary/20 text-xs xl:text-sm px-4 xl:px-6 py-2 xl:py-2.5 whitespace-nowrap"
+              >
                 {isHomePage ? t("nav_donate") : "Donate"}
               </Link>
               <a
                 href="https://bdjobs.com/h/company-insight/28456"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2 rounded-md font-bold text-sm border-2 border-brand-primary/25 text-brand-primary hover:bg-brand-primary hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm hover:shadow-md"
+                className="px-3 xl:px-4 py-1.5 xl:py-2 rounded-md font-bold text-xs xl:text-sm border-2 border-brand-primary/25 text-brand-primary hover:bg-brand-primary hover:text-white transition-all inline-flex items-center gap-1.5 shadow-xs hover:shadow-md whitespace-nowrap"
               >
                 <span>Career</span>
                 <ExternalLink size={13} />

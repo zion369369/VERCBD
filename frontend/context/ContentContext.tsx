@@ -12,6 +12,13 @@ export interface HeroSlide {
   primaryBtnLink: string;
   secondaryBtnText: string;
   secondaryBtnLink: string;
+  enabled?: boolean;
+  categoryBadge?: string;
+  title_bn?: string;
+  highlightText_bn?: string;
+  subtitle_bn?: string;
+  primaryBtnText_bn?: string;
+  secondaryBtnText_bn?: string;
 }
 
 export interface ImpactStat {
@@ -83,6 +90,85 @@ export interface TeamMember {
   bio: string;
   imageUrl: string;
   phone?: string;
+  tier?: "Executive" | "Director" | "Senior" | "Staff";
+  order?: number;
+}
+
+export interface LegalCertification {
+  id: string;
+  title: string;
+  authority: string;
+  regNo: string;
+  desc: string;
+  status: string;
+  type: string;
+  link: string;
+  category?: string;
+}
+
+export interface AnnualReportItem {
+  id: string;
+  year: string;
+  title: string;
+  desc: string;
+  link: string;
+  highlight?: boolean;
+  fileSize?: string;
+}
+
+export interface AwardItem {
+  id: string;
+  year: string;
+  title: string;
+  organization: string;
+  category: string;
+  desc: string;
+  badge: string;
+  badgeColor?: string;
+  isHonor?: boolean;
+}
+
+export interface OrganogramNode {
+  id: string;
+  title: string;
+  subtitle?: string;
+  category?: "General Body" | "Executive Committee" | "Senior Management" | "Divisions" | "Field Operations" | string;
+  department?: string;
+  level?: number;
+  order?: number;
+  isSpecial?: boolean;
+}
+
+export interface CoreValueItem {
+  id: string;
+  title: string;
+  desc: string;
+  color: string;
+}
+
+export interface AboutContent {
+  vision: string;
+  mission: string;
+  visionText?: string;
+  missionText?: string;
+  coreValues: CoreValueItem[];
+  organogramPdfLink: string;
+  organogramPdfUrl?: string;
+}
+
+export interface MicrofinanceProcessStep {
+  id: string;
+  stepNumber: number;
+  title: string;
+  desc: string;
+  duration?: string;
+  requirements?: string[];
+}
+
+export interface MicrofinanceProcessContent {
+  steps: MicrofinanceProcessStep[];
+  eligibilityCriteria: string[];
+  requiredDocuments: string[];
 }
 
 export interface PartnerItem {
@@ -182,6 +268,7 @@ export interface SiteSettings {
   donorsCount: number;
   registrationNumber?: string;
   ngoAffairsBureauReg?: string;
+  heroBannerEnabled?: boolean;
 }
 
 export interface CharityDashboardMetric {
@@ -208,7 +295,51 @@ export interface CharityDashboardMetric {
   }>;
 }
 
+export interface JobOpening {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: "Full-Time" | "Part-Time" | "Contract" | "Internship";
+  deadline: string;
+  salary?: string;
+  experience?: string;
+  description: string;
+  requirements: string[];
+  responsibilities?: string[];
+  status: "Active" | "Closed" | "Draft";
+  createdAt: string;
+}
+
+export interface JobApplication {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  candidateName: string;
+  email: string;
+  phone: string;
+  coverLetter?: string;
+  resumeUrl: string; // Base64 PDF Data URL or URL
+  resumeFileName: string;
+  resumeFileSize?: string;
+  appliedAt: string;
+  status: "Pending" | "Reviewed" | "Shortlisted" | "Rejected";
+  notes?: string;
+}
+
 interface ContentContextType {
+  jobOpenings: JobOpening[];
+  jobApplications: JobApplication[];
+  departments: string[];
+  addDepartment: (name: string) => void;
+  deleteDepartment: (name: string) => void;
+  addJobOpening: (job: Omit<JobOpening, "id" | "createdAt">) => void;
+  updateJobOpening: (id: string, job: Partial<JobOpening>) => void;
+  deleteJobOpening: (id: string) => void;
+  submitJobApplication: (app: Omit<JobApplication, "id" | "appliedAt" | "status">) => Promise<boolean>;
+  updateApplicationStatus: (id: string, status: JobApplication["status"]) => void;
+  deleteJobApplication: (id: string) => void;
+
   heroSlides: HeroSlide[];
   impactStats: ImpactStat[];
   programs: ProgramItem[];
@@ -286,9 +417,35 @@ interface ContentContextType {
   updateCampaign: (id: string, campaign: Partial<CharityCampaign>) => void;
   deleteCampaign: (id: string) => void;
 
+  legalCertifications: LegalCertification[];
+  annualReports: AnnualReportItem[];
+  awards: AwardItem[];
+  organogramNodes: OrganogramNode[];
+  aboutContent: AboutContent;
+  microfinanceProcess: MicrofinanceProcessContent;
+
   updateSiteSettings: (settings: Partial<SiteSettings>) => void;
   updateDashboardMetrics: (metrics: Partial<CharityDashboardMetric>) => void;
   resetToDefaults: () => void;
+
+  addCertification: (item: Omit<LegalCertification, "id">) => void;
+  updateCertification: (id: string, item: Partial<LegalCertification>) => void;
+  deleteCertification: (id: string) => void;
+
+  addAnnualReport: (item: Omit<AnnualReportItem, "id">) => void;
+  updateAnnualReport: (id: string, item: Partial<AnnualReportItem>) => void;
+  deleteAnnualReport: (id: string) => void;
+
+  addAward: (item: Omit<AwardItem, "id">) => void;
+  updateAward: (id: string, item: Partial<AwardItem>) => void;
+  deleteAward: (id: string) => void;
+
+  addOrganogramNode: (item: Omit<OrganogramNode, "id">) => void;
+  updateOrganogramNode: (id: string, item: Partial<OrganogramNode>) => void;
+  deleteOrganogramNode: (id: string) => void;
+
+  updateAboutContent: (content: Partial<AboutContent>) => void;
+  updateMicrofinanceProcess: (content: Partial<MicrofinanceProcessContent>) => void;
 }
 
 const defaultHeroSlides: HeroSlide[] = [
@@ -301,7 +458,9 @@ const defaultHeroSlides: HeroSlide[] = [
     primaryBtnText: "Our Story",
     primaryBtnLink: "/about",
     secondaryBtnText: "Partner with Us",
-    secondaryBtnLink: "/contact"
+    secondaryBtnLink: "/contact",
+    enabled: true,
+    categoryBadge: "Sustainable Development"
   },
   {
     id: "hero-2",
@@ -312,7 +471,9 @@ const defaultHeroSlides: HeroSlide[] = [
     primaryBtnText: "Explore WaSH",
     primaryBtnLink: "/programs/wash",
     secondaryBtnText: "Annual Reports",
-    secondaryBtnLink: "/about"
+    secondaryBtnLink: "/about",
+    enabled: true,
+    categoryBadge: "Global WaSH Revolution"
   },
   {
     id: "hero-3",
@@ -323,7 +484,9 @@ const defaultHeroSlides: HeroSlide[] = [
     primaryBtnText: "Education Programs",
     primaryBtnLink: "/programs/education",
     secondaryBtnText: "Donate Now",
-    secondaryBtnLink: "/donate"
+    secondaryBtnLink: "/donate",
+    enabled: true,
+    categoryBadge: "Grassroots Education"
   }
 ];
 
@@ -701,7 +864,8 @@ const defaultTeamMembers: TeamMember[] = [
     department: "Executive Leadership",
     bio: "Steering VERC's strategic humanitarian roadmap, global partnerships, and community empowerment models since decades.",
     imageUrl: "/assets/education_official.jpg",
-    phone: "+880 2 7745041"
+    phone: "+880 2 7745041",
+    tier: "Executive"
   },
   {
     id: "team-2",
@@ -711,7 +875,8 @@ const defaultTeamMembers: TeamMember[] = [
     department: "Operations & Governance",
     bio: "Overseeing nationwide field programs, institutional capacity building, and international donor compliance.",
     imageUrl: "/assets/education_official_2.jpg",
-    phone: "+880 2 7745042"
+    phone: "+880 2 7745042",
+    tier: "Executive"
   },
   {
     id: "team-3",
@@ -721,7 +886,8 @@ const defaultTeamMembers: TeamMember[] = [
     department: "Microfinance",
     bio: "Managing 136 branch operations and climate adaptation funds empowering over 112,000 active grassroots members.",
     imageUrl: "/assets/about_official.jpg",
-    phone: "+880 2 7745043"
+    phone: "+880 2 7745043",
+    tier: "Director"
   },
   {
     id: "team-4",
@@ -731,7 +897,8 @@ const defaultTeamMembers: TeamMember[] = [
     department: "Administration",
     bio: "Directing organizational human resources, staff welfare, field logistics, and institutional governance.",
     imageUrl: "/assets/education_1.jpg",
-    phone: "+880 2 7745044"
+    phone: "+880 2 7745044",
+    tier: "Director"
   },
   {
     id: "team-5",
@@ -741,7 +908,8 @@ const defaultTeamMembers: TeamMember[] = [
     department: "Finance & Audit",
     bio: "Ensuring top-tier fiscal integrity, external statutory audits, and transparent donor grant reporting.",
     imageUrl: "/assets/education_2.jpg",
-    phone: "+880 2 7745045"
+    phone: "+880 2 7745045",
+    tier: "Director"
   }
 ];
 
@@ -805,7 +973,8 @@ const defaultSiteSettings: SiteSettings = {
   totalDonationAmount: "৳ 1,620,000,000",
   donorsCount: 420,
   registrationNumber: "FD/R-348",
-  ngoAffairsBureauReg: "NGOAB-00348-1989"
+  ngoAffairsBureauReg: "NGOAB-00348-1989",
+  heroBannerEnabled: true
 };
 
 const defaultDashboardMetrics: CharityDashboardMetric = {
@@ -842,6 +1011,427 @@ const defaultDashboardMetrics: CharityDashboardMetric = {
   ]
 };
 
+const defaultLegalCertifications: LegalCertification[] = [
+  { 
+    id: "cert-1",
+    title: "NGO Affairs Bureau Registration", 
+    authority: "Prime Minister's Office, Government of Bangladesh",
+    regNo: "NGOAB Reg. No. 001", 
+    desc: "Mandatory statutory registration permitting the receipt and utilization of foreign grants under the Foreign Donations Regulation Act.",
+    status: "Active & Verified",
+    type: "Official PDF Document",
+    link: "https://www.vercbd.org/images/NGOAB.pdf",
+    category: "Statutory"
+  },
+  { 
+    id: "cert-2",
+    title: "Social Welfare Registration Certificate", 
+    authority: "Department of Social Services (DSS), GoB",
+    regNo: "Reg. No. SW-1981 / Savar", 
+    desc: "Certified under the Voluntary Social Welfare Agencies Ordinance for comprehensive grassroots development and community welfare.",
+    status: "Active & Verified",
+    type: "Official PDF Document",
+    link: "https://www.vercbd.org/images/Social%20Welfare.pdf",
+    category: "Statutory"
+  },
+  { 
+    id: "cert-3",
+    title: "Microcredit Regulatory Authority (MRA)", 
+    authority: "Microcredit Regulatory Authority (MRA), Bangladesh",
+    regNo: "MRA Certified License", 
+    desc: "Statutory authorization to deliver inclusive microfinance, revolving loan funds, and financial literacy initiatives nationwide.",
+    status: "Licensed Institution",
+    type: "Official Certified Scan",
+    link: "https://www.vercbd.org/images/Microcredit%20Rrgulatory%20Authority%20certificate%20latest.jpg",
+    category: "Microfinance"
+  },
+  { 
+    id: "cert-4",
+    title: "Value Added Tax (VAT) Registration", 
+    authority: "National Board of Revenue (NBR), Bangladesh",
+    regNo: "BIN: 000123456-0101", 
+    desc: "Strict adherence to statutory tax laws and VAT withholding compliance as mandated by the National Board of Revenue.",
+    status: "Compliant & Filed",
+    type: "Tax Clearance Record",
+    link: "https://www.vercbd.org/images/VAT.pdf",
+    category: "Tax & Compliance"
+  },
+  { 
+    id: "cert-5",
+    title: "Income Tax Exemption Certification", 
+    authority: "National Board of Revenue (NBR), Taxes Zone",
+    regNo: "Section 44 / Tax Exemption", 
+    desc: "Recognized non-profit tax-exempt entity ensuring all donations and institutional grants are allocated directly to beneficiaries.",
+    status: "Recognized Non-Profit",
+    type: "Statutory Exemption Certificate",
+    link: "https://www.vercbd.org/images/TIN.pdf",
+    category: "Tax & Compliance"
+  },
+  { 
+    id: "cert-6",
+    title: "Statutory Chartered Accountant Audit", 
+    authority: "Hoda Vasi Chowdhury & Co. (Chartered Accountants)",
+    regNo: "Fiscal Year 2023-2024", 
+    desc: "External annual financial compliance, balance sheet verification, and donor expenditure audit conducted by certified auditors.",
+    status: "Unqualified Audit Opinion",
+    type: "Independent Audit Report",
+    link: "https://www.vercbd.org/images/Audit.pdf",
+    category: "Audit & Governance"
+  }
+];
+
+const defaultAnnualReports: AnnualReportItem[] = [
+  { 
+    id: "report-1",
+    year: "2023 - 2024", 
+    title: "Impact & Resilience", 
+    desc: "Latest comprehensive overview of VERC's programmatic achievements, grassroots empowerment, and financial health.",
+    link: "https://www.vercbd.org/images/VERC%20Annual%20Report%20(Short%20Version)_Final.pdf",
+    highlight: true
+  },
+  { 
+    id: "report-2",
+    year: "2022 - 2023", 
+    title: "Growth & Innovation", 
+    desc: "Detailed report on community-led initiatives, WaSH revolutions, and institutional capacity expansion.",
+    link: "https://www.vercbd.org/images/VERC%20ANNUAL%20REPORT%202024.pdf"
+  },
+  { 
+    id: "report-3",
+    year: "2021 - 2022", 
+    title: "Sustainability Goals", 
+    desc: "Review of progress toward long-term developmental sustainability and grassroots livelihood programs.",
+    link: "https://www.vercbd.org/images/ANNUAL%20REPORT_2021-2022.pdf"
+  },
+  { 
+    id: "report-4",
+    year: "2020 - 2021", 
+    title: "Community Response", 
+    desc: "A year of significant field-level impact, health assistance, and emergency humanitarian response.",
+    link: "https://www.vercbd.org/images/ANNUAL%20REPORT_2020-2021.pdf"
+  },
+  { 
+    id: "report-5",
+    year: "2019 - 2020", 
+    title: "Vision Realization", 
+    desc: "Strategic review of thematic areas and societal vision achievement across rural Bangladesh.",
+    link: "https://www.vercbd.org/images/ANNUAL%20REPORT%202019-2020.pdf"
+  },
+  { 
+    id: "report-6",
+    year: "2018 - 2019", 
+    title: "Legacy of Excellence", 
+    desc: "Historical performance data, education milestones, and programmatic impact verification.",
+    link: "https://www.vercbd.org/images/ANNUAL%20REPORT%202018-2019.pdf"
+  }
+];
+
+const defaultAwards: AwardItem[] = [
+  {
+    id: "award-1",
+    year: "2023",
+    title: "Sustainable Development Excellence Award",
+    organization: "Global Sustainable Development Forum",
+    category: "Environment & WaSH",
+    desc: "Recognized for pioneering Community-Led Total Sanitation (CLTS) and providing long-term sustainable drinking water and sanitation infrastructure across 64 districts.",
+    badge: "Global Recognition",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200"
+  },
+  {
+    id: "award-2",
+    year: "2021",
+    title: "National Sanitation Leadership Champion",
+    organization: "Local Government Division (LGD), Government of Bangladesh",
+    category: "Public Health",
+    desc: "Honored for outstanding institutional contribution toward achieving 100% open-defecation-free (ODF) communities across targeted rural divisions.",
+    badge: "National Award",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200"
+  },
+  {
+    id: "award-3",
+    year: "2018",
+    title: "NGO Financial Governance & Transparency Award",
+    organization: "Transparency International Bangladesh (TIB)",
+    category: "Governance",
+    desc: "Ranked among top national development organizations for exemplary audit compliance, fiscal integrity, and open financial disclosure.",
+    badge: "Governance Standard",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200"
+  },
+  {
+    id: "award-4",
+    year: "2015",
+    title: "Global Sanitation Innovation Prize",
+    organization: "WASH Global Network & UNICEF",
+    category: "Innovation",
+    desc: "Awarded for the groundbreaking development and international scaling of the Community-Led Total Sanitation (CLTS) methodology originating in Bangladesh.",
+    badge: "Innovation Prize",
+    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200"
+  },
+  {
+    id: "award-5",
+    year: "2012",
+    title: "Social Business Pioneer Honor",
+    organization: "Yunus Centre",
+    category: "Livelihood",
+    desc: "For empowering rural women through micro-enterprise initiatives and grassroots entrepreneurship models.",
+    badge: "Special Recognition",
+    isHonor: true
+  },
+  {
+    id: "award-6",
+    year: "2010",
+    title: "Microfinance Institutional Star",
+    organization: "PKSF",
+    category: "Microfinance",
+    desc: "Recognized for ethical microcredit distribution, member financial protection, and 99%+ recovery discipline.",
+    badge: "Apex Recognition",
+    isHonor: true
+  },
+  {
+    id: "award-7",
+    year: "2008",
+    title: "Non-Formal Education Leadership Award",
+    organization: "CAMPE",
+    category: "Education",
+    desc: "Pioneering early childhood development and adult literacy centers for marginalized children.",
+    badge: "National Honor",
+    isHonor: true
+  },
+  {
+    id: "award-8",
+    year: "2002",
+    title: "Community Water Sanitation Pioneer",
+    organization: "WaterAid International",
+    category: "WaSH",
+    desc: "Implementation of arsenic-safe piped water systems and deep tubewells in hard-to-reach rural communities.",
+    badge: "Pioneer Award",
+    isHonor: true
+  }
+];
+
+const defaultOrganogramNodes: OrganogramNode[] = [
+  { id: "org-1", title: "General Body", subtitle: "Apex Governing Authority", category: "General Body", order: 1 },
+  { id: "org-2", title: "Executive Committee", subtitle: "Policy & Strategic Board", category: "Executive Committee", order: 2, isSpecial: true },
+  { id: "org-3", title: "Executive Director", subtitle: "Chief Executive Leadership", category: "Senior Management", order: 3 },
+  { id: "org-4", title: "Deputy Executive Director", subtitle: "Operational Oversight", category: "Senior Management", order: 4 },
+  { id: "org-5", title: "Director, Microfinance", subtitle: "136 Branches Network", category: "Divisions", order: 5 },
+  { id: "org-6", title: "Director, HR & Admin", subtitle: "Institutional Logistics", category: "Divisions", order: 6 },
+  { id: "org-7", title: "Director, Finance & Accounts", subtitle: "Fiscal Audit & Compliance", category: "Divisions", order: 7 },
+  { id: "org-8", title: "Thematic Program Coordinators", subtitle: "WaSH, Education, Livelihood", category: "Divisions", order: 8 },
+  { id: "org-9", title: "Branch Managers & Field Officers", subtitle: "Direct Grassroot Delivery", category: "Field Operations", order: 9 }
+];
+
+const defaultAboutContent: AboutContent = {
+  vision: "A self-reliant and enlightened society based on justice, equity and sustainability where every human being has equal opportunity.",
+  mission: "Establish and promote sustainable human, socio-economic and cultural development of marginalized people through community-led empowerment and institutional partnerships.",
+  organogramPdfLink: "https://www.vercbd.org/images/organogram.pdf",
+  coreValues: [
+    { id: "cv-1", title: "Participation & Ownership", desc: "Ensuring community involvement in every stage of development.", color: "bg-blue-50" },
+    { id: "cv-2", title: "Respect", desc: "Upholding the dignity and rights of every individual we serve.", color: "bg-green-50" },
+    { id: "cv-3", title: "Environment Friendliness", desc: "Integrating sustainable practices into all our projects.", color: "bg-emerald-50" },
+    { id: "cv-4", title: "Sustainability", desc: "Creating long-term solutions that outlast our direct involvement.", color: "bg-indigo-50" },
+    { id: "cv-5", title: "Innovation", desc: "Pioneering new approaches to solve age-old community challenges.", color: "bg-purple-50" },
+    { id: "cv-6", title: "Good Governance", desc: "Maintaining transparency, accountability, and ethical standards.", color: "bg-slate-50" },
+    { id: "cv-7", title: "Equality", desc: "Providing equal opportunities for marginalized segments of society.", color: "bg-rose-50" }
+  ]
+};
+
+const defaultMicrofinanceProcess: MicrofinanceProcessContent = {
+  steps: [
+    {
+      id: "mf-step-1",
+      stepNumber: 1,
+      title: "Community Survey & Group Formation",
+      desc: "Our field officers visit target villages and slums to meet potential borrowers, explain microfinance rules, and assist in forming a 15-25 member solidarity group (Somiti).",
+      duration: "3 - 5 Days",
+      requirements: ["Age 18 - 60 years", "Resident of operational area", "No default with other MFIs"]
+    },
+    {
+      id: "mf-step-2",
+      stepNumber: 2,
+      title: "Financial Literacy & Orientation",
+      desc: "Group members undergo interactive training covering budget planning, savings discipline, enterprise development, and loan repayment terms.",
+      duration: "2 - 3 Days",
+      requirements: ["Attendance in orientation sessions", "Group leader selection", "Savings account opening"]
+    },
+    {
+      id: "mf-step-3",
+      stepNumber: 3,
+      title: "Application & Peer Verification",
+      desc: "Borrowers submit simple one-page loan proposals detailing their micro-enterprise or household need, endorsed and guaranteed by peer group members.",
+      duration: "24 - 48 Hours",
+      requirements: ["National ID (NID) copy", "2 passport photos", "Group peer resolution signature"]
+    },
+    {
+      id: "mf-step-4",
+      stepNumber: 4,
+      title: "Approval & Fund Disbursement",
+      desc: "Following swift branch manager assessment, loan funds are disbursed directly in cash at the branch or through secure mobile financial services (bKash/Nagad).",
+      duration: "Same Day",
+      requirements: ["Sign passbook & agreement", "Disbursement receipt", "First installment schedule issued"]
+    }
+  ],
+  eligibilityCriteria: [
+    "Bangladeshi citizen aged between 18 and 60 years",
+    "Permanent resident of VERC branch operational catchment area",
+    "Active member of an accredited VERC Village Development Organization (Somiti)",
+    "Engaged in viable income-generating trade, agriculture, livestock, or micro-enterprise",
+    "Free from active non-performing debt with formal financial regulators"
+  ],
+  requiredDocuments: [
+    "Photocopy of National Identity Card (NID) or Smart Card",
+    "Two recent passport-size photographs of the applicant",
+    "One passport-size photograph of nominee/guarantor",
+    "Proof of residence (Chairman / Ward Councilor Certificate if requested)",
+    "Basic mobile number linked to applicant's NID"
+  ]
+};
+
+const DEMO_PDF_BASE64 = "data:application/pdf;base64,JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA2MTIgNzkyXQovQ29udGVudHMgNCAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0xlbmd0aCA2NQo+PgpzdHJlYW0KQlQKL0YxIDI0IFRmCjcwIDcwMCBUZAooVkVSQ0JEIENhbmRpZGF0ZSBSZXN1bWUgLSBEZW1vIERvY3VtZW50KSBUagogRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTggMDAwMDAgbiAKMDAwMDAwMDA3NyAwMDAwMCBuIAowMDAwMDAwMTM1IDAwMDAwIG4gCjAwMDAwMDAyMjQgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA1Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgozMzYgCiUlRU9GCg==";
+
+export const defaultDepartments: string[] = [
+  "WASH & Climate Resilience",
+  "Microfinance & Inclusive Finance",
+  "Health & Child Development",
+  "Life Skills & Primary Education",
+  "Executive & Quality Assurance",
+  "Finance, Accounts & Audit",
+  "HR & General Administration"
+];
+
+const defaultJobOpenings: JobOpening[] = [
+  {
+    id: "job-1",
+    title: "Senior WASH Project Manager",
+    department: "WASH & Climate Resilience",
+    location: "Dhaka Head Office (with regular field visits)",
+    type: "Full-Time",
+    deadline: "2026-10-30",
+    salary: "BDT 75,000 - 95,000 / month",
+    experience: "5+ Years in WASH / NGO sector",
+    description: "<p>We are seeking an experienced <strong>Senior WASH Project Manager</strong> to lead community-led total sanitation (CLTS), climate-resilient water infrastructure, and hygiene behavior change programs across 12 targeted rural districts.</p><p>The role involves managing donor-funded interventions, overseeing district field engineers, coordinating with local government authorities, and ensuring timely project milestones.</p>",
+    requirements: [
+      "Master's degree in Civil/Environmental Engineering, Water Resource Management, or Development Studies",
+      "Minimum 5 years of hands-on experience in managing large-scale WASH programs",
+      "Proven track record in donor reporting (UNICEF, WaterAid, or World Bank standards)",
+      "Strong proficiency in English and Bengali technical reporting",
+      "Willingness to travel to remote rural project sites frequently"
+    ],
+    responsibilities: [
+      "Oversee implementation of deep tube well, piped water supply, and community sanitation schemes",
+      "Lead monitoring, evaluation, and quality assurance for field interventions",
+      "Maintain active stakeholder liaison with Department of Public Health Engineering (DPHE)",
+      "Manage project budget allocations and certify procurement compliance"
+    ],
+    status: "Active",
+    createdAt: "2026-09-01"
+  },
+  {
+    id: "job-2",
+    title: "Microfinance Branch Manager",
+    department: "Microfinance & Inclusive Finance",
+    location: "Gazipur / Manikganj Branch",
+    type: "Full-Time",
+    deadline: "2026-10-25",
+    salary: "BDT 40,000 - 55,000 / month + Incentives",
+    experience: "3+ Years in Microfinance Operations",
+    description: "<p>VERC Microfinance Program is expanding! We are looking for an energetic <strong>Branch Manager</strong> to drive loan portfolio growth, ensure high recovery rates, manage credit officers, and foster trusted relationships with women-led borrower groups (Somitis).</p>",
+    requirements: [
+      "Bachelor's or Master's degree in Finance, Accounting, Economics, or Business Administration",
+      "At least 3 years of branch-level management experience in an MRA-licensed MFI",
+      "Sound knowledge of loan portfolio analysis, PAR control, and credit auditing",
+      "Proficiency in computerized accounting and microfinance management software"
+    ],
+    responsibilities: [
+      "Direct daily operations, loan disbursement approvals, and cash counter management",
+      "Mentor and supervise field credit officers for group formation and regular collection",
+      "Ensure strict compliance with Microcredit Regulatory Authority (MRA) guidelines",
+      "Conduct regular audits of member passbooks and somiti accounts"
+    ],
+    status: "Active",
+    createdAt: "2026-09-05"
+  },
+  {
+    id: "job-3",
+    title: "Community Health & Nutrition Coordinator",
+    department: "Health & Child Development",
+    location: "Cox's Bazar / Chattogram",
+    type: "Contract",
+    deadline: "2026-11-15",
+    salary: "BDT 50,000 - 65,000 / month",
+    experience: "3+ Years in Public Health / Maternal Care",
+    description: "<p>Coordinate maternal healthcare clinics, adolescent reproductive health awareness, and supplementary nutrition campaigns across coastal community hubs.</p>",
+    requirements: [
+      "MBBS, MPH, or Master's degree in Public Health, Nutrition, or Nursing",
+      "3+ years experience with grassroots maternal & child health programs",
+      "Familiarity with community clinic coordination and immunization tracking"
+    ],
+    responsibilities: [
+      "Organize satellite health camps and prenatal/postnatal checkups",
+      "Facilitate nutrition counseling sessions for mothers and adolescent girls",
+      "Coordinate medical supplies distribution and cold-chain maintenance"
+    ],
+    status: "Active",
+    createdAt: "2026-09-10"
+  },
+  {
+    id: "job-4",
+    title: "Monitoring, Evaluation & Learning (MEL) Officer",
+    department: "Executive & Quality Assurance",
+    location: "Dhaka Head Office",
+    type: "Full-Time",
+    deadline: "2026-11-05",
+    salary: "BDT 60,000 - 75,000 / month",
+    experience: "4+ Years in M&E",
+    description: "<p>Drive evidence-based impact evaluation, design mobile data collection systems (Kobo/ODK), and produce analytical reports for bilateral donors.</p>",
+    requirements: [
+      "Degree in Statistics, Economics, Development Studies, or Social Sciences",
+      "Demonstrated experience with quantitative and qualitative data analysis tools (SPSS/Stata/R)",
+      "Experience developing logical frameworks and theory of change models"
+    ],
+    responsibilities: [
+      "Conduct baseline, midline, and endline surveys across all active VERC programs",
+      "Train field teams on digital data collection and data integrity protocols",
+      "Draft quarterly impact dashboards for senior management review"
+    ],
+    status: "Active",
+    createdAt: "2026-09-12"
+  }
+];
+
+const defaultJobApplications: JobApplication[] = [
+  {
+    id: "app-1",
+    jobId: "job-1",
+    jobTitle: "Senior WASH Project Manager",
+    candidateName: "Engr. Rafiqul Islam",
+    email: "rafiq.wash.eng@example.com",
+    phone: "+880 1712-345678",
+    coverLetter: "I have over 6 years of experience implementing community-led water supply systems and sanitation solutions in rural Bangladesh, including 3 years working closely with DPHE and international NGOs.",
+    resumeUrl: DEMO_PDF_BASE64,
+    resumeFileName: "Engr_Rafiqul_Islam_Resume.pdf",
+    resumeFileSize: "1.4 MB",
+    appliedAt: "2026-09-14",
+    status: "Shortlisted",
+    notes: "Strong candidate with solid CLTS track record. Schedule first interview."
+  },
+  {
+    id: "app-2",
+    jobId: "job-2",
+    jobTitle: "Microfinance Branch Manager",
+    candidateName: "Nusrat Jahan",
+    email: "nusrat.jahan.fin@example.com",
+    phone: "+880 1819-876543",
+    coverLetter: "Experienced microfinance professional with 4 years as Assistant Branch Manager at ASA and PKSF partner organizations. Excellent record in portfolio recovery and somiti mobilization.",
+    resumeUrl: DEMO_PDF_BASE64,
+    resumeFileName: "Nusrat_Jahan_CV.pdf",
+    resumeFileSize: "890 KB",
+    appliedAt: "2026-09-16",
+    status: "Reviewed",
+    notes: "Solid credit management experience. Good candidate for Gazipur branch."
+  }
+];
+
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 const STORAGE_KEY = "vercbd_charity_cms_v3";
@@ -863,6 +1453,15 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [campaigns, setCampaigns] = useState<CharityCampaign[]>(defaultCampaigns);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSiteSettings);
   const [dashboardMetrics, setDashboardMetrics] = useState<CharityDashboardMetric>(defaultDashboardMetrics);
+  const [legalCertifications, setLegalCertifications] = useState<LegalCertification[]>(defaultLegalCertifications);
+  const [annualReports, setAnnualReports] = useState<AnnualReportItem[]>(defaultAnnualReports);
+  const [awards, setAwards] = useState<AwardItem[]>(defaultAwards);
+  const [organogramNodes, setOrganogramNodes] = useState<OrganogramNode[]>(defaultOrganogramNodes);
+  const [aboutContent, setAboutContent] = useState<AboutContent>(defaultAboutContent);
+  const [microfinanceProcess, setMicrofinanceProcess] = useState<MicrofinanceProcessContent>(defaultMicrofinanceProcess);
+  const [jobOpenings, setJobOpenings] = useState<JobOpening[]>(defaultJobOpenings);
+  const [jobApplications, setJobApplications] = useState<JobApplication[]>(defaultJobApplications);
+  const [departments, setDepartments] = useState<string[]>(defaultDepartments);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [primaryColor, setPrimaryColor] = useState<string>("#004B8D");
   const [isLoaded, setIsLoaded] = useState(false);
@@ -889,6 +1488,15 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (parsed.campaigns) setCampaigns(parsed.campaigns);
         if (parsed.siteSettings) setSiteSettings(parsed.siteSettings);
         if (parsed.dashboardMetrics) setDashboardMetrics(parsed.dashboardMetrics);
+        if (parsed.legalCertifications) setLegalCertifications(parsed.legalCertifications);
+        if (parsed.annualReports) setAnnualReports(parsed.annualReports);
+        if (parsed.awards) setAwards(parsed.awards);
+        if (parsed.organogramNodes) setOrganogramNodes(parsed.organogramNodes);
+        if (parsed.aboutContent) setAboutContent(parsed.aboutContent);
+        if (parsed.microfinanceProcess) setMicrofinanceProcess(parsed.microfinanceProcess);
+        if (parsed.jobOpenings) setJobOpenings(parsed.jobOpenings);
+        if (parsed.jobApplications) setJobApplications(parsed.jobApplications);
+        if (parsed.departments && Array.isArray(parsed.departments)) setDepartments(parsed.departments);
         if (parsed.theme) setTheme(parsed.theme);
         if (parsed.primaryColor) setPrimaryColor(parsed.primaryColor);
       }
@@ -935,34 +1543,47 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [primaryColor, siteSettings.primaryColor, siteSettings.secondaryColor]);
 
-  // Save to LocalStorage whenever content changes
+  // Save to LocalStorage with 250ms debounce to keep admin UI snappy
   useEffect(() => {
     if (!isLoaded) return;
-    try {
-      const payload = {
-        heroSlides,
-        impactStats,
-        programs,
-        news,
-        stories,
-        microfinanceProducts,
-        teamMembers,
-        partners,
-        gallery,
-        branches,
-        messages,
-        subscribers,
-        donations,
-        campaigns,
-        siteSettings,
-        dashboardMetrics,
-        theme,
-        primaryColor
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch (e) {
-      console.warn("Could not save content to localStorage:", e);
-    }
+    const timer = setTimeout(() => {
+      try {
+        const payload = {
+          heroSlides,
+          impactStats,
+          programs,
+          news,
+          stories,
+          microfinanceProducts,
+          teamMembers,
+          partners,
+          gallery,
+          branches,
+          messages,
+          subscribers,
+          donations,
+          campaigns,
+          siteSettings,
+          dashboardMetrics,
+          legalCertifications,
+          annualReports,
+          awards,
+          organogramNodes,
+          aboutContent,
+          microfinanceProcess,
+          jobOpenings,
+          jobApplications,
+          departments,
+          theme,
+          primaryColor
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.warn("Could not save content to localStorage:", e);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
   }, [
     heroSlides,
     impactStats,
@@ -980,6 +1601,15 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     campaigns,
     siteSettings,
     dashboardMetrics,
+    legalCertifications,
+    annualReports,
+    awards,
+    organogramNodes,
+    aboutContent,
+    microfinanceProcess,
+    jobOpenings,
+    jobApplications,
+    departments,
     theme,
     primaryColor,
     isLoaded
@@ -987,7 +1617,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // CRUD Operations
   const addHeroSlide = (slide: Omit<HeroSlide, "id">) => {
-    const newSlide = { ...slide, id: `hero-${Date.now()}` };
+    const newSlide = { ...slide, id: `hero-${Date.now()}`, enabled: slide.enabled ?? true };
     setHeroSlides(prev => [...prev, newSlide]);
   };
   const updateHeroSlide = (id: string, slide: Partial<HeroSlide>) => {
@@ -1156,6 +1786,96 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setDashboardMetrics(prev => ({ ...prev, ...metrics }));
   };
 
+  // Legal Certifications CRUD
+  const addCertification = (item: Omit<LegalCertification, "id">) => {
+    setLegalCertifications(prev => [{ ...item, id: `cert-${Date.now()}` }, ...prev]);
+  };
+  const updateCertification = (id: string, item: Partial<LegalCertification>) => {
+    setLegalCertifications(prev => prev.map(c => c.id === id ? { ...c, ...item } : c));
+  };
+  const deleteCertification = (id: string) => {
+    setLegalCertifications(prev => prev.filter(c => c.id !== id));
+  };
+
+  // Annual Reports CRUD
+  const addAnnualReport = (item: Omit<AnnualReportItem, "id">) => {
+    setAnnualReports(prev => [{ ...item, id: `report-${Date.now()}` }, ...prev]);
+  };
+  const updateAnnualReport = (id: string, item: Partial<AnnualReportItem>) => {
+    setAnnualReports(prev => prev.map(r => r.id === id ? { ...r, ...item } : r));
+  };
+  const deleteAnnualReport = (id: string) => {
+    setAnnualReports(prev => prev.filter(r => r.id !== id));
+  };
+
+  // Awards & Honors CRUD
+  const addAward = (item: Omit<AwardItem, "id">) => {
+    setAwards(prev => [{ ...item, id: `award-${Date.now()}` }, ...prev]);
+  };
+  const updateAward = (id: string, item: Partial<AwardItem>) => {
+    setAwards(prev => prev.map(a => a.id === id ? { ...a, ...item } : a));
+  };
+  const deleteAward = (id: string) => {
+    setAwards(prev => prev.filter(a => a.id !== id));
+  };
+
+  // Organogram Nodes CRUD
+  const addOrganogramNode = (item: Omit<OrganogramNode, "id">) => {
+    setOrganogramNodes(prev => [...prev, { ...item, id: `node-${Date.now()}` }]);
+  };
+  const updateOrganogramNode = (id: string, item: Partial<OrganogramNode>) => {
+    setOrganogramNodes(prev => prev.map(n => n.id === id ? { ...n, ...item } : n));
+  };
+  const deleteOrganogramNode = (id: string) => {
+    setOrganogramNodes(prev => prev.filter(n => n.id !== id));
+  };
+
+  // About Content & Microfinance Process
+  const updateAboutContent = (content: Partial<AboutContent>) => {
+    setAboutContent(prev => ({ ...prev, ...content }));
+  };
+  const updateMicrofinanceProcess = (content: Partial<MicrofinanceProcessContent>) => {
+    setMicrofinanceProcess(prev => ({ ...prev, ...content }));
+  };
+
+  // Careers & Job Openings CRUD
+  const addJobOpening = (job: Omit<JobOpening, "id" | "createdAt">) => {
+    const newJob: JobOpening = {
+      ...job,
+      id: `job-${Date.now()}`,
+      createdAt: new Date().toISOString().split("T")[0]
+    };
+    setJobOpenings(prev => [newJob, ...prev]);
+  };
+
+  const updateJobOpening = (id: string, updated: Partial<JobOpening>) => {
+    setJobOpenings(prev => prev.map(j => j.id === id ? { ...j, ...updated } : j));
+  };
+
+  const deleteJobOpening = (id: string) => {
+    setJobOpenings(prev => prev.filter(j => j.id !== id));
+  };
+
+  // Job Applications CRUD
+  const submitJobApplication = async (app: Omit<JobApplication, "id" | "appliedAt" | "status">): Promise<boolean> => {
+    const newApp: JobApplication = {
+      ...app,
+      id: `app-${Date.now()}`,
+      appliedAt: new Date().toISOString().split("T")[0],
+      status: "Pending"
+    };
+    setJobApplications(prev => [newApp, ...prev]);
+    return true;
+  };
+
+  const updateApplicationStatus = (id: string, status: JobApplication["status"]) => {
+    setJobApplications(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+  };
+
+  const deleteJobApplication = (id: string) => {
+    setJobApplications(prev => prev.filter(a => a.id !== id));
+  };
+
   const resetToDefaults = () => {
     setHeroSlides(defaultHeroSlides);
     setImpactStats(defaultImpactStats);
@@ -1173,14 +1893,46 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCampaigns(defaultCampaigns);
     setSiteSettings(defaultSiteSettings);
     setDashboardMetrics(defaultDashboardMetrics);
+    setLegalCertifications(defaultLegalCertifications);
+    setAnnualReports(defaultAnnualReports);
+    setAwards(defaultAwards);
+    setOrganogramNodes(defaultOrganogramNodes);
+    setAboutContent(defaultAboutContent);
+    setMicrofinanceProcess(defaultMicrofinanceProcess);
+    setJobOpenings(defaultJobOpenings);
+    setJobApplications(defaultJobApplications);
     setPrimaryColor("#004B8D");
     setTheme("light");
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const addDepartment = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setDepartments((prev) => {
+      if (prev.some((d) => d.toLowerCase() === trimmed.toLowerCase())) return prev;
+      return [...prev, trimmed];
+    });
+  };
+
+  const deleteDepartment = (name: string) => {
+    setDepartments((prev) => prev.filter((d) => d !== name));
+  };
+
   return (
     <ContentContext.Provider
       value={{
+        jobOpenings,
+        jobApplications,
+        departments,
+        addDepartment,
+        deleteDepartment,
+        addJobOpening,
+        updateJobOpening,
+        deleteJobOpening,
+        submitJobApplication,
+        updateApplicationStatus,
+        deleteJobApplication,
         heroSlides,
         impactStats,
         programs,
@@ -1197,6 +1949,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         campaigns,
         siteSettings,
         dashboardMetrics,
+        legalCertifications,
+        annualReports,
+        awards,
+        organogramNodes,
+        aboutContent,
+        microfinanceProcess,
         theme,
         setTheme,
         primaryColor,
@@ -1244,6 +2002,20 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         deleteCampaign,
         updateSiteSettings,
         updateDashboardMetrics,
+        addCertification,
+        updateCertification,
+        deleteCertification,
+        addAnnualReport,
+        updateAnnualReport,
+        deleteAnnualReport,
+        addAward,
+        updateAward,
+        deleteAward,
+        addOrganogramNode,
+        updateOrganogramNode,
+        deleteOrganogramNode,
+        updateAboutContent,
+        updateMicrofinanceProcess,
         resetToDefaults
       }}
     >

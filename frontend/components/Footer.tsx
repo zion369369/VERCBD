@@ -53,6 +53,7 @@ const Footer = () => {
       links: [
         { name: "Photo Gallery", href: "/resources/gallery" },
         { name: "Branch Network", href: "/resources/branches" },
+        { name: "Careers & Recruitment", href: "/careers" },
         { name: "Microfinance Overview", href: "/microfinance" },
         { name: "Contact Us", href: "/contact" },
         { name: "Donate", href: "/donate" },
@@ -72,7 +73,8 @@ const Footer = () => {
               <img 
                 src={siteSettings.logoUrl || "/assets/logo.png"} 
                 alt="VERC Logo" 
-                className="h-20 w-auto object-contain brightness-0 invert"
+                className="h-20 w-auto object-contain hover:opacity-90 transition-opacity"
+                style={{ maxHeight: "80px", width: "auto" }}
               />
             </Link>
             <p className="text-xl text-gray-400 font-medium leading-relaxed max-w-md">

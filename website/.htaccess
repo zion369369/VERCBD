@@ -1,0 +1,18 @@
+# VERCBD Next.js Production Apache / Passenger Configuration for cPanel
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS redirection (recommended)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Pass static assets directly if existing
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # Reverse Proxy to local Node.js process (if running via standalone port)
+  RewriteRule ^$ http://127.0.0.1:3000/ [P,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+</IfModule>

@@ -4,10 +4,23 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Award, Star, ShieldCheck, Trophy, Globe, ArrowRight, CheckCircle2, Medal } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function AwardsPage() {
-  const awards = [
+  const { awards } = useContent();
+
+  const getAwardIcon = (cat: string) => {
+    switch (cat) {
+      case "Environment & WaSH": return <Trophy className="text-amber-500 w-8 h-8" />;
+      case "Public Health": return <ShieldCheck className="text-emerald-500 w-8 h-8" />;
+      case "Governance": return <Award className="text-blue-500 w-8 h-8" />;
+      default: return <Globe className="text-indigo-500 w-8 h-8" />;
+    }
+  };
+
+  const fallbackAwards = [
     {
+      id: "award-1",
       year: "2023",
       title: "Sustainable Development Excellence Award",
       organization: "Global Sustainable Development Forum",
@@ -18,6 +31,7 @@ export default function AwardsPage() {
       badgeColor: "bg-amber-50 text-amber-700 border-amber-200"
     },
     {
+      id: "award-2",
       year: "2021",
       title: "National Sanitation Leadership Champion",
       organization: "Local Government Division (LGD), Government of Bangladesh",
@@ -28,6 +42,7 @@ export default function AwardsPage() {
       badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200"
     },
     {
+      id: "award-3",
       year: "2018",
       title: "NGO Financial Governance & Transparency Award",
       organization: "Transparency International Bangladesh (TIB)",
@@ -38,6 +53,7 @@ export default function AwardsPage() {
       badgeColor: "bg-blue-50 text-blue-700 border-blue-200"
     },
     {
+      id: "award-4",
       year: "2015",
       title: "Global Sanitation Innovation Prize",
       organization: "WASH Global Network & UNICEF",
@@ -48,6 +64,8 @@ export default function AwardsPage() {
       badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200"
     }
   ];
+
+  const awardsToDisplay = (awards && awards.length > 0) ? awards : fallbackAwards;
 
   const honors = [
     { year: "2012", title: "Social Business Pioneer Honor", org: "Yunus Centre", desc: "For empowering rural women through micro-enterprise initiatives." },
@@ -107,9 +125,9 @@ export default function AwardsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {awards.map((award, i) => (
+            {awardsToDisplay.map((award, i) => (
               <motion.div 
-                key={i}
+                key={award.id || i}
                 {...fadeIn}
                 transition={{ delay: i * 0.1 }}
                 className="bg-white p-8 lg:p-10 rounded-[36px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between group"
@@ -117,10 +135,10 @@ export default function AwardsPage() {
                 <div>
                   <div className="flex justify-between items-center mb-8">
                     <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:scale-110 transition-transform duration-500 shadow-sm">
-                      {award.icon}
+                      {(award as any).icon || getAwardIcon(award.category)}
                     </div>
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${award.badgeColor}`}>
-                      {award.badge}
+                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${award.badgeColor || "bg-amber-50 text-amber-700 border-amber-200"}`}>
+                      {award.badge || "Verified Recognition"}
                     </span>
                   </div>
 

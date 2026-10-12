@@ -21,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import impactHero from "@/app/assets/impact_hero.png";
 import { useContent } from "@/context/ContentContext";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function ImpactPage() {
   const { impactStats, teamMembers } = useContent();
@@ -97,7 +98,9 @@ export default function ImpactPage() {
                         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 transition-transform duration-500 text-brand-primary">
                           <TrendingUp size={28} />
                         </div>
-                        <h3 className="text-5xl font-black text-gray-900 mb-4 tracking-tighter">{stat.value}</h3>
+                        <h3 className="text-5xl font-black text-gray-900 mb-4 tracking-tighter">
+                          <AnimatedCounter value={stat.value} duration={1.2} />
+                        </h3>
                         <h4 className="text-xl font-bold text-gray-800 mb-4">{stat.label}</h4>
                         <p className="text-gray-500 font-medium leading-relaxed flex-grow">
                             {stat.subText}

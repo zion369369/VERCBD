@@ -42,12 +42,6 @@ export default function AdminLoginPage() {
     }, 400);
   };
 
-  const handleFillDemo = () => {
-    setUsername("Superadmin.verc");
-    setPassword("superadmin123");
-    setErrorMsg("");
-  };
-
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col justify-center items-center p-4 sm:p-6 font-valley font-sans select-none">
       {/* Background Decorative Glow */}
@@ -87,7 +81,7 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} autoComplete="off" className="space-y-4">
             {/* Username Input */}
             <div>
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
@@ -100,9 +94,10 @@ export default function AdminLoginPage() {
                 <input
                   type="text"
                   required
+                  autoComplete="off"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="e.g. Superadmin.verc"
+                  placeholder="Enter your administrative username"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-medium text-gray-900 dark:text-white outline-none focus:ring-2 transition-all"
                   style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
                 />
@@ -121,9 +116,10 @@ export default function AdminLoginPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-medium text-gray-900 dark:text-white outline-none focus:ring-2 transition-all"
                   style={{ "--tw-ring-color": primaryColor } as React.CSSProperties}
                 />
@@ -154,31 +150,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Helper for Superadmin Credentials */}
-          <div className="mt-5 pt-4 border-t border-gray-100 dark:border-white/5">
-            <div className="p-3 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-amber-600 dark:text-amber-400" />
-                  <span className="text-xs font-bold text-amber-900 dark:text-amber-300">
-                    Default Superadmin
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleFillDemo}
-                  className="text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-200/60 dark:bg-amber-900/60 hover:bg-amber-300/80 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-              <div className="mt-1.5 text-xs font-mono text-amber-900/80 dark:text-amber-200/90 space-y-0.5">
-                <div>User: <span className="font-bold">Superadmin.verc</span></div>
-                <div>Pass: <span className="font-bold">superadmin123</span></div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Clean Footer */}

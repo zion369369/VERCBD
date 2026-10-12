@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Users, User, ChevronDown, FileText, ExternalLink, ShieldCheck, Briefcase, Activity, Landmark, Settings, Database, Monitor, Globe } from "lucide-react";
 import Link from "next/link";
+import { useContent } from "@/context/ContentContext";
 
 const Node = ({ title, subtitle, icon, color = "bg-white", textColor = "text-gray-900", isSpecial = false }: any) => (
   <motion.div 
@@ -24,6 +25,9 @@ const Line = () => (
 );
 
 export default function OrganogramPage() {
+  const { aboutContent, organogramNodes } = useContent();
+  const pdfUrl = aboutContent?.organogramPdfUrl || "https://www.vercbd.org/images/organogram.pdf";
+
   return (
     <div className="bg-[#F9FAFB] min-h-screen pb-32">
       {/* Header */}
@@ -42,7 +46,7 @@ export default function OrganogramPage() {
                 </p>
                 <div className="flex gap-4 mt-10">
                     <Link 
-                        href="https://www.vercbd.org/images/organogram.pdf" 
+                        href={pdfUrl} 
                         target="_blank"
                         className="flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-xl font-bold hover:scale-105 transition-all shadow-lg"
                     >

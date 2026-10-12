@@ -4,9 +4,13 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FileText, Calendar, ExternalLink, ArrowRight, Download, BarChart3, PieChart, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import { useContent } from "@/context/ContentContext";
 
 export default function AnnualReportPage() {
-  const reports = [
+  const { annualReports } = useContent();
+
+  const fallbackReports = [
     { 
       year: "2023 - 2024", 
       title: "Impact & Resilience", 
@@ -46,6 +50,8 @@ export default function AnnualReportPage() {
     },
   ];
 
+  const reportsToDisplay = (annualReports && annualReports.length > 0) ? annualReports : fallbackReports;
+
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -77,9 +83,9 @@ export default function AnnualReportPage() {
       <section className="py-24">
         <div className="container-custom">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {reports.map((report, i) => (
+                {reportsToDisplay.map((report, i) => (
                     <motion.div 
-                        key={i}
+                        key={report.id || i}
                         {...fadeIn}
                         transition={{ delay: i * 0.1 }}
                         className={`group relative bg-white p-10 rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.04)] border ${report.highlight ? "border-brand-primary/20 ring-1 ring-brand-primary/5" : "border-gray-50"} hover:shadow-2xl transition-all duration-500 flex flex-col h-full`}
@@ -130,7 +136,9 @@ export default function AnnualReportPage() {
                     { label: "Transparency", value: "Public", sub: "Annual Disclosures" }
                 ].map((stat, i) => (
                     <motion.div key={i} {...fadeIn}>
-                        <h4 className="text-5xl lg:text-7xl font-black mb-4 tracking-tighter text-brand-secondary">{stat.value}</h4>
+                        <h4 className="text-5xl lg:text-7xl font-black mb-4 tracking-tighter text-brand-secondary">
+                          <AnimatedCounter value={stat.value} duration={1.2} />
+                        </h4>
                         <p className="text-[12px] font-black uppercase tracking-[0.3em] mb-2">{stat.label}</p>
                         <p className="text-sm text-gray-500 font-medium">{stat.sub}</p>
                     </motion.div>

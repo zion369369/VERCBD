@@ -19,9 +19,23 @@ import {
   MapPin
 } from "lucide-react";
 import Image from "next/image";
+import { useContent } from "@/context/ContentContext";
 
 export default function MicrofinanceProcessPage() {
-  const steps = [
+  const { microfinanceProcess } = useContent();
+
+  const getStepIcon = (index: number) => {
+    switch (index % 6) {
+      case 0: return <Users size={32} />;
+      case 1: return <Search size={32} />;
+      case 2: return <FileText size={32} />;
+      case 3: return <CreditCard size={32} />;
+      case 4: return <CheckCircle2 size={32} />;
+      default: return <Calendar size={32} />;
+    }
+  };
+
+  const fallbackSteps = [
     {
       title: "Group Formation",
       desc: "Assemble a group of 15-30 like-minded women from your locality who are committed to mutual growth.",
@@ -59,6 +73,22 @@ export default function MicrofinanceProcessPage() {
       duration: "Ongoing"
     }
   ];
+
+  const stepsToDisplay = (microfinanceProcess?.steps && microfinanceProcess.steps.length > 0)
+    ? microfinanceProcess.steps
+    : fallbackSteps;
+
+  const fallbackCriteria = [
+    "Permanent resident of the project area for at least 3 years.",
+    "Age between 18 to 55 years.",
+    "Involvement in a small business or a viable income-generating plan.",
+    "Commitment to attend weekly group meetings and follow group discipline.",
+    "Not a defaulter of any other financial institution."
+  ];
+
+  const criteriaToDisplay = (microfinanceProcess?.eligibilityCriteria && microfinanceProcess.eligibilityCriteria.length > 0)
+    ? microfinanceProcess.eligibilityCriteria
+    : fallbackCriteria;
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -116,13 +146,7 @@ export default function MicrofinanceProcessPage() {
                         Who Can <br/> <span className="text-brand-primary">Join Us?</span>
                     </h3>
                     <div className="space-y-6">
-                        {[
-                            "Permanent resident of the project area for at least 3 years.",
-                            "Age between 18 to 55 years.",
-                            "Involvement in a small business or a viable income-generating plan.",
-                            "Commitment to attend weekly group meetings and follow group discipline.",
-                            "Not a defaulter of any other financial institution."
-                        ].map((criteria, i) => (
+                        {criteriaToDisplay.map((criteria, i) => (
                             <div key={i} className="flex items-start gap-4 p-6 bg-gray-50 rounded-3xl border border-gray-100 group hover:border-brand-primary/20 transition-all">
                                 <div className="p-2 bg-white rounded-lg text-brand-primary shadow-sm group-hover:scale-110 transition-transform"><CheckCircle2 size={18} /></div>
                                 <p className="font-bold text-gray-700 leading-relaxed">{criteria}</p>
@@ -158,18 +182,18 @@ export default function MicrofinanceProcessPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 relative z-10">
-                {steps.map((step, i) => (
+                {stepsToDisplay.map((step, i) => (
                     <motion.div 
-                        key={i} 
+                        key={(step as any).id || i} 
                         {...fadeIn}
                         transition={{ delay: i * 0.1 }}
                         className="relative p-12 bg-white rounded-[56px] shadow-sm hover:shadow-2xl transition-all duration-500 group flex flex-col h-full border border-gray-100"
                     >
                         <div className="absolute -top-6 -right-6 w-16 h-16 bg-brand-primary text-white rounded-full flex items-center justify-center text-2xl font-black shadow-xl z-20">
-                            0{i + 1}
+                            0{(step as any).stepNumber || i + 1}
                         </div>
                         <div className="mb-10 text-brand-primary group-hover:scale-110 transition-transform duration-500">
-                            {step.icon}
+                            {(step as any).icon || getStepIcon(i)}
                         </div>
                         <h3 className="text-2xl font-black mb-6 text-gray-900 leading-tight">{step.title}</h3>
                         <p className="text-lg text-gray-500 font-medium leading-relaxed mb-10">

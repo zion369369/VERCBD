@@ -25,8 +25,11 @@ import {
   LogOut,
   KeyRound,
   ShieldAlert,
+  ShieldCheck,
   ArrowRight,
-  Check
+  Check,
+  Briefcase,
+  BookMarked
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -37,7 +40,7 @@ import AdminLoginPage from "./login/page";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme, primaryColor, messages, siteSettings, donations, programs } = useContent();
+  const { theme, setTheme, primaryColor, messages, siteSettings, donations, programs, jobApplications } = useContent();
   const { language, setLanguage, t } = useLanguage();
   const { currentUser, isAuthenticated, isLoading, logout, hasPermission } = useAuth();
 
@@ -65,26 +68,63 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const unreadCount = messages.filter(m => m.status === "Unread").length;
+  const pendingJobsCount = (jobApplications || []).filter(a => a.status === "Pending").length;
 
-  const masterNavItems = [
-    { key: "admin_nav_overview", name: "Overview", href: "/admin", icon: Home },
-    { key: "admin_nav_donations", name: "Donations", href: "/admin/donations", icon: Heart, count: donations.length },
-    { key: "admin_nav_programs", name: "Programs", href: "/admin/programs", icon: BookOpen, count: programs.length },
-    { key: "admin_nav_impact", name: "Impact", href: "/admin/impact", icon: BarChart2 },
-    { key: "admin_nav_news", name: "News & Stories", href: "/admin/news", icon: Newspaper },
-    { key: "admin_nav_partners", name: "Partners", href: "/admin/partners", icon: HeartHandshake },
-    { key: "admin_nav_microfinance", name: "Microfinance", href: "/admin/microfinance", icon: CreditCard },
-    { key: "admin_nav_branches", name: "Branches", href: "/admin/branches", icon: MapPin },
-    { key: "admin_nav_gallery", name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
-    { key: "admin_nav_team", name: "Team", href: "/admin/team", icon: Users },
-    { key: "admin_nav_hero", name: "Banners", href: "/admin/hero", icon: Sparkles },
-    { key: "admin_nav_messages", name: "Inquiries", href: "/admin/messages", icon: MessageSquare, count: unreadCount, countColor: "bg-rose-500" },
-    { key: "admin_nav_subscribers", name: "Supporters", href: "/admin/subscribers", icon: Globe },
-    { key: "admin_nav_settings", name: "Settings", href: "/admin/settings", icon: Settings },
-    { key: "admin_nav_users", name: "Users & Roles", href: "/admin/users", icon: KeyRound },
+  interface NavItem {
+    key: string;
+    name: string;
+    href: string;
+    icon: React.ComponentType<{ className?: string; size?: number | string }>;
+    count?: number;
+    countColor?: string;
+  }
+
+  interface NavSection {
+    title: string;
+    items: NavItem[];
+  }
+
+  const navSections: NavSection[] = [
+    {
+      title: "Overview",
+      items: [
+        { key: "admin_nav_overview", name: "Dashboard", href: "/admin", icon: Home },
+      ]
+    },
+    {
+      title: "Page Content (CMS)",
+      items: [
+        { key: "admin_nav_about", name: "About Us CMS", href: "/admin/about", icon: ShieldCheck },
+        { key: "admin_nav_careers", name: "Career & Recruitment", href: "/admin/careers", icon: Briefcase, count: pendingJobsCount, countColor: "bg-rose-500" },
+        { key: "admin_nav_programs", name: "Programs & Projects", href: "/admin/programs", icon: BookOpen, count: programs.length },
+        { key: "admin_nav_microfinance", name: "Microfinance", href: "/admin/microfinance", icon: CreditCard },
+        { key: "admin_nav_impact", name: "Impact & Metrics", href: "/admin/impact", icon: BarChart2 },
+        { key: "admin_nav_hero", name: "Hero Banners", href: "/admin/hero", icon: Sparkles },
+        { key: "admin_nav_team", name: "Leadership & Team", href: "/admin/team", icon: Users },
+        { key: "admin_nav_branches", name: "Branch Network", href: "/admin/branches", icon: MapPin },
+        { key: "admin_nav_gallery", name: "Media Gallery", href: "/admin/gallery", icon: ImageIcon },
+        { key: "admin_nav_news", name: "News & Stories", href: "/admin/news", icon: Newspaper },
+        { key: "admin_nav_partners", name: "Partners & Donors", href: "/admin/partners", icon: HeartHandshake },
+      ]
+    },
+    {
+      title: "Community & Donors",
+      items: [
+        { key: "admin_nav_donations", name: "Donations & Grants", href: "/admin/donations", icon: Heart, count: donations.length },
+        { key: "admin_nav_messages", name: "Inquiries", href: "/admin/messages", icon: MessageSquare, count: unreadCount, countColor: "bg-rose-500" },
+        { key: "admin_nav_subscribers", name: "Supporters List", href: "/admin/subscribers", icon: Globe },
+      ]
+    },
+    {
+      title: "System & Documentation",
+      items: [
+        { key: "admin_nav_manual", name: "Operations Manual (PDF)", href: "/admin/manual", icon: BookMarked },
+        { key: "admin_nav_settings", name: "Site Settings", href: "/admin/settings", icon: Settings },
+        { key: "admin_nav_users", name: "Users & Roles", href: "/admin/users", icon: KeyRound },
+      ]
+    }
   ];
 
-  const authorizedNavItems = masterNavItems.filter((item) => hasPermission(item.href));
   const currentRouteAuthorized = hasPermission(pathname);
 
   return (
@@ -94,7 +134,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         theme === "dark" ? "bg-[#181824] border-white/5" : "bg-white border-gray-200/80"
       }`}>
         {/* Brand Logo Header */}
-        <div className="p-6 border-b border-gray-100 dark:border-white/5">
+        <div className="p-5 border-b border-gray-100 dark:border-white/5">
           <Link href="/admin" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/10 p-1.5 border border-gray-200 dark:border-white/10 flex items-center justify-center shadow-xs flex-shrink-0">
               <img
@@ -107,47 +147,62 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="font-extrabold text-base tracking-tight text-gray-900 dark:text-white">
                 VERC Admin
               </div>
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                Management Portal
+              </div>
             </div>
           </Link>
         </div>
 
-        {/* Clean Navigation Items */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1 custom-scrollbar">
-          {authorizedNavItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            const translatedTitle = t(item.key) !== item.key ? t(item.key) : item.name;
+        {/* Categorized Navigation Items */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4 custom-scrollbar">
+          {navSections.map((sec, secIdx) => {
+            const authorizedItems = sec.items.filter(item => hasPermission(item.href));
+            if (authorizedItems.length === 0) return null;
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                style={isActive ? { backgroundColor: primaryColor } : {}}
-                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${
-                  isActive
-                    ? "text-white shadow-sm font-bold"
-                    : theme === "dark"
-                    ? "text-gray-400 hover:text-white hover:bg-white/5"
-                    : "text-gray-700 hover:text-gray-950 hover:bg-gray-100/80"
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon size={18} className={isActive ? "text-white" : "text-gray-400"} />
-                  <span className="truncate">{translatedTitle}</span>
+              <div key={secIdx} className="space-y-1">
+                <div className="px-3 text-[10px] font-black uppercase tracking-wider text-gray-400">
+                  {sec.title}
                 </div>
+                {authorizedItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  const translatedTitle = t(item.key) !== item.key ? t(item.key) : item.name;
 
-                {item.count !== undefined && item.count > 0 && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : item.countColor
-                      ? `${item.countColor} text-white`
-                      : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300"
-                  }`}>
-                    {item.count}
-                  </span>
-                )}
-              </Link>
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      style={isActive ? { backgroundColor: primaryColor } : {}}
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                        isActive
+                          ? "text-white shadow-xs font-bold"
+                          : theme === "dark"
+                          ? "text-gray-400 hover:text-white hover:bg-white/5"
+                          : "text-gray-700 hover:text-gray-950 hover:bg-gray-100/80"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon size={16} className={isActive ? "text-white" : "text-gray-400"} />
+                        <span className="truncate">{translatedTitle}</span>
+                      </div>
+
+                      {item.count !== undefined && item.count > 0 && (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : item.countColor
+                            ? `${item.countColor} text-white`
+                            : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300"
+                        }`}>
+                          {item.count}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             );
           })}
         </div>

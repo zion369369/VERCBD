@@ -1,0 +1,85 @@
+name: Automated cPanel Deployment
+
+# Trigger deployment whenever changes are pushed to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+
+# Ensure only one deployment runs at a time to prevent file upload race conditions
+concurrency:
+  group: cpanel-production-deployment
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to cPanel Live Website
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+
+      - name: 📦 Install Frontend Dependencies
+        working-directory: ./frontend
+        run: |
+          npm install
+
+      - name: 🚀 Build Next.js Production Bundle
+        working-directory: ./frontend
+        run: |
+          npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          NODE_ENV: production
+
+      - name: 📂 Assemble Production Deployment Package
+        run: |
+          mkdir -p deploy-package
+          
+          # 1. Copy pre-compiled Next.js production output (.next)
+          cp -r frontend/.next deploy-package/.next
+          
+          # 2. Copy application source and assets
+          cp -r frontend/public deploy-package/public
+          cp -r frontend/app deploy-package/app
+          cp -r frontend/components deploy-package/components
+          cp -r frontend/context deploy-package/context
+          cp -r frontend/lib deploy-package/lib
+          
+          # 3. Copy production server and cPanel configs
+          cp website/server.js deploy-package/server.js
+          cp website/package.json deploy-package/package.json
+          cp website/next.config.js deploy-package/next.config.js
+          cp website/.htaccess deploy-package/.htaccess
+          
+          # 4. Create Phusion Passenger restart signal
+          mkdir -p deploy-package/tmp
+          touch deploy-package/tmp/restart.txt
+          
+          echo "Deployment package assembled successfully."
+          ls -la deploy-package
+
+      - name: 🚀 Deploy to cPanel via FTPS / FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          server-dir: ${{ secrets.CPANEL_TARGET_DIR || 'website/' }}
+          local-dir: ./deploy-package/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .env
+            .env*

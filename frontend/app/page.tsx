@@ -6,25 +6,38 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, Target, Heart, Globe, 
   Droplets, BookOpen, Users, Zap, HeartPulse, Scale, 
-  TrendingUp, Handshake, Sun 
+  TrendingUp, Handshake, Sun, ChevronLeft, ChevronRight, Sparkles, HeartHandshake 
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function Home() {
-  const { heroSlides, impactStats, programs } = useContent();
+  const { heroSlides, impactStats, programs, siteSettings, primaryColor } = useContent();
   const { language, t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Filter only active / enabled slides
+  const activeHeroSlides = heroSlides.filter((s) => s.enabled !== false);
+  const isBannerGloballyEnabled = siteSettings.heroBannerEnabled !== false;
 
   useEffect(() => {
-    if (heroSlides.length === 0) return;
+    if (!isBannerGloballyEnabled || activeHeroSlides.length <= 1 || isPaused) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4000);
+      setCurrentSlide((prev) => (prev + 1) % activeHeroSlides.length);
+    }, 5500);
     return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  }, [activeHeroSlides.length, isBannerGloballyEnabled, isPaused]);
 
-  const activeSlide = heroSlides[currentSlide] || heroSlides[0];
+  // Keep current slide within bounds if slides are disabled or removed
+  useEffect(() => {
+    if (activeHeroSlides.length > 0 && currentSlide >= activeHeroSlides.length) {
+      setCurrentSlide(0);
+    }
+  }, [activeHeroSlides.length, currentSlide]);
+
+  const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
   const primaryStats = impactStats.slice(0, 4);
 
   const fadeIn = {
@@ -34,14 +47,72 @@ export default function Home() {
     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   };
 
-  // Helper for dynamic slide title/subtitle depending on current language
-  const getSlideTitle = (idx: number) => {
-    if (idx === 0) return { title: t("hero_title_1"), highlight: t("hero_highlight_1"), subtitle: t("hero_subtitle_1"), btnPrimary: t("hero_btn_primary_1"), btnSecondary: t("hero_btn_secondary_1") };
-    if (idx === 1) return { title: t("hero_title_2"), highlight: t("hero_highlight_2"), subtitle: t("hero_subtitle_2"), btnPrimary: t("hero_btn_primary_2"), btnSecondary: t("hero_btn_secondary_2") };
-    return { title: t("hero_title_3"), highlight: t("hero_highlight_3"), subtitle: t("hero_subtitle_3"), btnPrimary: t("hero_btn_primary_3"), btnSecondary: t("hero_btn_secondary_3") };
+  // Dynamic slide content resolver: accurately uses slide's own CMS title, highlight, subtitle, and buttons!
+  const getSlideContent = (slide?: typeof activeSlide) => {
+    if (!slide) {
+      return { 
+        title: "", 
+        highlight: "", 
+        subtitle: "", 
+        btnPrimary: "Our Story", 
+        btnSecondary: "Contact Us", 
+        badge: "VERC Bangladesh" 
+      };
+    }
+
+    if (language === "bn") {
+      if (slide.id === "hero-1") {
+        return {
+          title: slide.title_bn || t("hero_title_1"),
+          highlight: slide.highlightText_bn || t("hero_highlight_1"),
+          subtitle: slide.subtitle_bn || t("hero_subtitle_1"),
+          btnPrimary: slide.primaryBtnText_bn || t("hero_btn_primary_1"),
+          btnSecondary: slide.secondaryBtnText_bn || t("hero_btn_secondary_1"),
+          badge: slide.categoryBadge || "টেকসই উন্নয়ন ও উদ্ভাবন"
+        };
+      }
+      if (slide.id === "hero-2") {
+        return {
+          title: slide.title_bn || t("hero_title_2"),
+          highlight: slide.highlightText_bn || t("hero_highlight_2"),
+          subtitle: slide.subtitle_bn || t("hero_subtitle_2"),
+          btnPrimary: slide.primaryBtnText_bn || t("hero_btn_primary_2"),
+          btnSecondary: slide.secondaryBtnText_bn || t("hero_btn_secondary_2"),
+          badge: slide.categoryBadge || "সিএলটিএস স্যানিটেশন বিপ্লব"
+        };
+      }
+      if (slide.id === "hero-3") {
+        return {
+          title: slide.title_bn || t("hero_title_3"),
+          highlight: slide.highlightText_bn || t("hero_highlight_3"),
+          subtitle: slide.subtitle_bn || t("hero_subtitle_3"),
+          btnPrimary: slide.primaryBtnText_bn || t("hero_btn_primary_3"),
+          btnSecondary: slide.secondaryBtnText_bn || t("hero_btn_secondary_3"),
+          badge: slide.categoryBadge || "শিশু বিকাশ ও শিক্ষা"
+        };
+      }
+      return {
+        title: slide.title_bn || slide.title,
+        highlight: slide.highlightText_bn || slide.highlightText,
+        subtitle: slide.subtitle_bn || slide.subtitle,
+        btnPrimary: slide.primaryBtnText_bn || slide.primaryBtnText || "Explore",
+        btnSecondary: slide.secondaryBtnText_bn || slide.secondaryBtnText || "Contact",
+        badge: slide.categoryBadge || "সামাজিক অগ্রগতি"
+      };
+    }
+
+    // English mode: ALWAYS uses the slide's actual title and subtitle from CMS!
+    return {
+      title: slide.title,
+      highlight: slide.highlightText,
+      subtitle: slide.subtitle,
+      btnPrimary: slide.primaryBtnText || "Our Story",
+      btnSecondary: slide.secondaryBtnText || "Partner with Us",
+      badge: slide.categoryBadge || "Sustainable Development Since 1977"
+    };
   };
 
-  const currentSlideText = getSlideTitle(currentSlide);
+  const currentSlideText = getSlideContent(activeSlide);
 
   // Helper for bilingual stat labels
   const getStatLabel = (key: string, defaultLabel: string) => {
@@ -50,6 +121,15 @@ export default function Home() {
     if (key === "leaders") return t("stat_leaders_label");
     if (key === "legacy") return t("stat_legacy_label");
     return defaultLabel;
+  };
+
+  // Helper for dynamic stat icons
+  const getStatIcon = (key: string, iconName?: string) => {
+    if (key === "lives" || iconName === "Users") return <Users size={22} className="stroke-[2.2]" />;
+    if (key === "districts" || iconName === "Globe") return <Globe size={22} className="stroke-[2.2]" />;
+    if (key === "leaders" || iconName === "UserCheck") return <HeartHandshake size={22} className="stroke-[2.2]" />;
+    if (key === "legacy" || iconName === "History") return <TrendingUp size={22} className="stroke-[2.2]" />;
+    return <TrendingUp size={22} className="stroke-[2.2]" />;
   };
 
   // Helper for bilingual program details
@@ -64,88 +144,221 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-white overflow-x-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative min-h-screen flex items-center pt-32 overflow-hidden bg-gray-900">
-        <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="wait">
-            {activeSlide && (
-              <motion.div
-                key={activeSlide.id || currentSlide}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 0.7, scale: 1.05 }}
-                exit={{ opacity: 0, scale: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="absolute inset-0"
-              >
-                <img 
-                  src={activeSlide.imageUrl} 
-                  alt={activeSlide.title} 
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/40 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900/80"></div>
-          
-          {/* Slide Indicators */}
-          <div className="absolute bottom-12 right-12 z-30 flex gap-3">
-            {heroSlides.map((_, i) => (
-              <button
-                key={i} 
-                onClick={() => setCurrentSlide(i)}
-                className={`h-1.5 transition-all duration-500 rounded-full ${i === currentSlide ? "w-10 bg-brand-secondary" : "w-2 bg-white/20"}`}
-              />
-            ))}
-          </div>
-        </div>
-        
-        <div className="container-custom relative z-20 text-white text-center">
-          <div className="max-w-4xl mx-auto">
-            {activeSlide && (
-              <motion.div
-                key={currentSlide}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h1 className={`text-5xl lg:text-8xl font-black select-none caret-transparent ${language === "bn" ? "leading-[1.3] tracking-normal py-2 mb-6" : "leading-[0.95] tracking-tighter mb-8"}`}>
-                  {currentSlideText.title} <br/> <span className="text-brand-secondary">{currentSlideText.highlight}</span>
-                </h1>
-                <p className="text-lg lg:text-2xl text-gray-300 mb-10 leading-relaxed font-medium max-w-3xl mx-auto">
-                  {currentSlideText.subtitle}
-                </p>
-                <div className="flex flex-wrap justify-center gap-5">
-                  <Link href={activeSlide.primaryBtnLink || "/about"} className="px-8 py-4 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3">
-                    {currentSlideText.btnPrimary} <ArrowRight size={20} />
-                  </Link>
-                  <Link href={activeSlide.secondaryBtnLink || "/contact"} className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
-                    {currentSlideText.btnSecondary}
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </section>
+      {isBannerGloballyEnabled && activeHeroSlides.length > 0 ? (
+        <section 
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-32 pb-24 overflow-hidden bg-slate-950"
+        >
+          {/* Ambient Decorative Lighting */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
+          <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* 2. IMPACT STATS SECTION */}
-      <section className="relative z-30 -mt-16">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+          {/* Background Slides with Ken-Burns Motion */}
+          <div className="absolute inset-0 z-0">
+            <AnimatePresence mode="wait">
+              {activeSlide && (
+                <motion.div
+                  key={activeSlide.id || currentSlide}
+                  initial={{ opacity: 0, scale: 1.08 }}
+                  animate={{ opacity: 0.95, scale: 1.02 }}
+                  exit={{ opacity: 0, scale: 1.0 }}
+                  transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+                  className="absolute inset-0"
+                >
+                  <img 
+                    src={activeSlide.imageUrl} 
+                    alt={activeSlide.title || "VERC Bangladesh"} 
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Soft, light shade for high banner visibility with excellent text contrast */}
+            <div className="absolute inset-0 bg-slate-950/25" />
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-slate-950/65 via-slate-950/15 to-transparent" />
+          </div>
+
+          {/* Desktop Left/Right Navigation Arrows */}
+          {activeHeroSlides.length > 1 && (
+            <>
+              <button 
+                type="button"
+                onClick={() => setCurrentSlide((prev) => (prev - 1 + activeHeroSlides.length) % activeHeroSlides.length)}
+                className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft size={22} />
+              </button>
+              <button 
+                type="button"
+                onClick={() => setCurrentSlide((prev) => (prev + 1) % activeHeroSlides.length)}
+                className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
+                aria-label="Next slide"
+              >
+                <ChevronRight size={22} />
+              </button>
+            </>
+          )}
+
+          {/* Floating Slide Indicator & Counter Pill */}
+          {activeHeroSlides.length > 1 && (
+            <div className="absolute bottom-8 right-6 sm:right-12 z-30 flex items-center gap-3 bg-slate-950/70 backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-2xl">
+              <span className="text-[11px] font-mono font-bold text-white/80 tracking-widest">
+                {String(currentSlide + 1).padStart(2, "0")} / {String(activeHeroSlides.length).padStart(2, "0")}
+              </span>
+              <div className="h-3 w-[1px] bg-white/20" />
+              <div className="flex items-center gap-1.5">
+                {activeHeroSlides.map((_, i) => (
+                  <button
+                    key={i} 
+                    type="button"
+                    onClick={() => setCurrentSlide(i)}
+                    title={`Slide ${i + 1}`}
+                    className={`h-1.5 transition-all duration-500 rounded-full cursor-pointer ${
+                      i === currentSlide ? "w-8 bg-cyan-400 shadow-sm shadow-cyan-400/50" : "w-2 bg-white/30 hover:bg-white/60"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Main Slide Content */}
+          <div className="container-custom relative z-20 text-white text-center">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6">
+              <AnimatePresence mode="wait">
+                {activeSlide && (
+                  <motion.div
+                    key={activeSlide.id || currentSlide}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col items-center"
+                  >
+
+                    {/* Headline */}
+                    <h1 className={`text-3xl sm:text-5xl lg:text-7xl font-black text-white select-none caret-transparent drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] ${
+                      language === "bn" ? "leading-[1.25] tracking-normal mb-5 py-1" : "leading-[1.04] tracking-tight mb-6"
+                    }`}>
+                      {currentSlideText.title}{" "}
+                      {currentSlideText.highlight && (
+                        <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                          {currentSlideText.highlight}
+                        </span>
+                      )}
+                    </h1>
+
+                    {/* Subtitle / Description */}
+                    <p className="text-base sm:text-xl md:text-2xl lg:text-3xl text-white font-medium mb-8 sm:mb-10 leading-relaxed max-w-4xl mx-auto drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+                      {currentSlideText.subtitle}
+                    </p>
+
+                    {/* CTAs */}
+                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5">
+                      <Link 
+                        href={activeSlide.primaryBtnLink || "/about"} 
+                        className="group relative inline-flex items-center gap-2.5 px-8 py-4 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-100 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl text-sm sm:text-base cursor-pointer"
+                      >
+                        <span>{currentSlideText.btnPrimary}</span>
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                      <Link 
+                        href={activeSlide.secondaryBtnLink || "/contact"} 
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl text-white border border-white/25 font-semibold rounded-2xl hover:bg-white/20 hover:border-white/40 hover:scale-[1.03] active:scale-[0.98] transition-all text-sm sm:text-base shadow-lg cursor-pointer"
+                      >
+                        <span>{currentSlideText.btnSecondary}</span>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </section>
+      ) : (
+        /* Minimalist fallback when hero banner is globally disabled */
+        <div className="pt-32 pb-16 bg-gradient-to-b from-slate-950 to-slate-900 text-white text-center">
+          <div className="container-custom py-6">
+            <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold uppercase tracking-wider text-cyan-300 mb-3">
+              Village Education Resource Center
+            </span>
+            <h1 className="text-2xl lg:text-4xl font-extrabold text-white tracking-tight">
+              Transforming Lives & Empowering Grassroots Communities
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN */}
+      <section className="relative z-30 -mt-16 sm:-mt-20 pb-4">
+        <div className="container-custom relative">
+          {/* Subtle Ambient Color Reflection Glow Behind Glass Cards */}
+          <div 
+            style={{ 
+              background: `radial-gradient(ellipse at center, ${primaryColor || "#004B8D"}22 0%, rgba(0, 174, 239, 0.12) 50%, transparent 75%)` 
+            }}
+            className="absolute inset-0 -top-8 blur-3xl -z-10 rounded-full pointer-events-none transform scale-y-75" 
+          />
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {primaryStats.map((stat, i) => (
               <motion.div 
                 key={stat.id}
                 {...fadeIn}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white p-8 lg:p-10 rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.06)] border border-gray-50 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500"
+                className="relative group rounded-[32px] sm:rounded-[36px] p-6 sm:p-8 lg:p-9 flex flex-col items-center text-center overflow-hidden transition-all duration-500 hover:-translate-y-2.5 cursor-pointer backdrop-blur-2xl bg-white/80 dark:bg-slate-900/80 border border-white/80 dark:border-white/15 shadow-[0_20px_50px_-10px_rgba(0,75,141,0.12),0_4px_12px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,75,141,0.06)] hover:shadow-[0_30px_70px_-12px_rgba(0,75,141,0.24),0_0_30px_rgba(0,174,239,0.2),inset_0_1px_2px_rgba(255,255,255,1)] hover:border-cyan-300/60"
               >
-                <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-all">
-                  <TrendingUp size={20} />
+                {/* Polymorphic Corner Light Flares */}
+                <div 
+                  style={{ backgroundColor: `${primaryColor || "#004B8D"}18` }}
+                  className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" 
+                />
+                <div className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full bg-cyan-400/15 blur-xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+
+                {/* Top Specular Edge Highlight Bar */}
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80 group-hover:via-cyan-300 group-hover:opacity-100 transition-all duration-500" />
+
+                {/* Jewel-like Frosted Glass Icon Badge */}
+                <div className="relative mb-5 z-10">
+                  <div 
+                    style={{
+                      borderColor: `${primaryColor || "#004B8D"}25`,
+                    }}
+                    className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-white/95 via-sky-50/70 to-white/90 dark:from-white/15 dark:to-white/5 border shadow-[0_8px_20px_rgba(0,75,141,0.1),inset_0_1px_2px_rgba(255,255,255,0.95)] flex items-center justify-center text-brand-primary group-hover:scale-110 group-hover:text-white transition-all duration-500 relative overflow-hidden"
+                  >
+                    {/* Hover Fill with Brand Gradient */}
+                    <div 
+                      style={{ 
+                        background: `linear-gradient(135deg, ${primaryColor || "#004B8D"}, #00AEEF)` 
+                      }}
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    />
+                    <span className="relative z-10 transition-colors duration-300">
+                      {getStatIcon(stat.key, stat.iconName)}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-[11px] font-black uppercase tracking-widest text-gray-500">
+
+                {/* Value with Classy Contrast & Smooth Animated Counter */}
+                <div className="relative z-10 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-brand-primary dark:group-hover:text-cyan-300 transition-colors duration-300">
+                  <AnimatedCounter value={stat.value} duration={1.2} />
+                </div>
+
+                {/* Label with Classy Tracking */}
+                <div className="relative z-10 text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors duration-300 leading-tight">
                   {getStatLabel(stat.key, stat.label)}
                 </div>
+
+                {/* Subtle Polymorphic Shimmer Accent Pill */}
+                <div 
+                  style={{ 
+                    background: `linear-gradient(90deg, ${primaryColor || "#004B8D"}, #00AEEF)` 
+                  }}
+                  className="w-8 h-1 rounded-full opacity-35 group-hover:opacity-100 group-hover:w-16 transition-all duration-500 mt-4 shadow-sm"
+                />
               </motion.div>
             ))}
           </div>

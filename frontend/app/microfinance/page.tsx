@@ -26,6 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 import microHero from "@/app/assets/microfinance_woman_hero.png";
 import { useContent } from "@/context/ContentContext";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function MicrofinancePage() {
   const { microfinanceProducts, impactStats } = useContent();
@@ -157,7 +158,9 @@ export default function MicrofinancePage() {
                         <div className="inline-flex items-center justify-center w-12 h-12 bg-white/10 rounded-xl mb-6 text-brand-secondary">
                             {stat.icon}
                         </div>
-                        <div className="text-5xl lg:text-7xl font-black mb-2 tracking-tighter">{stat.value}</div>
+                        <div className="text-5xl lg:text-7xl font-black mb-2 tracking-tighter">
+                          <AnimatedCounter value={stat.value} duration={1.2} />
+                        </div>
                         <div className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60">{stat.label}</div>
                     </motion.div>
                 ))}
