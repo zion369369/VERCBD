@@ -143,29 +143,31 @@ const Navbar = () => {
 
                     {item.children && (
                       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
-                        <div className="w-68 rounded-2xl p-2 backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-white/80 dark:border-white/10 shadow-[0_20px_50px_-10px_rgba(0,75,141,0.18),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_2px_rgba(255,255,255,1)] overflow-hidden">
+                        <div className="min-w-[280px] sm:min-w-[310px] w-max rounded-2xl p-2.5 backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-white/80 dark:border-white/10 shadow-[0_20px_50px_-10px_rgba(0,75,141,0.18),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_2px_rgba(255,255,255,1)] overflow-hidden">
                           {/* Top Specular Edge Flare */}
                           <div 
                             style={{ background: `linear-gradient(90deg, transparent, ${primaryColor || "#004B8D"}80, #00AEEF, transparent)` }} 
-                            className="h-[2px] w-full opacity-80 mb-1 rounded-full" 
+                            className="h-[2px] w-full opacity-80 mb-1.5 rounded-full" 
                           />
-                          {item.children.map((child) => {
-                            const isChildActive = pathname === child.href;
-                            return (
-                              <Link
-                                key={child.name}
-                                href={child.href}
-                                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200 group/item ${
-                                  isChildActive
-                                    ? "bg-sky-500/10 text-brand-primary font-bold"
-                                    : "text-slate-700 hover:text-brand-primary hover:bg-sky-50/80 dark:hover:bg-white/5 hover:translate-x-1"
-                                }`}
-                              >
-                                <span>{child.name}</span>
-                                <span className="text-cyan-500 opacity-0 group-hover/item:opacity-100 transition-opacity text-xs font-mono">→</span>
-                              </Link>
-                            );
-                          })}
+                          <div className="space-y-1">
+                            {item.children.map((child) => {
+                              const isChildActive = pathname === child.href;
+                              return (
+                                <Link
+                                  key={child.name}
+                                  href={child.href}
+                                  className={`flex items-center justify-between gap-5 px-4.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all duration-200 group/item whitespace-nowrap ${
+                                    isChildActive
+                                      ? "bg-sky-500/10 text-brand-primary font-bold shadow-xs"
+                                      : "text-slate-700 hover:text-brand-primary hover:bg-sky-50/80 dark:hover:bg-white/5 hover:translate-x-1"
+                                  }`}
+                                >
+                                  <span className="whitespace-nowrap">{child.name}</span>
+                                  <span className="text-cyan-500 opacity-0 group-hover/item:opacity-100 transition-opacity text-xs font-mono ml-2">→</span>
+                                </Link>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     )}
@@ -190,7 +192,7 @@ const Navbar = () => {
                 </button>
 
                 {isLangDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-32 p-1.5 rounded-2xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-white/80 dark:border-white/10 shadow-[0_15px_35px_-5px_rgba(0,75,141,0.15),inset_0_1px_1px_rgba(255,255,255,0.9)] z-50 overflow-hidden animate-fade-in">
+                  <div className="absolute right-0 top-full mt-2 min-w-[140px] w-36 p-1.5 rounded-2xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-white/80 dark:border-white/10 shadow-[0_15px_35px_-5px_rgba(0,75,141,0.15),inset_0_1px_1px_rgba(255,255,255,0.9)] z-50 overflow-hidden animate-fade-in">
                     <button
                       onClick={() => {
                         setLanguage("en");
