@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, Target, Heart, Globe, 
   Droplets, BookOpen, Users, Zap, HeartPulse, Scale, 
-  TrendingUp, Handshake, Sun, ChevronLeft, ChevronRight, Sparkles, HeartHandshake 
+  TrendingUp, Handshake, Sun, ChevronLeft, ChevronRight, Sparkles, HeartHandshake,
+  GraduationCap
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -360,43 +361,180 @@ export default function Home() {
       </section>
 
       {/* 3. PROGRAM PILLARS */}
-      <section className="py-32 bg-white">
-        <div className="container-custom">
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-8">
+      <section className="relative py-20 sm:py-28 lg:py-32 bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 overflow-hidden">
+        {/* Ambient Polymorphic Light Blobs */}
+        <div 
+          style={{ 
+            background: `radial-gradient(circle at 18% 25%, ${primaryColor || "#004B8D"}12 0%, transparent 60%)` 
+          }}
+          className="absolute inset-0 -top-24 blur-3xl -z-10 rounded-full pointer-events-none transform scale-y-75" 
+        />
+        <div 
+          className="absolute right-0 bottom-10 w-96 h-96 rounded-full bg-cyan-400/10 blur-3xl -z-10 pointer-events-none" 
+        />
+
+        <div className="container-custom relative z-10">
+          {/* Header Row */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 sm:mb-16 lg:mb-20 gap-6 sm:gap-8">
             <div className="max-w-2xl">
-              <div className="flex items-center gap-3 text-brand-primary mb-4">
-                <Target size={24} />
-                <h2 className="font-black uppercase tracking-[0.2em] text-xs">{t("focus_badge")}</h2>
+              {/* Classy Frosted Glass Focus Badge */}
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full backdrop-blur-xl bg-brand-primary/[0.08] dark:bg-white/10 border border-brand-primary/20 dark:border-white/15 shadow-[0_2px_10px_rgba(0,75,141,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] text-brand-primary dark:text-cyan-300 mb-4 sm:mb-5">
+                <Target size={16} className="stroke-[2.5]" />
+                <h2 className="font-black uppercase tracking-[0.22em] text-[11px] sm:text-xs">
+                  {t("focus_badge")}
+                </h2>
               </div>
-              <h3 className={`text-4xl lg:text-7xl font-black text-gray-900 ${language === "bn" ? "leading-[1.25] tracking-normal py-1" : "leading-[1.05] tracking-tighter"}`}>
-                {t("focus_title")} <br/> <span className="text-brand-primary">{t("focus_highlight")}</span>
+              <h3 className={`text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white ${language === "bn" ? "leading-[1.25] tracking-normal py-1" : "leading-[1.08] tracking-tight"}`}>
+                {t("focus_title")} <br/> 
+                <span 
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, ${primaryColor || "#004B8D"}, #00AEEF)`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent"
+                  }}
+                  className="text-brand-primary"
+                >
+                  {t("focus_highlight")}
+                </span>
               </h3>
             </div>
-            <p className="text-lg lg:text-xl text-gray-500 font-medium max-w-md leading-relaxed">
-              {t("focus_subtitle")}
-            </p>
+            
+            {/* Subtitle with Classy Architectural Border Accent */}
+            <div className="max-w-md lg:pl-6 lg:border-l-2 lg:border-brand-primary/20">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                {t("focus_subtitle")}
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Polymorphic 4-Column Responsive Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-6 xl:gap-8">
             {programs.slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
-              const programEmojis = ["📚", "💧", "🌾", "🎯"];
+              
+              const pillarCards = [
+                {
+                  icon: GraduationCap,
+                  tagNumber: "01",
+                  lightBg: "from-sky-50/80 via-white/85 to-blue-50/50",
+                  darkBg: "dark:from-sky-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
+                  topFlare: "group-hover:via-sky-400",
+                  topGlowColor: "rgba(0, 122, 255, 0.14)",
+                  bottomGlowColor: "rgba(0, 174, 239, 0.1)",
+                  badgeGradient: "from-sky-500 via-blue-600 to-indigo-600",
+                  iconColor: "text-sky-600 dark:text-sky-400",
+                  btnGradient: "from-sky-600 to-blue-700",
+                },
+                {
+                  icon: Droplets,
+                  tagNumber: "02",
+                  lightBg: "from-emerald-50/80 via-white/85 to-teal-50/50",
+                  darkBg: "dark:from-emerald-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
+                  topFlare: "group-hover:via-emerald-400",
+                  topGlowColor: "rgba(16, 185, 129, 0.14)",
+                  bottomGlowColor: "rgba(20, 184, 166, 0.1)",
+                  badgeGradient: "from-emerald-500 via-teal-600 to-cyan-600",
+                  iconColor: "text-emerald-600 dark:text-emerald-400",
+                  btnGradient: "from-emerald-600 to-teal-700",
+                },
+                {
+                  icon: TrendingUp,
+                  tagNumber: "03",
+                  lightBg: "from-amber-50/80 via-white/85 to-orange-50/50",
+                  darkBg: "dark:from-amber-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
+                  topFlare: "group-hover:via-amber-400",
+                  topGlowColor: "rgba(245, 158, 11, 0.14)",
+                  bottomGlowColor: "rgba(249, 115, 22, 0.1)",
+                  badgeGradient: "from-amber-500 via-orange-600 to-rose-600",
+                  iconColor: "text-amber-600 dark:text-amber-400",
+                  btnGradient: "from-amber-600 to-orange-700",
+                },
+                {
+                  icon: Target,
+                  tagNumber: "04",
+                  lightBg: "from-purple-50/80 via-white/85 to-indigo-50/50",
+                  darkBg: "dark:from-purple-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
+                  topFlare: "group-hover:via-purple-400",
+                  topGlowColor: "rgba(139, 92, 246, 0.14)",
+                  bottomGlowColor: "rgba(99, 102, 241, 0.1)",
+                  badgeGradient: "from-purple-500 via-violet-600 to-indigo-600",
+                  iconColor: "text-purple-600 dark:text-purple-400",
+                  btnGradient: "from-purple-600 to-indigo-700",
+                },
+              ];
+
+              const cfg = pillarCards[i % pillarCards.length];
+              const IconComp = cfg.icon;
+
               return (
                 <motion.div 
                   key={item.id} 
                   {...fadeIn}
-                  transition={{ delay: i * 0.1 }}
-                  className={`${item.color || "bg-blue-50"} p-8 lg:p-10 rounded-[40px] border border-transparent hover:border-gray-200 hover:bg-white hover:shadow-2xl transition-all duration-500 group flex flex-col h-full`}
+                  transition={{ delay: i * 0.12 }}
+                  className={`group relative rounded-[32px] sm:rounded-[36px] lg:rounded-[40px] p-6 sm:p-8 xl:p-9 flex flex-col h-full overflow-hidden transition-all duration-500 hover:-translate-y-2.5 cursor-pointer backdrop-blur-2xl bg-gradient-to-br ${cfg.lightBg} ${cfg.darkBg} border border-white/85 dark:border-white/12 shadow-[0_16px_40px_-12px_rgba(0,75,141,0.08),0_4px_16px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(0,75,141,0.03)] hover:shadow-[0_28px_65px_-14px_rgba(0,75,141,0.22),0_0_35px_rgba(0,174,239,0.18),inset_0_2px_3px_rgba(255,255,255,1)] hover:border-white`}
                 >
-                  <div className="mb-8 w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform text-3xl border border-gray-100 select-none">
-                    <span>{programEmojis[i] || "🌱"}</span>
+                  {/* Polymorphic Ambient Corner Glow Flares */}
+                  <div 
+                    style={{ backgroundColor: cfg.topGlowColor }}
+                    className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" 
+                  />
+                  <div 
+                    style={{ backgroundColor: cfg.bottomGlowColor }}
+                    className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" 
+                  />
+
+                  {/* Top Specular Edge Highlight Flare Bar */}
+                  <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80 ${cfg.topFlare} group-hover:opacity-100 transition-all duration-500`} />
+
+                  {/* Shimmer Light Sweep on Hover */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+                  {/* Card Header Row: Jewel Badge + Tag Number */}
+                  <div className="relative z-10 flex items-center justify-between mb-6">
+                    {/* Jewel-like Frosted Glass Icon Badge */}
+                    <div className="relative p-[1.5px] rounded-[22px] bg-gradient-to-br from-white via-white/85 to-white/40 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,1)] group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[20px] bg-gradient-to-br from-white/95 to-white/80 dark:from-white/15 dark:to-white/5 backdrop-blur-md flex items-center justify-center relative overflow-hidden">
+                        {/* Hover Gradient Fill */}
+                        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${cfg.badgeGradient}`} />
+                        
+                        {/* Crisp Icon with Scale Transition */}
+                        <span className="relative z-10">
+                          <IconComp className={`w-7 h-7 sm:w-8 sm:h-8 ${cfg.iconColor} group-hover:text-white transition-all duration-300 drop-shadow-xs`} strokeWidth={2.2} />
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Polymorphic Tag Number Capsule */}
+                    <div className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black tracking-widest text-slate-400 group-hover:text-brand-primary dark:group-hover:text-cyan-300 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/80 dark:border-white/15 shadow-[0_2px_6px_rgba(0,0,0,0.02),inset_0_1px_1px_rgba(255,255,255,0.9)] transition-colors">
+                      {cfg.tagNumber}
+                    </div>
                   </div>
-                  <h3 className={`text-2xl font-black mb-4 text-gray-900 ${language === "bn" ? "leading-snug tracking-normal" : "leading-tight"}`}>{progInfo.title}</h3>
-                  <p className="text-gray-600 font-medium mb-8 text-sm leading-relaxed line-clamp-3">
+
+                  {/* Pillar Title */}
+                  <h3 className={`relative z-10 text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-brand-primary dark:group-hover:text-cyan-300 transition-colors duration-300 mb-3 ${language === "bn" ? "leading-snug tracking-normal" : "leading-tight tracking-tight"}`}>
+                    {progInfo.title}
+                  </h3>
+
+                  {/* Pillar Description */}
+                  <p className="relative z-10 text-slate-600 dark:text-slate-300 font-medium text-sm sm:text-[14px] leading-relaxed line-clamp-3 mb-8 flex-grow">
                     {progInfo.desc}
                   </p>
-                  <Link href={`/programs/${item.slug}`} className="mt-auto inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-brand-primary hover:gap-4 transition-all">
-                    {t("explore_program")} <ArrowRight size={14} />
+
+                  {/* Polymorphic Interactive CTA Action Pill */}
+                  <Link 
+                    href={`/programs/${item.slug}`} 
+                    className="relative z-10 mt-auto group/btn inline-flex items-center justify-between w-full px-4 sm:px-5 py-3 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/90 dark:border-white/15 shadow-[0_4px_12px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.95)] group-hover:shadow-[0_10px_25px_-5px_rgba(0,75,141,0.3)] transition-all duration-300 overflow-hidden"
+                  >
+                    {/* Background fill on card hover */}
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r ${cfg.btnGradient}`} />
+                    
+                    <span className="relative z-10 text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 group-hover:text-white transition-colors duration-300">
+                      {t("explore_program")}
+                    </span>
+
+                    <div className="relative z-10 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-white/10 group-hover:bg-white/25 flex items-center justify-center text-slate-700 dark:text-white group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
+                      <ArrowRight size={13} strokeWidth={2.5} />
+                    </div>
                   </Link>
                 </motion.div>
               );
