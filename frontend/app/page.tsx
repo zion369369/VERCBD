@@ -148,7 +148,7 @@ export default function Home() {
         <section 
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-36 sm:pt-40 lg:pt-48 pb-28 sm:pb-32 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-48 sm:pt-56 lg:pt-64 pb-16 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
         >
           {/* Ambient Decorative Lighting */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
@@ -182,8 +182,8 @@ export default function Home() {
             </AnimatePresence>
 
             {/* Soft, light shade for high banner visibility with excellent text contrast */}
-            <div className="absolute inset-0 bg-slate-950/25" />
-            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-slate-950/65 via-slate-950/15 to-transparent" />
+            <div className="absolute inset-0 bg-slate-950/20" />
+            <div className="absolute inset-x-0 bottom-0 h-64 sm:h-72 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent" />
           </div>
 
           {/* Desktop Left/Right Navigation Arrows */}
@@ -192,7 +192,7 @@ export default function Home() {
               <button 
                 type="button"
                 onClick={() => setCurrentSlide((prev) => (prev - 1 + activeHeroSlides.length) % activeHeroSlides.length)}
-                className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
+                className="hidden lg:flex absolute left-8 top-[56%] -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
                 aria-label="Previous slide"
               >
                 <ChevronLeft size={22} />
@@ -200,7 +200,7 @@ export default function Home() {
               <button 
                 type="button"
                 onClick={() => setCurrentSlide((prev) => (prev + 1) % activeHeroSlides.length)}
-                className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
+                className="hidden lg:flex absolute right-8 top-[56%] -translate-y-1/2 z-30 w-12 h-12 items-center justify-center rounded-2xl bg-slate-900/50 hover:bg-slate-900/90 text-white/70 hover:text-white backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
                 aria-label="Next slide"
               >
                 <ChevronRight size={22} />
@@ -210,7 +210,7 @@ export default function Home() {
 
           {/* Floating Slide Indicator & Counter Pill */}
           {activeHeroSlides.length > 1 && (
-            <div className="absolute bottom-8 right-6 sm:right-12 z-30 flex items-center gap-3 bg-slate-950/70 backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-2xl">
+            <div className="absolute bottom-6 right-6 sm:right-12 z-30 flex items-center gap-3 bg-slate-950/70 backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-2xl">
               <span className="text-[11px] font-mono font-bold text-white/80 tracking-widest">
                 {String(currentSlide + 1).padStart(2, "0")} / {String(activeHeroSlides.length).padStart(2, "0")}
               </span>
@@ -231,8 +231,8 @@ export default function Home() {
             </div>
           )}
           
-          {/* Main Slide Content - Positioned slightly downward */}
-          <div className="container-custom relative z-20 text-white text-center mt-6 sm:mt-8 lg:mt-12">
+          {/* Main Slide Content - Positioned downwards to fill bottom space and uncover faces */}
+          <div className="container-custom relative z-20 text-white text-center mt-14 sm:mt-20 lg:mt-28 mb-3 sm:mb-5">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
               <AnimatePresence mode="wait">
                 {activeSlide && (
