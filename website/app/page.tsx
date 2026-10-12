@@ -416,50 +416,79 @@ export default function Home() {
                 {
                   icon: GraduationCap,
                   tagNumber: "01",
-                  lightBg: "from-sky-50/80 via-white/85 to-blue-50/50",
-                  darkBg: "dark:from-sky-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
-                  topFlare: "group-hover:via-sky-400",
-                  topGlowColor: "rgba(0, 122, 255, 0.14)",
-                  bottomGlowColor: "rgba(0, 174, 239, 0.1)",
+                  // Signature Pastel Glass Color (shown normally)
+                  lightBg: "from-sky-100/90 via-sky-50/70 to-blue-50/60",
+                  darkBg: "dark:from-sky-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
+                  cardBorder: "border-sky-200/90 dark:border-sky-800/50",
+                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(2,132,199,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(2,132,199,0.05)]",
+                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(2,132,199,0.38),0_0_40px_rgba(56,189,248,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
+                  normalFlare: "via-sky-400 opacity-90",
+                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
+                  topGlowColor: "rgba(0, 122, 255, 0.22)",
+                  bottomGlowColor: "rgba(0, 174, 239, 0.18)",
                   badgeGradient: "from-sky-500 via-blue-600 to-indigo-600",
-                  iconColor: "text-sky-600 dark:text-sky-400",
+                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(2,132,199,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
+                  tagStyle: "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-300/70 dark:border-sky-700/60",
                   btnGradient: "from-sky-600 to-blue-700",
+                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(2,132,199,0.4)]",
+                  hoverRing: "group-hover:ring-sky-400/50",
                 },
                 {
                   icon: Droplets,
                   tagNumber: "02",
-                  lightBg: "from-emerald-50/80 via-white/85 to-teal-50/50",
-                  darkBg: "dark:from-emerald-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
-                  topFlare: "group-hover:via-emerald-400",
-                  topGlowColor: "rgba(16, 185, 129, 0.14)",
-                  bottomGlowColor: "rgba(20, 184, 166, 0.1)",
+                  lightBg: "from-emerald-100/90 via-emerald-50/70 to-teal-50/60",
+                  darkBg: "dark:from-emerald-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
+                  cardBorder: "border-emerald-200/90 dark:border-emerald-800/50",
+                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(5,150,105,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(5,150,105,0.05)]",
+                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(5,150,105,0.38),0_0_40px_rgba(52,211,153,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
+                  normalFlare: "via-emerald-400 opacity-90",
+                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
+                  topGlowColor: "rgba(16, 185, 129, 0.22)",
+                  bottomGlowColor: "rgba(20, 184, 166, 0.18)",
                   badgeGradient: "from-emerald-500 via-teal-600 to-cyan-600",
-                  iconColor: "text-emerald-600 dark:text-emerald-400",
+                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(5,150,105,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
+                  tagStyle: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300/70 dark:border-emerald-700/60",
                   btnGradient: "from-emerald-600 to-teal-700",
+                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(5,150,105,0.4)]",
+                  hoverRing: "group-hover:ring-emerald-400/50",
                 },
                 {
                   icon: TrendingUp,
                   tagNumber: "03",
-                  lightBg: "from-amber-50/80 via-white/85 to-orange-50/50",
-                  darkBg: "dark:from-amber-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
-                  topFlare: "group-hover:via-amber-400",
-                  topGlowColor: "rgba(245, 158, 11, 0.14)",
-                  bottomGlowColor: "rgba(249, 115, 22, 0.1)",
-                  badgeGradient: "from-amber-500 via-orange-600 to-rose-600",
-                  iconColor: "text-amber-600 dark:text-amber-400",
-                  btnGradient: "from-amber-600 to-orange-700",
+                  lightBg: "from-rose-100/90 via-rose-50/70 to-orange-50/60",
+                  darkBg: "dark:from-rose-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
+                  cardBorder: "border-rose-200/90 dark:border-rose-800/50",
+                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(244,63,94,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(244,63,94,0.05)]",
+                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(244,63,94,0.38),0_0_40px_rgba(251,113,133,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
+                  normalFlare: "via-rose-400 opacity-90",
+                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
+                  topGlowColor: "rgba(244, 63, 94, 0.22)",
+                  bottomGlowColor: "rgba(249, 115, 22, 0.18)",
+                  badgeGradient: "from-rose-500 via-amber-500 to-orange-500",
+                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(244,63,94,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
+                  tagStyle: "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-300/70 dark:border-rose-700/60",
+                  btnGradient: "from-rose-600 to-amber-600",
+                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(244,63,94,0.4)]",
+                  hoverRing: "group-hover:ring-rose-400/50",
                 },
                 {
                   icon: Target,
                   tagNumber: "04",
-                  lightBg: "from-purple-50/80 via-white/85 to-indigo-50/50",
-                  darkBg: "dark:from-purple-950/25 dark:via-slate-900/80 dark:to-slate-900/90",
-                  topFlare: "group-hover:via-purple-400",
-                  topGlowColor: "rgba(139, 92, 246, 0.14)",
-                  bottomGlowColor: "rgba(99, 102, 241, 0.1)",
-                  badgeGradient: "from-purple-500 via-violet-600 to-indigo-600",
-                  iconColor: "text-purple-600 dark:text-purple-400",
-                  btnGradient: "from-purple-600 to-indigo-700",
+                  lightBg: "from-amber-100/90 via-amber-50/70 to-yellow-50/60",
+                  darkBg: "dark:from-amber-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
+                  cardBorder: "border-amber-200/90 dark:border-amber-800/50",
+                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(245,158,11,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(245,158,11,0.05)]",
+                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(245,158,11,0.38),0_0_40px_rgba(252,211,77,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
+                  normalFlare: "via-amber-400 opacity-90",
+                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
+                  topGlowColor: "rgba(245, 158, 11, 0.22)",
+                  bottomGlowColor: "rgba(234, 179, 8, 0.18)",
+                  badgeGradient: "from-amber-500 via-orange-500 to-red-500",
+                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(245,158,11,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
+                  tagStyle: "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-300/70 dark:border-amber-700/60",
+                  btnGradient: "from-amber-600 to-orange-600",
+                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(245,158,11,0.4)]",
+                  hoverRing: "group-hover:ring-amber-400/50",
                 },
               ];
 
@@ -471,41 +500,41 @@ export default function Home() {
                   key={item.id} 
                   {...fadeIn}
                   transition={{ delay: i * 0.12 }}
-                  className={`group relative rounded-[32px] sm:rounded-[36px] lg:rounded-[40px] p-6 sm:p-8 xl:p-9 flex flex-col h-full overflow-hidden transition-all duration-500 hover:-translate-y-2.5 cursor-pointer backdrop-blur-2xl bg-gradient-to-br ${cfg.lightBg} ${cfg.darkBg} border border-white/85 dark:border-white/12 shadow-[0_16px_40px_-12px_rgba(0,75,141,0.08),0_4px_16px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(0,75,141,0.03)] hover:shadow-[0_28px_65px_-14px_rgba(0,75,141,0.22),0_0_35px_rgba(0,174,239,0.18),inset_0_2px_3px_rgba(255,255,255,1)] hover:border-white`}
+                  className={`group relative rounded-[32px] sm:rounded-[36px] lg:rounded-[40px] p-6 sm:p-8 xl:p-9 flex flex-col h-full overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3.5 hover:scale-[1.015] cursor-pointer backdrop-blur-2xl bg-gradient-to-br ${cfg.lightBg} ${cfg.darkBg} border ${cfg.cardBorder} ${cfg.normalShadow} ${cfg.hoverShadow} hover:border-white hover:ring-2 ${cfg.hoverRing}`}
                 >
                   {/* Polymorphic Ambient Corner Glow Flares */}
                   <div 
                     style={{ backgroundColor: cfg.topGlowColor }}
-                    className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" 
+                    className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl group-hover:scale-160 transition-transform duration-700 pointer-events-none" 
                   />
                   <div 
                     style={{ backgroundColor: cfg.bottomGlowColor }}
-                    className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" 
+                    className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-xl group-hover:scale-140 transition-transform duration-700 pointer-events-none" 
                   />
 
-                  {/* Top Specular Edge Highlight Flare Bar */}
-                  <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80 ${cfg.topFlare} group-hover:opacity-100 transition-all duration-500`} />
+                  {/* Top Specular Edge Highlight Flare Bar (Colored normally, brilliant white diamond on hover) */}
+                  <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent ${cfg.normalFlare} to-transparent ${cfg.hoverFlare} transition-all duration-500`} />
 
-                  {/* Shimmer Light Sweep on Hover */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+                  {/* Prismatic Crystal Light Beam Sweep on Hover */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
 
                   {/* Card Header Row: Jewel Badge + Tag Number */}
                   <div className="relative z-10 flex items-center justify-between mb-6">
-                    {/* Jewel-like Frosted Glass Icon Badge */}
-                    <div className="relative p-[1.5px] rounded-[22px] bg-gradient-to-br from-white via-white/85 to-white/40 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,1)] group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[20px] bg-gradient-to-br from-white/95 to-white/80 dark:from-white/15 dark:to-white/5 backdrop-blur-md flex items-center justify-center relative overflow-hidden">
-                        {/* Hover Gradient Fill */}
-                        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${cfg.badgeGradient}`} />
+                    {/* Jewel-like Frosted Glass Icon Badge - Richly Colored Normally, 3D Elevate & Halo Ring on Hover */}
+                    <div className={`relative p-[1.5px] rounded-[22px] bg-gradient-to-br from-white via-white/80 to-white/30 ${cfg.badgeShadow} group-hover:scale-115 group-hover:-rotate-3 group-hover:ring-4 group-hover:ring-white/80 group-hover:shadow-[0_14px_32px_rgba(0,0,0,0.35)] transition-all duration-500`}>
+                      <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-[20px] bg-gradient-to-br ${cfg.badgeGradient} backdrop-blur-md flex items-center justify-center relative overflow-hidden`}>
+                        {/* Shimmering specular sheen over the icon on hover */}
+                        <div className="absolute inset-0 bg-radial from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         
-                        {/* Crisp Icon with Scale Transition */}
+                        {/* Crisp White Icon shown normally */}
                         <span className="relative z-10">
-                          <IconComp className={`w-7 h-7 sm:w-8 sm:h-8 ${cfg.iconColor} group-hover:text-white transition-all duration-300 drop-shadow-xs`} strokeWidth={2.2} />
+                          <IconComp className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-md transition-transform duration-500 group-hover:scale-110" strokeWidth={2.3} />
                         </span>
                       </div>
                     </div>
 
-                    {/* Polymorphic Tag Number Capsule */}
-                    <div className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black tracking-widest text-slate-400 group-hover:text-brand-primary dark:group-hover:text-cyan-300 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/80 dark:border-white/15 shadow-[0_2px_6px_rgba(0,0,0,0.02),inset_0_1px_1px_rgba(255,255,255,0.9)] transition-colors">
+                    {/* Polymorphic Tag Number Capsule - Thematically Colored Normally, Frosts on Hover */}
+                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black tracking-widest backdrop-blur-md border shadow-[0_2px_6px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.9)] transition-all duration-300 ${cfg.tagStyle} group-hover:bg-white group-hover:text-slate-900 group-hover:border-white group-hover:shadow-sm`}>
                       {cfg.tagNumber}
                     </div>
                   </div>
@@ -520,20 +549,21 @@ export default function Home() {
                     {progInfo.desc}
                   </p>
 
-                  {/* Polymorphic Interactive CTA Action Pill */}
+                  {/* Polymorphic Interactive CTA Action Pill - Distinctly Colored Normally, Expands & Illuminates on Hover */}
                   <Link 
                     href={`/programs/${item.slug}`} 
-                    className="relative z-10 mt-auto group/btn inline-flex items-center justify-between w-full px-4 sm:px-5 py-3 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/90 dark:border-white/15 shadow-[0_4px_12px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.95)] group-hover:shadow-[0_10px_25px_-5px_rgba(0,75,141,0.3)] transition-all duration-300 overflow-hidden"
+                    className={`relative z-10 mt-auto group/btn inline-flex items-center justify-between w-full px-4 sm:px-5 py-3 rounded-2xl bg-gradient-to-r ${cfg.btnGradient} text-white border border-white/40 ${cfg.btnShadow} group-hover:scale-[1.02] group-hover:shadow-[0_12px_28px_-2px_rgba(0,0,0,0.3)] transition-all duration-300 overflow-hidden`}
                   >
-                    {/* Background fill on card hover */}
-                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r ${cfg.btnGradient}`} />
+                    {/* Liquid light gloss streak on hover */}
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
                     
-                    <span className="relative z-10 text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 group-hover:text-white transition-colors duration-300">
+                    <span className="relative z-10 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white drop-shadow-xs">
                       {t("explore_program")}
                     </span>
 
-                    <div className="relative z-10 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-white/10 group-hover:bg-white/25 flex items-center justify-center text-slate-700 dark:text-white group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
-                      <ArrowRight size={13} strokeWidth={2.5} />
+                    {/* Arrow Circle Inverts and Illuminates on Hover */}
+                    <div className="relative z-10 w-7 h-7 rounded-full bg-white/20 group-hover:bg-white group-hover:text-slate-900 flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-1.5 group-hover:scale-110 shadow-xs">
+                      <ArrowRight size={13} strokeWidth={2.6} />
                     </div>
                   </Link>
                 </motion.div>
