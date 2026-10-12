@@ -148,28 +148,34 @@ export default function Home() {
         <section 
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-32 pb-24 overflow-hidden bg-slate-950"
+          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-36 sm:pt-40 lg:pt-48 pb-28 sm:pb-32 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
         >
           {/* Ambient Decorative Lighting */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
           <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-          {/* Background Slides with Ken-Burns Motion */}
+          {/* Background Slides with Ken-Burns Motion (No wait blackout, smooth crossfade) */}
           <div className="absolute inset-0 z-0">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               {activeSlide && (
                 <motion.div
                   key={activeSlide.id || currentSlide}
-                  initial={{ opacity: 0, scale: 1.08 }}
+                  initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 0.95, scale: 1.02 }}
                   exit={{ opacity: 0, scale: 1.0 }}
-                  transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+                  transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
                   className="absolute inset-0"
                 >
                   <img 
-                    src={activeSlide.imageUrl} 
+                    src={activeSlide.imageUrl || "/assets/home_official_1.jpg"} 
                     alt={activeSlide.title || "VERC Bangladesh"} 
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.includes("/assets/home_official_1.jpg")) {
+                        target.src = "/assets/home_official_1.jpg";
+                      }
+                    }}
                   />
                 </motion.div>
               )}
@@ -225,8 +231,8 @@ export default function Home() {
             </div>
           )}
           
-          {/* Main Slide Content */}
-          <div className="container-custom relative z-20 text-white text-center">
+          {/* Main Slide Content - Positioned slightly downward */}
+          <div className="container-custom relative z-20 text-white text-center mt-6 sm:mt-8 lg:mt-12">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
               <AnimatePresence mode="wait">
                 {activeSlide && (
@@ -235,7 +241,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col items-center"
                   >
 
@@ -278,22 +284,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-      ) : (
-        /* Minimalist fallback when hero banner is globally disabled */
-        <div className="pt-32 pb-16 bg-gradient-to-b from-slate-950 to-slate-900 text-white text-center">
-          <div className="container-custom py-6">
-            <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold uppercase tracking-wider text-cyan-300 mb-3">
-              Village Education Resource Center
-            </span>
-            <h1 className="text-2xl lg:text-4xl font-extrabold text-white tracking-tight">
-              Transforming Lives & Empowering Grassroots Communities
-            </h1>
-          </div>
-        </div>
-      )}
+      ) : null}
 
-      {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN */}
-      <section className="relative z-30 -mt-16 sm:-mt-20 pb-4">
+      {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN (Positioned downward) */}
+      <section className={`relative z-30 ${isBannerGloballyEnabled && activeHeroSlides.length > 0 ? "-mt-4 sm:-mt-6 lg:-mt-8" : "pt-28 sm:pt-32"} pb-6`}>
         <div className="container-custom relative">
           {/* Subtle Ambient Color Reflection Glow Behind Glass Cards */}
           <div 

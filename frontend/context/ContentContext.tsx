@@ -1506,6 +1506,39 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsLoaded(true);
   }, []);
 
+  // Real-time synchronization across browser tabs and components
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleSync = (e: Event) => {
+      try {
+        let data: any = null;
+        if (e instanceof StorageEvent && e.key === STORAGE_KEY && e.newValue) {
+          data = JSON.parse(e.newValue);
+        } else if (e instanceof CustomEvent && e.detail) {
+          data = e.detail;
+        }
+        if (!data) return;
+
+        if (data.heroSlides) setHeroSlides(data.heroSlides);
+        if (data.siteSettings) setSiteSettings(data.siteSettings);
+        if (data.impactStats) setImpactStats(data.impactStats);
+        if (data.programs) setPrograms(data.programs);
+        if (data.theme) setTheme(data.theme);
+        if (data.primaryColor) setPrimaryColor(data.primaryColor);
+      } catch (err) {
+        console.warn("Sync error:", err);
+      }
+    };
+
+    window.addEventListener("storage", handleSync);
+    window.addEventListener("verc_content_sync", handleSync);
+    return () => {
+      window.removeEventListener("storage", handleSync);
+      window.removeEventListener("verc_content_sync", handleSync);
+    };
+  }, []);
+
   // Sync theme with HTML document element for Tailwind class-based dark mode
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -1615,16 +1648,42 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isLoaded
   ]);
 
+  // Helper for immediate synchronous persistence to prevent data loss on quick navigation
+  const saveToStorageImmediate = (key: string, value: any) => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const parsed = stored ? JSON.parse(stored) : {};
+      parsed[key] = value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+      window.dispatchEvent(new CustomEvent("verc_content_sync", { detail: { [key]: value } }));
+    } catch (e) {
+      console.warn(`Immediate save for ${key} failed:`, e);
+    }
+  };
+
   // CRUD Operations
   const addHeroSlide = (slide: Omit<HeroSlide, "id">) => {
     const newSlide = { ...slide, id: `hero-${Date.now()}`, enabled: slide.enabled ?? true };
-    setHeroSlides(prev => [...prev, newSlide]);
+    setHeroSlides(prev => {
+      const updated = [...prev, newSlide];
+      saveToStorageImmediate("heroSlides", updated);
+      return updated;
+    });
   };
   const updateHeroSlide = (id: string, slide: Partial<HeroSlide>) => {
-    setHeroSlides(prev => prev.map(s => s.id === id ? { ...s, ...slide } : s));
+    setHeroSlides(prev => {
+      const updated = prev.map(s => s.id === id ? { ...s, ...slide } : s);
+      saveToStorageImmediate("heroSlides", updated);
+      return updated;
+    });
   };
   const deleteHeroSlide = (id: string) => {
-    setHeroSlides(prev => prev.filter(s => s.id !== id));
+    setHeroSlides(prev => {
+      const updated = prev.filter(s => s.id !== id);
+      saveToStorageImmediate("heroSlides", updated);
+      return updated;
+    });
   };
 
   const updateImpactStat = (id: string, stat: Partial<ImpactStat>) => {
@@ -1776,7 +1835,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateSiteSettings = (settings: Partial<SiteSettings>) => {
-    setSiteSettings(prev => ({ ...prev, ...settings }));
+    setSiteSettings(prev => {
+      const updated = { ...prev, ...settings };
+      saveToStorageImmediate("siteSettings", updated);
+      return updated;
+    });
     if (settings.primaryColor) {
       setPrimaryColor(settings.primaryColor);
     }
