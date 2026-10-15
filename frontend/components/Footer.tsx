@@ -42,9 +42,10 @@ const Footer = () => {
       title: "Social Programs",
       links: [
         { name: "Life Skill Education", href: "/programs/education" },
-        { name: "WASH", href: "/programs/wash" },
+        { name: "WASH (Water & Sanitation)", href: "/programs/wash" },
         { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
         { name: "Capacity Building", href: "/programs/capacity" },
+        { name: "Microfinance Program", href: "/microfinance" },
         { name: "Partnerships", href: "/partners" },
       ]
     },

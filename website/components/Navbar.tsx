@@ -53,16 +53,10 @@ const Navbar = () => {
       href: "/programs/education",
       children: [
         { name: "Life Skill Education", href: "/programs/education" },
-        { name: "WASH", href: "/programs/wash" },
+        { name: "WASH (Water & Sanitation)", href: "/programs/wash" },
         { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
         { name: "Capacity Building", href: "/programs/capacity" },
-      ],
-    },
-    {
-      name: "Microfinance",
-      href: "/microfinance",
-      children: [
-        { name: "About Microfinance", href: "/microfinance" },
+        { name: "Microfinance Program", href: "/microfinance" },
         { name: "Loan & Savings Products", href: "/microfinance/products" },
         { name: "Eligibility & Process", href: "/microfinance/process" },
       ],

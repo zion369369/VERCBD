@@ -18,9 +18,34 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["'Google Sans'", "'Product Sans'", 'Inter', '-apple-system', 'sans-serif'],
-        display: ["'Google Sans Display'", "'Google Sans'", 'sans-serif'],
-        valley: ["'Google Sans'", "'Valley Sans'", 'sans-serif'],
+        sans: [
+          "'SF Pro Display'",
+          "'SF Pro Text'",
+          "'SF Pro'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'San Francisco'",
+          "'Helvetica Neue'",
+          "Helvetica",
+          "Arial",
+          "sans-serif"
+        ],
+        display: [
+          "'SF Pro Display'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'SF Pro Text'",
+          "'San Francisco'",
+          "'Helvetica Neue'",
+          "sans-serif"
+        ],
+        valley: [
+          "'SF Pro Display'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'SF Pro Text'",
+          "sans-serif"
+        ],
       },
     },
   },

@@ -12,6 +12,10 @@ import {
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import SdgSection from "@/components/SdgSection";
+import GlobalCollaborationsSection from "@/components/GlobalCollaborationsSection";
+import SuccessStorySection from "@/components/SuccessStorySection";
+import CtaSection from "@/components/CtaSection";
 
 export default function Home() {
   const { heroSlides, impactStats, programs, siteSettings, primaryColor } = useContent();
@@ -574,153 +578,16 @@ export default function Home() {
       </section>
 
       {/* 4. GLOBAL AGENDA 2030 (SDGs) */}
-      <section className="py-32 bg-gray-50 overflow-hidden">
-        <div className="container-custom">
-            <div className="text-center max-w-4xl mx-auto mb-20">
-                <motion.div {...fadeIn}>
-                    <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/10 rounded-full text-[10px] font-black uppercase tracking-widest text-brand-primary mb-6">
-                        {t("sdg_badge")}
-                    </span>
-                    <h2 className={`text-4xl lg:text-7xl font-black text-gray-900 ${language === "bn" ? "leading-[1.25] tracking-normal mb-6" : "leading-[1] tracking-tighter mb-8"}`}>
-                        {t("sdg_title")} <br/> <span className="text-brand-primary">{t("sdg_highlight")}</span>
-                    </h2>
-                    <p className="text-lg lg:text-xl text-gray-600 font-medium leading-relaxed max-w-3xl mx-auto">
-                        {t("sdg_subtitle")}
-                    </p>
-                </motion.div>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-5">
-                {[
-                    { id: 1, title: language === "bn" ? "দারিদ্র্য বিমোচন" : "No Poverty", color: "bg-[#E5243B]", desc: language === "bn" ? "সুবিধাবঞ্চিতদের জীবিকা উন্নয়ন।" : "Livelihood development for the disadvantaged.", icon: <Users size={28} /> },
-                    { id: 2, title: language === "bn" ? "ক্ষুধা মুক্তি" : "Zero Hunger", color: "bg-[#DDA63A]", desc: language === "bn" ? "খাদ্য নিরাপত্তায় গ্রামীণ উন্নয়ন।" : "Rural development aimed at food security.", icon: <Zap size={28} /> },
-                    { id: 3, title: language === "bn" ? "সুস্বাস্থ্য ও কল্যাণ" : "Good Health", color: "bg-[#4C9F38]", desc: language === "bn" ? "মা ও শিশু হাসপাতাল ও স্বাস্থ্য সেবা।" : "Mother & Child Hospital and health initiatives.", icon: <HeartPulse size={28} /> },
-                    { id: 4, title: language === "bn" ? "গুণগত শিক্ষা" : "Quality Education", color: "bg-[#C5192D]", desc: language === "bn" ? "প্রাথমিক ও শিশু বিকাশে অগ্রাধিকার।" : "Emphasis on early childhood development.", icon: <BookOpen size={28} /> },
-                    { id: 5, title: language === "bn" ? "জেন্ডার সমতা" : "Gender Equality", color: "bg-[#FF3A21]", desc: language === "bn" ? "প্রান্তিক নারীদের আত্মনির্ভরশীলতা।" : "Empowering marginalized women populations.", icon: <Scale size={28} /> },
-                    { id: 6, title: language === "bn" ? "নিরাপদ পানি" : "Clean Water", color: "bg-[#26BDE2]", desc: language === "bn" ? "বাংলাদেশে সিএলটিএস স্যানিটেশনের অগ্রদূত।" : "Pioneers of the CLTS approach in Bangladesh.", icon: <Droplets size={28} /> },
-                    { id: 7, title: language === "bn" ? "সাশ্রয়ী জ্বালানি" : "Clean Energy", color: "bg-[#FCC30B]", desc: language === "bn" ? "১৯৮৭ সাল থেকে বন্ধন চুলা কর্মসূচি।" : "Improved Cook Stove (ICS) program since 1987.", icon: <Sun size={28} /> },
-                    { id: 8, title: language === "bn" ? "উপযুক্ত কাজ" : "Decent Work", color: "bg-[#A21942]", desc: language === "bn" ? "ক্ষুদ্র উদ্যোগ ও আয় বৃদ্ধি।" : "Micro-enterprise and income generation.", icon: <TrendingUp size={28} /> },
-                    { id: 10, title: language === "bn" ? "বৈষম্য হ্রাস" : "Reduced Inequality", color: "bg-[#DD1367]", desc: language === "bn" ? "প্রান্তিক জনগোষ্ঠীর অধিকার সুরক্ষা।" : "Focus on justice for marginalized populations.", icon: <Target size={28} /> },
-                    { id: 13, title: language === "bn" ? "জলবায়ু কার্যক্রম" : "Climate Action", color: "bg-[#3F7E44]", desc: language === "bn" ? "জলবায়ু অভিযোজন ও দুর্যোগ ব্যবস্থাপনা।" : "Adaptation and disaster preparedness.", icon: <Globe size={28} /> },
-                    { id: 17, title: language === "bn" ? "লক্ষ্য অর্জনে অংশীদারিত্ব" : "Partnerships", color: "bg-[#19486A]", desc: language === "bn" ? "বিশ্বব্যাংক, পিকেএসএফ, ওয়াটারএইডের সাথে কাজ।" : "Collaboration with World Bank, PKSF, WaterAid.", icon: <Handshake size={28} /> },
-                ].map((sdg, i) => (
-                    <motion.div
-                        key={sdg.id}
-                        {...fadeIn}
-                        transition={{ delay: i * 0.05 }}
-                        className="group relative w-[calc(50%-1rem)] md:w-[calc(33.33%-1rem)] lg:w-[calc(20%-1rem)] xl:w-[calc(16.66%-1rem)] max-w-[200px] aspect-square"
-                    >
-                        <div className={`${sdg.color} p-5 h-full rounded-[32px] text-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl overflow-hidden flex flex-col justify-between`}>
-                            <div className="absolute top-0 right-0 p-3 opacity-10 scale-150 transform translate-x-4 -translate-y-4 font-black text-6xl">
-                                {sdg.id}
-                            </div>
-                            <div className="relative z-10">
-                                <div className="text-2xl font-black mb-1 leading-none">{sdg.id}</div>
-                                <div className="mb-2 opacity-90 group-hover:opacity-100 transition-opacity">
-                                    {sdg.icon}
-                                </div>
-                                <h4 className="text-[11px] font-black uppercase tracking-tight leading-tight">{sdg.title}</h4>
-                            </div>
-                            <p className="relative z-10 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 leading-snug">
-                                {sdg.desc}
-                            </p>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
-      </section>
+      <SdgSection />
 
       {/* 5. GLOBAL COLLABORATIONS */}
-      <section className="py-32 bg-white">
-        <div className="container-custom">
-            <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                <div className="flex-1 space-y-8">
-                    <div className="flex items-center gap-3 text-brand-primary">
-                        <Globe size={24} />
-                        <h2 className="font-black uppercase tracking-widest text-xs">{t("global_badge")}</h2>
-                    </div>
-                    <h3 className={`text-4xl lg:text-7xl font-black text-gray-900 ${language === "bn" ? "leading-[1.25] tracking-normal" : "leading-[1.05] tracking-tighter"}`}>
-                        {t("global_title")} <br/> <span className="text-brand-primary">{t("global_highlight")}</span>
-                    </h3>
-                    <p className="text-lg lg:text-xl text-gray-600 font-medium leading-relaxed">
-                        {t("global_subtitle")}
-                    </p>
-                    <div className="pt-4">
-                        <Link href="/partners" className="btn-primary px-10 py-5 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-block">
-                            {t("global_btn")}
-                        </Link>
-                    </div>
-                </div>
-                <div className="flex-1 relative h-[500px] lg:h-[560px] w-full rounded-[48px] overflow-hidden shadow-2xl group">
-                    <img 
-                        src="/assets/home_official_1.jpg" 
-                        alt="VERC Field Operation" 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                    <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 text-white">
-                        <p className="text-[10px] font-black uppercase tracking-widest mb-2 text-brand-secondary">{t("spotlight_badge")}</p>
-                        <h5 className="text-base lg:text-lg font-bold">{t("spotlight_title")}</h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </section>
+      <GlobalCollaborationsSection />
 
       {/* 6. SUCCESS STORY */}
-      <section className="py-32 relative bg-gray-50">
-        <div className="container-custom">
-            <div className="bg-white rounded-[56px] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch border border-gray-100">
-                <div className="flex-1 relative h-[360px] lg:h-auto min-h-[380px]">
-                    <img 
-                        src="/assets/community_success_hero.png" 
-                        alt="Community Success" 
-                        className="w-full h-full object-cover"
-                    />
-                </div>
-                <div className="flex-1 p-10 lg:p-20 space-y-8">
-                    <div className="flex items-center gap-3 text-brand-secondary">
-                        <Heart size={20} />
-                        <h4 className="font-black uppercase tracking-widest text-xs">{t("success_badge")}</h4>
-                    </div>
-                    <h3 className={`text-3xl lg:text-6xl font-black text-gray-900 ${language === "bn" ? "leading-[1.25] tracking-normal" : "leading-tight tracking-tighter"}`}>
-                      {t("success_title")} <br/> {t("success_highlight")}
-                    </h3>
-                    <p className="text-lg lg:text-xl text-gray-600 leading-relaxed font-medium italic">
-                        {t("success_quote")}
-                    </p>
-                    <div className="pt-4">
-                        <Link href="/impact" className="btn-primary px-10 py-5 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-block">
-                            {t("success_btn")}
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </section>
+      <SuccessStorySection />
 
       {/* 7. CALL TO ACTION */}
-      <section className="py-32 bg-brand-primary text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 blur-[150px] -mr-40 mt-20"></div>
-        <div className="container-custom text-center relative z-10">
-            <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-10">
-                <h3 className={`text-5xl lg:text-8xl font-black mb-10 ${language === "bn" ? "leading-[1.2] tracking-normal py-2" : "leading-[0.95] tracking-tighter"}`}>
-                  {t("cta_title")} <br/> <span className="text-brand-secondary">{t("cta_highlight")}</span>
-                </h3>
-                <p className="text-xl lg:text-2xl text-gray-200 font-medium max-w-3xl mx-auto leading-relaxed">
-                    {t("cta_subtitle")}
-                </p>
-                <div className="flex flex-wrap justify-center gap-5 pt-8">
-                    <Link href="/donate" className="px-10 py-5 bg-white text-brand-primary text-lg font-black rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all inline-block">
-                        {t("cta_btn_donate")}
-                    </Link>
-                    <Link href="/contact" className="px-10 py-5 bg-transparent border-2 border-white/20 text-white text-lg font-bold rounded-2xl hover:bg-white/10 transition-all inline-block">
-                        {t("cta_btn_partner")}
-                    </Link>
-                </div>
-            </motion.div>
-        </div>
-      </section>
+      <CtaSection />
     </div>
   );
 }
