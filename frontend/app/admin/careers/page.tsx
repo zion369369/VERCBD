@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useContent, JobOpening, JobApplication } from "@/context/ContentContext";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { isBdjobsUrl, VERC_BDJOBS_URL } from "@/lib/careers";
 
 export default function AdminCareersPage() {
   const { 
@@ -59,18 +60,20 @@ export default function AdminCareersPage() {
   // Job Modal State
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<JobOpening | null>(null);
+  const [jobError, setJobError] = useState("");
   const [jobForm, setJobForm] = useState({
     title: "",
     department: "WASH & Climate Resilience",
-    location: "Dhaka Head Office",
+    applicationUrl: "",
+    location: "",
     type: "Full-Time" as JobOpening["type"],
-    deadline: "2026-11-30",
-    salary: "BDT 60,000 - 80,000 / month",
-    experience: "3+ Years",
+    deadline: "",
+    salary: "",
+    experience: "",
     description: "",
-    requirements: ["Bachelor or Master degree in relevant discipline", "Minimum 3 years development sector experience", "Proficiency in English and Bangla"],
-    responsibilities: ["Lead day-to-day project operations and coordinate with stakeholders", "Ensure quality compliance and prepare periodic progress reports"],
-    status: "Active" as JobOpening["status"]
+    requirements: [] as string[],
+    responsibilities: [] as string[],
+    status: "Draft" as JobOpening["status"]
   });
 
   // Requirement & Responsibility temporary inputs
@@ -123,18 +126,20 @@ export default function AdminCareersPage() {
 
   const handleOpenCreateJob = () => {
     setEditingJob(null);
+    setJobError("");
     setJobForm({
       title: "",
       department: (departments && departments.length > 0) ? departments[0] : "WASH & Climate Resilience",
-      location: "Dhaka Head Office",
+      applicationUrl: "",
+      location: "",
       type: "Full-Time",
-      deadline: "2026-11-30",
-      salary: "BDT 60,000 - 80,000 / month",
-      experience: "3+ Years",
-      description: "<p>We are looking for a qualified professional to join our program team.</p>",
-      requirements: ["Bachelor or Master degree in relevant field", "Strong communication and reporting skills"],
-      responsibilities: ["Manage program activities and collaborate with community teams"],
-      status: "Active"
+      deadline: "",
+      salary: "",
+      experience: "",
+      description: "",
+      requirements: [],
+      responsibilities: [],
+      status: "Draft"
     });
     setIsAddingDept(false);
     setNewDeptInput("");
@@ -143,8 +148,10 @@ export default function AdminCareersPage() {
 
   const handleOpenEditJob = (job: JobOpening) => {
     setEditingJob(job);
+    setJobError("");
     setJobForm({
       title: job.title,
+      applicationUrl: job.applicationUrl || "",
       department: job.department,
       location: job.location,
       type: job.type,
@@ -162,6 +169,7 @@ export default function AdminCareersPage() {
   const handleSubmitJob = (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobForm.title.trim()) return;
+    if (jobForm.status === "Active" && (!isBdjobsUrl(jobForm.applicationUrl) || !jobForm.deadline)) { setJobError("An active vacancy needs its official HTTPS BDJobs application link and application deadline."); return; }
 
     if (editingJob) {
       updateJobOpening(editingJob.id, jobForm);
@@ -242,7 +250,7 @@ export default function AdminCareersPage() {
             Career & Recruitment CMS
           </h1>
           <p className="text-xs text-gray-400 mt-1 font-medium">
-            Post and update job circulars, manage candidate submissions, and download PDF resumes.
+            Manage approved vacancy notices and historical applications. New applications go through BDJobs.
           </p>
         </div>
 
@@ -787,6 +795,12 @@ export default function AdminCareersPage() {
                 </div>
               </div>
 
+              <div className="rounded-xl border border-sky-100 bg-sky-50 p-4 dark:border-white/10 dark:bg-white/5">
+                <label className="block text-xs font-bold">Official BDJobs application link<input type="url" value={jobForm.applicationUrl} onChange={e => setJobForm({ ...jobForm, applicationUrl: e.target.value })} placeholder="https://jobs.bdjobs.com/jobdetails.asp?..." className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium dark:border-white/10 dark:bg-[#14141E]" /></label>
+                <p className="mt-2 text-xs leading-5 text-gray-500">Only active, unexpired notices with a BDJobs link appear publicly. Copy the vacancy details from the approved circular.</p>
+                <a href={VERC_BDJOBS_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-10 items-center text-xs font-bold text-brand-primary underline">Open VERC on BDJobs</a>
+                {jobError && <p role="alert" className="mt-2 text-xs font-bold text-red-600">{jobError}</p>}
+              </div>
               {/* Row 3: Salary, Experience, Status */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>

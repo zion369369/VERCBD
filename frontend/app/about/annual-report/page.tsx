@@ -69,7 +69,7 @@ export default function AnnualReportPage() {
                     <BarChart3 size={24} />
                     <h2 className="font-black uppercase tracking-[0.4em] text-xs">Transparency Archive</h2>
                 </div>
-                <h1 className="text-5xl lg:text-8xl font-black text-gray-900 mb-10 leading-[0.95] tracking-tighter">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 mb-10 leading-[0.95] tracking-tighter">
                     Annual <br/> <span className="text-brand-primary">Reports.</span>
                 </h1>
                 <p className="text-xl text-gray-500 font-medium leading-relaxed">
@@ -88,7 +88,7 @@ export default function AnnualReportPage() {
                         key={report.id || i}
                         {...fadeIn}
                         transition={{ delay: i * 0.1 }}
-                        className={`group relative bg-white p-10 rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.04)] border ${report.highlight ? "border-brand-primary/20 ring-1 ring-brand-primary/5" : "border-gray-50"} hover:shadow-2xl transition-all duration-500 flex flex-col h-full`}
+                        className={`group relative bg-white p-6 sm:p-10 rounded-3xl sm:rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.04)] border ${report.highlight ? "border-brand-primary/20 ring-1 ring-brand-primary/5" : "border-gray-50"} hover:shadow-2xl transition-all duration-500 flex flex-col h-full`}
                     >
                         {report.highlight && (
                             <div className="absolute -top-4 right-10 px-4 py-1.5 bg-brand-primary text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
@@ -148,7 +148,7 @@ export default function AnnualReportPage() {
       </section>
 
       {/* Verification CTA */}
-      <section className="py-32 bg-white">
+      <section className="py-16 sm:py-24 lg:py-32 bg-white">
         <div className="container-custom text-center">
             <div className="max-w-2xl mx-auto space-y-8">
                 <h3 className="text-4xl font-black text-gray-900 tracking-tight">Need a Physical Copy?</h3>

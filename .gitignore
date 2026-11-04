@@ -41,3 +41,9 @@ dev.db
 
 # Backup files
 *.bak
+
+# Runtime CMS content and uploaded media (preserved by deployment)
+/frontend/data/
+/frontend/public/uploads/
+/website/data/
+/website/public/uploads/

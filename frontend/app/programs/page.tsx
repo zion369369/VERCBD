@@ -472,14 +472,14 @@ export default function SocialProgramsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Microfinance Program Card */}
+            {/* Livelihood subsection: Microfinance */}
             <div className="rounded-[32px] p-8 sm:p-9 bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 shadow-lg hover:shadow-2xl transition-all duration-500 group flex flex-col justify-between">
               <div>
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-brand-primary mb-6 group-hover:scale-110 transition-transform">
                   <Coins size={28} />
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
-                  {isBn ? "ক্ষুদ্রঅর্থায়ন কর্মসূচি (Microfinance)" : "Microfinance Program"}
+                  {isBn ? "ক্ষুদ্রঅর্থায়ন কর্মসূচি (Microfinance)" : "Livelihood: Microfinance"}
                 </h3>
                 <p className="text-slate-600 dark:text-slate-300 font-medium text-sm sm:text-base leading-relaxed mb-6">
                   {isBn 
@@ -500,7 +500,7 @@ export default function SocialProgramsPage() {
               </div>
 
               <Link 
-                href="/microfinance" 
+                href="/programs/livelihood#microfinance"
                 className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-brand-primary hover:gap-3 transition-all"
               >
                 {isBn ? "ক্ষুদ্রঅর্থায়ন দেখুন" : "Explore Microfinance"} <ArrowRight size={16} />

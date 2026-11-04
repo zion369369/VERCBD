@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+import { branchDirectory, ensureBranchDirectory, BRANCH_DIRECTORY_VERSION } from "@/lib/branchDirectory";
+import { photoLibrary, ensurePhotoLibrary, PHOTO_LIBRARY_VERSION } from "@/lib/photoLibrary";
+import { ensureCareers, CAREERS_CONTENT_VERSION } from "@/lib/careers";
+
 export interface HeroSlide {
   id: string;
   title: string;
@@ -146,7 +150,19 @@ export interface CoreValueItem {
   color: string;
 }
 
+export interface BoardMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  imageUrl: string;
+  order: number;
+}
+
 export interface AboutContent {
+  boardMembers?: BoardMember[];
+  heroImageUrl?: string;
+  journeyImageUrl?: string;
   vision: string;
   mission: string;
   visionText?: string;
@@ -183,13 +199,23 @@ export interface PartnerItem {
 export interface GalleryItem {
   id: string;
   title: string;
-  category: "Education" | "WASH" | "Livelihood" | "Health" | "Events" | "All";
+  category: "Education" | "WASH" | "Livelihood" | "Health" | "Events" | "Capacity Building" | "All";
   imageUrl: string;
   description?: string;
   date: string;
+  width?: number;
+  height?: number;
 }
 
 export interface BranchOffice {
+  code?: string;
+  branchType?: string;
+  upazila?: string;
+  postOffice?: string;
+  village?: string;
+  sourcePhone?: string;
+  mapsQuery?: string;
+  googlePlaceId?: string;
   id: string;
   name: string;
   district: string;
@@ -296,6 +322,7 @@ export interface CharityDashboardMetric {
 }
 
 export interface JobOpening {
+  applicationUrl?: string;
   id: string;
   title: string;
   department: string;
@@ -402,6 +429,7 @@ interface ContentContextType {
   updateBranch: (id: string, branch: Partial<BranchOffice>) => void;
   deleteBranch: (id: string) => void;
 
+  refreshMessages: () => Promise<void>;
   addMessage: (msg: Omit<ContactMessage, "id" | "date" | "status">) => void;
   updateMessageStatus: (id: string, status: ContactMessage["status"]) => void;
   deleteMessage: (id: string) => void;
@@ -471,7 +499,7 @@ const defaultHeroSlides: HeroSlide[] = [
     title: "Pioneering Community",
     highlightText: "Sanitation & Water.",
     subtitle: "Leading the global CLTS revolution, providing life-saving hygiene and clean water infrastructure to millions.",
-    imageUrl: "/assets/wash_hero.png",
+    imageUrl: "/assets/wash-community-banner.webp",
     primaryBtnText: "Explore WaSH",
     primaryBtnLink: "/programs/wash",
     secondaryBtnText: "Annual Reports",
@@ -928,22 +956,9 @@ const defaultPartners: PartnerItem[] = [
   { id: "p-8", name: "CARE Bangladesh", category: "International NGO", logoUrl: "/assets/care_logo.png", websiteUrl: "https://carebangladesh.org", description: "Community disaster risk reduction and livelihoods" }
 ];
 
-const defaultGallery: GalleryItem[] = [
-  { id: "gal-1", title: "Joyful Early Childhood Learning Session", category: "Education", imageUrl: "/assets/edu_1.png", description: "Children engaging in participatory numeracy and literacy games at Savar center.", date: "2024-03-15" },
-  { id: "gal-2", title: "Community Total Sanitation Declaration", category: "WASH", imageUrl: "/assets/wash_hero.png", description: "Village leaders celebrating 100% open-defecation-free status in Rajshahi.", date: "2024-02-28" },
-  { id: "gal-3", title: "Women Entrepreneurship Handicrafts Display", category: "Livelihood", imageUrl: "/assets/microfinance_woman_hero.png", description: "Organic crops and handloom products created by VERC microcredit beneficiaries.", date: "2024-01-20" },
-  { id: "gal-4", title: "Orlando Bloom Inspects Piped Water Network", category: "Events", imageUrl: "/assets/home_official_1.jpg", description: "UNICEF goodwill ambassador assessing community water tap points.", date: "2024-04-02" },
-  { id: "gal-5", title: "Mother & Child Specialized Medical Checkup", category: "Health", imageUrl: "/assets/health_hero.png", description: "Free antenatal care and infant immunization camp at Mirsarai Hospital.", date: "2024-02-12" },
-  { id: "gal-6", title: "Arsenic-Free Deep Tubewell Commissioning", category: "WASH", imageUrl: "/assets/impact_hero.png", description: "Safe drinking water source inauguration serving 500 households.", date: "2024-03-08" }
-];
+const defaultGallery: GalleryItem[] = photoLibrary;
 
-const defaultBranches: BranchOffice[] = [
-  { id: "br-1", name: "Savar Head Office & Training Institute", district: "Dhaka", division: "Dhaka", address: "B-30, Ekhlas Uddin Khan Road, Anandapur, Savar, Dhaka-1340", phone: "+880 2 7745041", email: "savar@vercbd.org", manager: "Md. Masud Hassan", lat: 23.8488, lng: 90.2585 },
-  { id: "br-2", name: "Rajshahi Regional Operations Hub", district: "Rajshahi", division: "Rajshahi", address: "House 45, Terokhadia, Rajshahi Sadar", phone: "+880 721 771234", email: "rajshahi@vercbd.org", manager: "Shahadat Hossain", lat: 24.3745, lng: 88.6042 },
-  { id: "br-3", name: "Chattogram & Mirsarai Center", district: "Chattogram", division: "Chattogram", address: "Mirsarai Hospital Road, Mirsarai, Chattogram", phone: "+880 31 654321", email: "ctg@vercbd.org", manager: "Kamrul Islam", lat: 22.7758, lng: 91.5746 },
-  { id: "br-4", name: "Rangpur Field Operations Office", district: "Rangpur", division: "Rangpur", address: "Dhap Engineer Para, Rangpur City", phone: "+880 521 63980", email: "rangpur@vercbd.org", manager: "Aminul Islam", lat: 25.7439, lng: 89.2752 },
-  { id: "br-5", name: "Cox's Bazar Humanitarian Response Hub", district: "Cox's Bazar", division: "Chattogram", address: "Kolatoli Road, Cox's Bazar", phone: "+880 341 62100", email: "coxsbazar@vercbd.org", manager: "Farzana Akter", lat: 21.4272, lng: 91.9846 }
-];
+const defaultBranches: BranchOffice[] = branchDirectory;
 
 const defaultMessages: ContactMessage[] = [
   { id: "msg-1", name: "Sarah Jenkins (UN Water)", email: "sarah.j@unwater.org", phone: "+1 415 890 1234", subject: "Partnership Inquiry: Scaling WaSH in Coastal Districts", message: "We are finalizing our 2024-2026 climate resilience grant allocations and would like to invite VERC to submit a full technical proposal for coastal piped water.", date: "2024-04-20 10:30 AM", status: "Unread" },
@@ -1303,138 +1318,8 @@ export const defaultDepartments: string[] = [
   "HR & General Administration"
 ];
 
-const defaultJobOpenings: JobOpening[] = [
-  {
-    id: "job-1",
-    title: "Senior WASH Project Manager",
-    department: "WASH & Climate Resilience",
-    location: "Dhaka Head Office (with regular field visits)",
-    type: "Full-Time",
-    deadline: "2026-10-30",
-    salary: "BDT 75,000 - 95,000 / month",
-    experience: "5+ Years in WASH / NGO sector",
-    description: "<p>We are seeking an experienced <strong>Senior WASH Project Manager</strong> to lead community-led total sanitation (CLTS), climate-resilient water infrastructure, and hygiene behavior change programs across 12 targeted rural districts.</p><p>The role involves managing donor-funded interventions, overseeing district field engineers, coordinating with local government authorities, and ensuring timely project milestones.</p>",
-    requirements: [
-      "Master's degree in Civil/Environmental Engineering, Water Resource Management, or Development Studies",
-      "Minimum 5 years of hands-on experience in managing large-scale WASH programs",
-      "Proven track record in donor reporting (UNICEF, WaterAid, or World Bank standards)",
-      "Strong proficiency in English and Bengali technical reporting",
-      "Willingness to travel to remote rural project sites frequently"
-    ],
-    responsibilities: [
-      "Oversee implementation of deep tube well, piped water supply, and community sanitation schemes",
-      "Lead monitoring, evaluation, and quality assurance for field interventions",
-      "Maintain active stakeholder liaison with Department of Public Health Engineering (DPHE)",
-      "Manage project budget allocations and certify procurement compliance"
-    ],
-    status: "Active",
-    createdAt: "2026-09-01"
-  },
-  {
-    id: "job-2",
-    title: "Microfinance Branch Manager",
-    department: "Microfinance & Inclusive Finance",
-    location: "Gazipur / Manikganj Branch",
-    type: "Full-Time",
-    deadline: "2026-10-25",
-    salary: "BDT 40,000 - 55,000 / month + Incentives",
-    experience: "3+ Years in Microfinance Operations",
-    description: "<p>VERC Microfinance Program is expanding! We are looking for an energetic <strong>Branch Manager</strong> to drive loan portfolio growth, ensure high recovery rates, manage credit officers, and foster trusted relationships with women-led borrower groups (Somitis).</p>",
-    requirements: [
-      "Bachelor's or Master's degree in Finance, Accounting, Economics, or Business Administration",
-      "At least 3 years of branch-level management experience in an MRA-licensed MFI",
-      "Sound knowledge of loan portfolio analysis, PAR control, and credit auditing",
-      "Proficiency in computerized accounting and microfinance management software"
-    ],
-    responsibilities: [
-      "Direct daily operations, loan disbursement approvals, and cash counter management",
-      "Mentor and supervise field credit officers for group formation and regular collection",
-      "Ensure strict compliance with Microcredit Regulatory Authority (MRA) guidelines",
-      "Conduct regular audits of member passbooks and somiti accounts"
-    ],
-    status: "Active",
-    createdAt: "2026-09-05"
-  },
-  {
-    id: "job-3",
-    title: "Community Health & Nutrition Coordinator",
-    department: "Health & Child Development",
-    location: "Cox's Bazar / Chattogram",
-    type: "Contract",
-    deadline: "2026-11-15",
-    salary: "BDT 50,000 - 65,000 / month",
-    experience: "3+ Years in Public Health / Maternal Care",
-    description: "<p>Coordinate maternal healthcare clinics, adolescent reproductive health awareness, and supplementary nutrition campaigns across coastal community hubs.</p>",
-    requirements: [
-      "MBBS, MPH, or Master's degree in Public Health, Nutrition, or Nursing",
-      "3+ years experience with grassroots maternal & child health programs",
-      "Familiarity with community clinic coordination and immunization tracking"
-    ],
-    responsibilities: [
-      "Organize satellite health camps and prenatal/postnatal checkups",
-      "Facilitate nutrition counseling sessions for mothers and adolescent girls",
-      "Coordinate medical supplies distribution and cold-chain maintenance"
-    ],
-    status: "Active",
-    createdAt: "2026-09-10"
-  },
-  {
-    id: "job-4",
-    title: "Monitoring, Evaluation & Learning (MEL) Officer",
-    department: "Executive & Quality Assurance",
-    location: "Dhaka Head Office",
-    type: "Full-Time",
-    deadline: "2026-11-05",
-    salary: "BDT 60,000 - 75,000 / month",
-    experience: "4+ Years in M&E",
-    description: "<p>Drive evidence-based impact evaluation, design mobile data collection systems (Kobo/ODK), and produce analytical reports for bilateral donors.</p>",
-    requirements: [
-      "Degree in Statistics, Economics, Development Studies, or Social Sciences",
-      "Demonstrated experience with quantitative and qualitative data analysis tools (SPSS/Stata/R)",
-      "Experience developing logical frameworks and theory of change models"
-    ],
-    responsibilities: [
-      "Conduct baseline, midline, and endline surveys across all active VERC programs",
-      "Train field teams on digital data collection and data integrity protocols",
-      "Draft quarterly impact dashboards for senior management review"
-    ],
-    status: "Active",
-    createdAt: "2026-09-12"
-  }
-];
-
-const defaultJobApplications: JobApplication[] = [
-  {
-    id: "app-1",
-    jobId: "job-1",
-    jobTitle: "Senior WASH Project Manager",
-    candidateName: "Engr. Rafiqul Islam",
-    email: "rafiq.wash.eng@example.com",
-    phone: "+880 1712-345678",
-    coverLetter: "I have over 6 years of experience implementing community-led water supply systems and sanitation solutions in rural Bangladesh, including 3 years working closely with DPHE and international NGOs.",
-    resumeUrl: DEMO_PDF_BASE64,
-    resumeFileName: "Engr_Rafiqul_Islam_Resume.pdf",
-    resumeFileSize: "1.4 MB",
-    appliedAt: "2026-09-14",
-    status: "Shortlisted",
-    notes: "Strong candidate with solid CLTS track record. Schedule first interview."
-  },
-  {
-    id: "app-2",
-    jobId: "job-2",
-    jobTitle: "Microfinance Branch Manager",
-    candidateName: "Nusrat Jahan",
-    email: "nusrat.jahan.fin@example.com",
-    phone: "+880 1819-876543",
-    coverLetter: "Experienced microfinance professional with 4 years as Assistant Branch Manager at ASA and PKSF partner organizations. Excellent record in portfolio recovery and somiti mobilization.",
-    resumeUrl: DEMO_PDF_BASE64,
-    resumeFileName: "Nusrat_Jahan_CV.pdf",
-    resumeFileSize: "890 KB",
-    appliedAt: "2026-09-16",
-    status: "Reviewed",
-    notes: "Solid credit management experience. Good candidate for Gazipur branch."
-  }
-];
+const defaultJobOpenings: JobOpening[] = [];
+const defaultJobApplications: JobApplication[] = [];
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
@@ -1451,6 +1336,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [partners, setPartners] = useState<PartnerItem[]>(defaultPartners);
   const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery);
   const [branches, setBranches] = useState<BranchOffice[]>(defaultBranches);
+  const [deletedMessageIds, setDeletedMessageIds] = useState<string[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>(defaultMessages);
   const [subscribers, setSubscribers] = useState<Subscriber[]>(defaultSubscribers);
   const [donations, setDonations] = useState<DonationRecord[]>(defaultDonations);
@@ -1477,6 +1363,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Helper to apply incoming payload into component states
   const applyPayload = (parsed: any) => {
     if (!parsed || typeof parsed !== "object") return;
+    if (Array.isArray(parsed.branches)) parsed = ensureBranchDirectory(parsed);
+    if (Array.isArray(parsed.gallery)) parsed = ensurePhotoLibrary(parsed);
+    if (Array.isArray(parsed.jobOpenings) || Array.isArray(parsed.jobApplications)) parsed = ensureCareers(parsed);
     if (parsed.heroSlides && Array.isArray(parsed.heroSlides)) setHeroSlides(parsed.heroSlides);
     if (parsed.impactStats && Array.isArray(parsed.impactStats)) setImpactStats(parsed.impactStats);
     if (parsed.programs && Array.isArray(parsed.programs)) setPrograms(parsed.programs);
@@ -1488,6 +1377,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (parsed.gallery && Array.isArray(parsed.gallery)) setGallery(parsed.gallery);
     if (parsed.branches && Array.isArray(parsed.branches)) setBranches(parsed.branches);
     if (parsed.messages && Array.isArray(parsed.messages)) setMessages(parsed.messages);
+    if (Array.isArray(parsed.deletedMessageIds)) setDeletedMessageIds(parsed.deletedMessageIds);
     if (parsed.subscribers && Array.isArray(parsed.subscribers)) setSubscribers(parsed.subscribers);
     if (parsed.donations && Array.isArray(parsed.donations)) setDonations(parsed.donations);
     if (parsed.campaigns && Array.isArray(parsed.campaigns)) setCampaigns(parsed.campaigns);
@@ -1497,7 +1387,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (parsed.annualReports && Array.isArray(parsed.annualReports)) setAnnualReports(parsed.annualReports);
     if (parsed.awards && Array.isArray(parsed.awards)) setAwards(parsed.awards);
     if (parsed.organogramNodes && Array.isArray(parsed.organogramNodes)) setOrganogramNodes(parsed.organogramNodes);
-    if (parsed.aboutContent && typeof parsed.aboutContent === "object") setAboutContent(parsed.aboutContent);
+    if (parsed.aboutContent && typeof parsed.aboutContent === "object") setAboutContent({ ...defaultAboutContent, ...parsed.aboutContent });
     if (parsed.microfinanceProcess && typeof parsed.microfinanceProcess === "object") setMicrofinanceProcess(parsed.microfinanceProcess);
     if (parsed.jobOpenings && Array.isArray(parsed.jobOpenings)) setJobOpenings(parsed.jobOpenings);
     if (parsed.jobApplications && Array.isArray(parsed.jobApplications)) setJobApplications(parsed.jobApplications);
@@ -1577,12 +1467,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
         if (!data) return;
 
-        if (data.heroSlides) setHeroSlides(data.heroSlides);
-        if (data.siteSettings) setSiteSettings(data.siteSettings);
-        if (data.impactStats) setImpactStats(data.impactStats);
-        if (data.programs) setPrograms(data.programs);
-        if (data.theme) setTheme(data.theme);
-        if (data.primaryColor) setPrimaryColor(data.primaryColor);
+        applyPayload(data);
       } catch (err) {
         console.warn("Sync error:", err);
       }
@@ -1644,7 +1529,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     teamMembers,
     partners,
     gallery,
+    photoLibraryVersion: PHOTO_LIBRARY_VERSION,
+    careersContentVersion: CAREERS_CONTENT_VERSION,
     branches,
+    branchDirectoryVersion: BRANCH_DIRECTORY_VERSION,
+    deletedMessageIds,
     messages,
     subscribers,
     donations,
@@ -1711,6 +1600,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     gallery,
     branches,
     messages,
+    deletedMessageIds,
     subscribers,
     donations,
     campaigns,
@@ -1903,6 +1793,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setBranches(prev => prev.filter(b => b.id !== id));
   };
 
+  const refreshMessages = async () => {
+    const response = await fetch("/api/content", { cache: "no-store" });
+    if (!response.ok) return;
+    const result = await response.json();
+    if (result.success && Array.isArray(result.data?.messages)) setMessages(result.data.messages);
+  };
+
   const addMessage = (msg: Omit<ContactMessage, "id" | "date" | "status">) => {
     const newMessage: ContactMessage = {
       ...msg,
@@ -1916,6 +1813,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setMessages(prev => prev.map(m => m.id === id ? { ...m, status } : m));
   };
   const deleteMessage = (id: string) => {
+    setDeletedMessageIds(previous => [...previous, id]);
     setMessages(prev => prev.filter(m => m.id !== id));
   };
 
@@ -2179,6 +2077,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         addBranch,
         updateBranch,
         deleteBranch,
+        refreshMessages,
         addMessage,
         updateMessageStatus,
         deleteMessage,

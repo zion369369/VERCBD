@@ -42,3 +42,13 @@ p, a, span, button, input, select, textarea {
     @apply text-sm font-medium text-gray-700 hover:text-brand-primary transition-colors;
   }
 }
+
+@layer base {
+  :focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 4px; }
+}
+
+.cms-copy { overflow-wrap: anywhere; }
+.cms-copy p + p { margin-top: 1rem; }
+.cms-copy ul { list-style: disc; padding-left: 1.5rem; }
+.cms-copy ol { list-style: decimal; padding-left: 1.5rem; }
+.cms-copy img { max-width: 100%; height: auto; }

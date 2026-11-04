@@ -201,6 +201,7 @@ export default function AdminMicrofinancePage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      <div role="status" className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">Eligibility information and the public process page are temporarily hidden. Your saved criteria, documents and process steps are retained here for review. Product updates continue to appear on both public microfinance pages.</div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -219,12 +220,12 @@ export default function AdminMicrofinancePage() {
 
         <div className="flex items-center gap-2">
           <a
-            href="/microfinance/process"
+            href="/microfinance"
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 transition-all flex items-center gap-1.5"
           >
-            <Eye size={13} /> View Process Page <ExternalLink size={11} />
+            <Eye size={13} /> View Microfinance <ExternalLink size={11} />
           </a>
           <a
             href="/programs/microfinance"

@@ -26,6 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 import microHero from "@/app/assets/microfinance_woman_hero.png";
 import { useContent } from "@/context/ContentContext";
+import ContentImage from "@/components/ContentImage";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function MicrofinancePage() {
@@ -48,13 +49,13 @@ export default function MicrofinancePage() {
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10">
       {/* Immersive Hero Section */}
-      <section className="relative h-[85vh] flex items-center overflow-hidden bg-gray-900">
+      <section className="relative min-h-[520px] py-20 sm:min-h-[70vh] sm:py-24 flex items-center overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image 
             src={microHero} 
             alt="Microfinance Program" 
-            fill 
-            className="object-cover opacity-60 scale-105"
+            fill sizes="100vw"
+            className="object-cover object-center opacity-70"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent"></div>
@@ -68,13 +69,14 @@ export default function MicrofinancePage() {
             transition={{ duration: 1 }}
             className="max-w-4xl mx-auto"
           >
+            <Link href="/programs/livelihood#microfinance" className="mb-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/90 hover:text-white">Livelihood & Empowerment <ArrowRight size={14} /></Link><br />
             <span className="inline-flex items-center gap-2 px-5 py-2 bg-brand-primary/20 backdrop-blur-xl rounded-full text-[11px] font-black uppercase tracking-[0.4em] mb-10 border border-brand-primary/30 text-brand-secondary">
               Economic Empowerment
             </span>
-            <h1 className="text-6xl lg:text-9xl font-black mb-10 leading-[0.95] tracking-tighter">
+            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black mb-10 leading-[0.95] tracking-tighter">
               Micro <br/> <span className="text-brand-secondary">Finance.</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mx-auto">
               Transforming lives through inclusive financial services, empowering women and rural entrepreneurs since 1982.
             </p>
           </motion.div>
@@ -82,15 +84,15 @@ export default function MicrofinancePage() {
       </section>
 
       {/* Overview & Strategy */}
-      <section className="py-32 bg-white">
+      <section className="py-16 sm:py-24 lg:py-32 bg-white">
         <div className="container-custom">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-start">
                 <motion.div {...fadeIn}>
                     <div className="flex items-center gap-3 text-brand-primary mb-6">
                         <TrendingUp size={24} />
                         <h2 className="font-black uppercase tracking-widest text-xs">Our Strategy</h2>
                     </div>
-                    <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight tracking-tighter mb-10">
+                    <h3 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-tight tracking-tighter mb-10">
                         Bridging the <br/> <span className="text-brand-primary">Financial Gap.</span>
                     </h3>
                     <p className="text-xl text-gray-600 leading-relaxed font-medium mb-8">
@@ -100,14 +102,14 @@ export default function MicrofinancePage() {
                         From its inception, VERC has been expanding into remote and isolated areas, increasing multidimensional lending services to meet market demand for both rural and urban micro-economy sectors.
                     </p>
                     
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-4">
                         <div className="p-8 bg-brand-light/50 rounded-3xl border border-brand-primary/5">
                             <h4 className="font-black text-gray-900 mb-2 uppercase tracking-widest text-[10px]">Active Since</h4>
                             <div className="text-4xl font-black text-brand-primary tracking-tighter">1982</div>
                         </div>
                         <div className="p-8 bg-brand-light/50 rounded-3xl border border-brand-primary/5">
                             <h4 className="font-black text-gray-900 mb-2 uppercase tracking-widest text-[10px]">MRA Certified</h4>
-                            <div className="text-4xl font-black text-brand-primary tracking-tighter">Approved</div>
+                            <div className="text-3xl font-black text-brand-primary tracking-tighter">Approved</div>
                         </div>
                     </div>
                 </motion.div>
@@ -115,7 +117,7 @@ export default function MicrofinancePage() {
                 <div className="space-y-8">
                     <motion.div 
                         {...fadeIn}
-                        className="p-10 bg-gray-900 text-white rounded-[48px] shadow-2xl relative overflow-hidden"
+                        className="p-6 sm:p-10 bg-gray-900 text-white rounded-[48px] shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/20 rounded-full -mr-16 -mt-16"></div>
                         <div className="flex items-center gap-4 mb-8">
@@ -145,9 +147,9 @@ export default function MicrofinancePage() {
       </section>
 
       {/* Geographical Reach Stats */}
-      <section className="py-24 bg-brand-primary text-white overflow-hidden relative">
+      <section className="py-14 sm:py-20 lg:py-24 bg-brand-primary text-white overflow-hidden relative">
         <div className="container-custom relative z-10">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 items-center">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-12 lg:gap-24 items-center">
                 {stats.map((stat, i) => (
                     <motion.div 
                         key={i}
@@ -158,7 +160,7 @@ export default function MicrofinancePage() {
                         <div className="inline-flex items-center justify-center w-12 h-12 bg-white/10 rounded-xl mb-6 text-brand-secondary">
                             {stat.icon}
                         </div>
-                        <div className="text-5xl lg:text-7xl font-black mb-2 tracking-tighter">
+                        <div className="text-3xl sm:text-5xl lg:text-6xl font-black mb-2 tracking-tighter">
                           <AnimatedCounter value={stat.value} duration={1.2} />
                         </div>
                         <div className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60">{stat.label}</div>
@@ -169,14 +171,14 @@ export default function MicrofinancePage() {
       </section>
 
       {/* Product Lines (Wings) - Dynamic from Admin */}
-      <section className="py-32 bg-gray-50">
+      <section className="py-16 sm:py-24 lg:py-32 bg-gray-50">
         <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-24">
+            <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-24">
                 <div className="flex items-center justify-center gap-3 text-brand-primary mb-6">
                     <Layers size={24} />
                     <h2 className="font-black uppercase tracking-widest text-xs">Our Product Lines</h2>
                 </div>
-                <h3 className="text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Specialized <br/> <span className="text-brand-primary">Financial Wings.</span></h3>
+                <h3 className="text-3xl sm:text-4xl lg:text-6xl font-black mb-8 leading-tight tracking-tighter">Specialized <br/> <span className="text-brand-primary">Financial Wings.</span></h3>
                 <p className="text-xl text-gray-600 font-medium">
                     Our multidimensional lending system delivery is designed to meet specific market demands and empower different social groups.
                 </p>
@@ -188,12 +190,12 @@ export default function MicrofinancePage() {
                         key={product.id}
                         {...fadeIn}
                         transition={{ delay: i * 0.05 }}
-                        className="p-10 bg-white rounded-[40px] border border-transparent hover:border-brand-primary/10 hover:shadow-2xl transition-all group h-full flex flex-col justify-between"
+                        className="p-6 sm:p-10 bg-white rounded-[40px] border border-transparent hover:border-brand-primary/10 hover:shadow-2xl transition-all group h-full flex flex-col justify-between"
                     >
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <div className="w-14 h-14 rounded-2xl bg-brand-light flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform overflow-hidden">
-                              <img src={product.imageUrl || "/assets/microfinance_hero.png"} alt={product.title} className="w-full h-full object-cover" />
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="relative w-20 h-20 rounded-2xl bg-brand-light flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform overflow-hidden">
+                              <ContentImage src={product.imageUrl || "/assets/microfinance_hero.png"} alt={product.title} sizes="80px" />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full">
                               {product.category}

@@ -1,0 +1,299 @@
+[
+  {
+    "id": "photo-8ffcb6f31b90",
+    "title": "Water collection at a community tap",
+    "category": "WASH",
+    "imageUrl": "/assets/wash-community-banner.webp",
+    "date": "",
+    "width": 1536,
+    "height": 1024,
+    "aliases": [
+      "/assets/wash-community-banner.webp"
+    ]
+  },
+  {
+    "id": "photo-f817f2e73656",
+    "title": "Learning through play",
+    "category": "Education",
+    "imageUrl": "/assets/edu_1.png",
+    "date": "",
+    "width": 987,
+    "height": 660,
+    "aliases": [
+      "/assets/edu_1.png"
+    ]
+  },
+  {
+    "id": "photo-2ae3bca13e43",
+    "title": "Women harvesting potatoes",
+    "category": "Livelihood",
+    "imageUrl": "/assets/livelihood_agro.jpg",
+    "date": "",
+    "width": 550,
+    "height": 354,
+    "aliases": [
+      "/assets/livelihood_agro.jpg",
+      "/assets/livelihood_slide_1.jpg"
+    ]
+  },
+  {
+    "id": "photo-27980dcae824",
+    "title": "A participatory training session",
+    "category": "Capacity Building",
+    "imageUrl": "/assets/capacity_building_hero.png",
+    "date": "",
+    "width": 1376,
+    "height": 768,
+    "aliases": [
+      "/assets/capacity_building_hero.png",
+      "/assets/capacity_building_training.jpg"
+    ]
+  },
+  {
+    "id": "photo-697d04e68019",
+    "title": "Learning together in the classroom",
+    "category": "Education",
+    "imageUrl": "/assets/edu_2.png",
+    "date": "",
+    "width": 684,
+    "height": 471,
+    "aliases": [
+      "/assets/edu_2.png"
+    ]
+  },
+  {
+    "id": "photo-d6470237c31b",
+    "title": "Water for everyday hygiene",
+    "category": "WASH",
+    "imageUrl": "/assets/wash_clean_water.jpg",
+    "date": "",
+    "width": 1376,
+    "height": 768,
+    "aliases": [
+      "/assets/wash_clean_water.jpg",
+      "/assets/wash_hero.jpg"
+    ]
+  },
+  {
+    "id": "photo-59d4694ce405",
+    "title": "Young people coming together",
+    "category": "Events",
+    "imageUrl": "/assets/community_success_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 576,
+    "aliases": [
+      "/assets/community_success_hero.png"
+    ]
+  },
+  {
+    "id": "photo-327f867be2eb",
+    "title": "Growing vegetables at home",
+    "category": "Livelihood",
+    "imageUrl": "/assets/livelihood_community.jpg",
+    "date": "",
+    "width": 550,
+    "height": 413,
+    "aliases": [
+      "/assets/livelihood_community.jpg",
+      "/assets/livelihood_slide_3.jpg"
+    ]
+  },
+  {
+    "id": "photo-d839a5dd584b",
+    "title": "Friendship at school",
+    "category": "Education",
+    "imageUrl": "/assets/edu_3.png",
+    "date": "",
+    "width": 705,
+    "height": 471,
+    "aliases": [
+      "/assets/edu_3.png"
+    ]
+  },
+  {
+    "id": "photo-1494ac93cdef",
+    "title": "A community discussion",
+    "category": "Events",
+    "imageUrl": "/assets/about_official.jpg",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/about_official.jpg"
+    ]
+  },
+  {
+    "id": "photo-ef5750ec770d",
+    "title": "A teacher supporting classroom learning",
+    "category": "Education",
+    "imageUrl": "/assets/education_official.jpg",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/education_1.jpg",
+      "/assets/education_2.jpg",
+      "/assets/education_3.jpg",
+      "/assets/education_official.jpg",
+      "/assets/education_official_2.jpg"
+    ]
+  },
+  {
+    "id": "photo-baaff653f16c",
+    "title": "Women meeting in their community",
+    "category": "Livelihood",
+    "imageUrl": "/assets/microfinance_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/microfinance_hero.png"
+    ]
+  },
+  {
+    "id": "photo-474267854c7a",
+    "title": "Community sanitation planning",
+    "category": "WASH",
+    "imageUrl": "/assets/wash_slide_1.jpg",
+    "date": "",
+    "width": 270,
+    "height": 160,
+    "aliases": [
+      "/assets/wash_slide_1.jpg"
+    ]
+  },
+  {
+    "id": "photo-ea64042e66af",
+    "title": "Small-group learning with a teacher",
+    "category": "Education",
+    "imageUrl": "/assets/education_children_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/education_children_hero.png"
+    ]
+  },
+  {
+    "id": "photo-abf846490be5",
+    "title": "Tending a vegetable garden",
+    "category": "Livelihood",
+    "imageUrl": "/assets/livelihood_slide_2.jpg",
+    "date": "",
+    "width": 550,
+    "height": 367,
+    "aliases": [
+      "/assets/livelihood_slide_2.jpg"
+    ]
+  },
+  {
+    "id": "photo-07af512637c1",
+    "title": "An institutional building at dusk",
+    "category": "Events",
+    "imageUrl": "/assets/home_official_1.jpg",
+    "date": "",
+    "width": 512,
+    "height": 320,
+    "aliases": [
+      "/assets/home_official_1.jpg"
+    ]
+  },
+  {
+    "id": "photo-5e0acb28f0fb",
+    "title": "Children exploring books together",
+    "category": "Education",
+    "imageUrl": "/assets/impact_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/impact_hero.png"
+    ]
+  },
+  {
+    "id": "photo-51028e897977",
+    "title": "Sanitation enterprise at work",
+    "category": "WASH",
+    "imageUrl": "/assets/wash_slide_2.jpg",
+    "date": "",
+    "width": 270,
+    "height": 160,
+    "aliases": [
+      "/assets/wash_slide_2.jpg"
+    ]
+  },
+  {
+    "id": "photo-caf9e8214b25",
+    "title": "A woman at her clothing shop",
+    "category": "Livelihood",
+    "imageUrl": "/assets/microfinance_woman_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/microfinance_woman_hero.png"
+    ]
+  },
+  {
+    "id": "photo-5203320acd8b",
+    "title": "Outdoor learning under a tree",
+    "category": "Education",
+    "imageUrl": "/assets/education_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/education_hero.png"
+    ]
+  },
+  {
+    "id": "photo-2e647de63592",
+    "title": "Cattle rearing in a rural community",
+    "category": "Livelihood",
+    "imageUrl": "/assets/livelihood_vocational.jpg",
+    "date": "",
+    "width": 550,
+    "height": 413,
+    "aliases": [
+      "/assets/livelihood_vocational.jpg"
+    ]
+  },
+  {
+    "id": "photo-09fa38a2226c",
+    "title": "Southeast Bank PLC. Signed Cash Management Solution Agreement with Village Education Resource Center (VERC)",
+    "category": "Events",
+    "imageUrl": "/assets/southeast-bank-verc-agreement.jpg",
+    "date": "",
+    "width": 856,
+    "height": 358,
+    "aliases": [
+      "/assets/southeast-bank-verc-agreement.jpg",
+      "/assets/partners_hero.png"
+    ]
+  },
+  {
+    "id": "photo-bb7a07c36b55",
+    "title": "A community sanitation facility",
+    "category": "WASH",
+    "imageUrl": "/assets/wash_slide_3.jpg",
+    "date": "",
+    "width": 270,
+    "height": 160,
+    "aliases": [
+      "/assets/wash_slide_3.jpg"
+    ]
+  },
+  {
+    "id": "photo-5a68e7b1404d",
+    "title": "A gathering at a village water point",
+    "category": "WASH",
+    "imageUrl": "/assets/wash_hero.png",
+    "date": "",
+    "width": 1024,
+    "height": 1024,
+    "aliases": [
+      "/assets/wash_hero.png"
+    ]
+  }
+]

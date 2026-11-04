@@ -7,10 +7,24 @@ import { Menu, X, ChevronDown, ChevronUp, Globe, ExternalLink } from "lucide-rea
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
 
+import { publicNavigation, NavigationItem, isNavigationActive } from "@/lib/navigation";
+
+function NavigationChildren({ items, pathname, close }: { items: NavigationItem[]; pathname: string; close?: () => void }) {
+  return <ul className="space-y-1">{items.map(child => <li key={child.href}>
+    <Link href={child.href} onClick={close} aria-current={pathname === child.href ? "page" : undefined}
+      className={`flex min-h-11 items-center justify-between gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-primary ${pathname === child.href ? "bg-sky-50 text-brand-primary" : "text-slate-700 hover:bg-sky-50 hover:text-brand-primary"}`}>
+      {child.name}
+    </Link>
+    {child.children && <div className="ml-5 mb-2 border-l-2 border-sky-100 pl-2"><NavigationChildren items={child.children} pathname={pathname} close={close} /></div>}
+  </li>)}</ul>;
+}
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { siteSettings, primaryColor } = useContent();
   const { language, setLanguage, t } = useLanguage();
   const langDropdownRef = useRef<HTMLDivElement>(null);
@@ -28,62 +42,38 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+    setIsLangDropdownOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setIsOpen(false); menuButtonRef.current?.focus(); }
+    };
+    const desktop = window.matchMedia("(min-width: 1280px)");
+    const closeOnDesktop = () => { if (desktop.matches) setIsOpen(false); };
+    desktop.addEventListener("change", closeOnDesktop);
+    document.addEventListener("keydown", dismiss);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", dismiss);
+      desktop.removeEventListener("change", closeOnDesktop);
+    };
+  }, [isOpen]);
+
   // Do not render public Navbar when inside the Admin Studio
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
-  // Fully connected navigation hierarchy pointing to exact dedicated page routes
-  const navigation = [
-    { name: "Home", href: "/" },
-    {
-      name: "About Us",
-      href: "/about",
-      children: [
-        { name: "Vision and Mission", href: "/about" },
-        { name: "Governance & Leadership", href: "/about/organogram" },
-        { name: "Senior Staff Members", href: "/about/staff" },
-        { name: "Our Awards", href: "/about/awards" },
-        { name: "Annual Reports", href: "/about/annual-report" },
-        { name: "Legal Status", href: "/about/legal" },
-      ],
-    },
-    {
-      name: "Social Programs",
-      href: "/programs",
-      children: [
-        { name: "Programs Overview", href: "/programs" },
-        { name: "Life Skill Education", href: "/programs/education" },
-        { name: "WASH (Water & Sanitation)", href: "/programs/wash" },
-        { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
-        { name: "Capacity Building", href: "/programs/capacity" },
-        { name: "Microfinance Program", href: "/microfinance" },
-        { name: "Loan & Savings Products", href: "/microfinance/products" },
-        { name: "Eligibility & Process", href: "/microfinance/process" },
-      ],
-    },
-    {
-      name: "Impact & Partners",
-      href: "/impact",
-      children: [
-        { name: "Impact Results", href: "/impact" },
-        { name: "Development Partners", href: "/partners" },
-      ],
-    },
-    {
-      name: "Resources & Contact",
-      href: "/contact",
-      children: [
-        { name: "Photo & Video Gallery", href: "/resources/gallery" },
-        { name: "Branch Network", href: "/resources/branches" },
-        { name: "Careers & Openings", href: "/careers" },
-        { name: "Contact Us", href: "/contact" },
-      ],
-    },
-  ];
+  const navigation = publicNavigation;
 
   return (
-    <nav className="sticky top-0 z-50 h-22 lg:h-24 flex items-center backdrop-blur-2xl backdrop-saturate-150 bg-white/80 dark:bg-slate-950/80 border-b border-white/80 dark:border-white/10 shadow-[0_10px_35px_-8px_rgba(0,75,141,0.08),0_1px_3px_rgba(0,0,0,0.02),inset_0_1px_1px_rgba(255,255,255,0.95)] transition-all duration-300">
+    <nav aria-label="Main navigation" className="sticky top-0 z-[60] h-20 xl:h-24 flex items-center backdrop-blur-2xl backdrop-saturate-150 bg-white/80 dark:bg-slate-950/80 border-b border-white/80 dark:border-white/10 shadow-[0_10px_35px_-8px_rgba(0,75,141,0.08),0_1px_3px_rgba(0,0,0,0.02),inset_0_1px_1px_rgba(255,255,255,0.95)] transition-all duration-300">
       {/* Ambient Glass Reflections & Primary Color Glow */}
       <div 
         style={{ 
@@ -116,10 +106,10 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Nav - Centered slot (Polymorphic Pill Navigation) */}
-          <div className="hidden lg:flex items-center justify-center flex-1 px-2 xl:px-4">
+          <div className="hidden xl:flex items-center justify-center flex-1 px-2 xl:px-4">
             <div className="flex items-center space-x-1.5 xl:space-x-3">
               {navigation.map((item) => {
-                const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+                const isActive = isNavigationActive(item, pathname);
                 return (
                   <div key={item.name} className="relative group">
                     <Link
@@ -137,32 +127,14 @@ const Navbar = () => {
                     </Link>
 
                     {item.children && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
                         <div className="min-w-[280px] sm:min-w-[310px] w-max rounded-2xl p-2.5 backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-white/80 dark:border-white/10 shadow-[0_20px_50px_-10px_rgba(0,75,141,0.18),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_2px_rgba(255,255,255,1)] overflow-hidden">
                           {/* Top Specular Edge Flare */}
                           <div 
                             style={{ background: `linear-gradient(90deg, transparent, ${primaryColor || "#004B8D"}80, #00AEEF, transparent)` }} 
                             className="h-[2px] w-full opacity-80 mb-1.5 rounded-full" 
                           />
-                          <div className="space-y-1">
-                            {item.children.map((child) => {
-                              const isChildActive = pathname === child.href;
-                              return (
-                                <Link
-                                  key={child.name}
-                                  href={child.href}
-                                  className={`flex items-center justify-between gap-5 px-4.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all duration-200 group/item whitespace-nowrap ${
-                                    isChildActive
-                                      ? "bg-sky-500/10 text-brand-primary font-bold shadow-xs"
-                                      : "text-slate-700 hover:text-brand-primary hover:bg-sky-50/80 dark:hover:bg-white/5 hover:translate-x-1"
-                                  }`}
-                                >
-                                  <span className="whitespace-nowrap">{child.name}</span>
-                                  <span className="text-cyan-500 opacity-0 group-hover/item:opacity-100 transition-opacity text-xs font-mono ml-2">→</span>
-                                </Link>
-                              );
-                            })}
-                          </div>
+                          <NavigationChildren items={item.children} pathname={pathname} />
                         </div>
                       </div>
                     )}
@@ -216,7 +188,7 @@ const Navbar = () => {
             )}
 
             {/* Action Buttons: Donate & Career */}
-            <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
+            <div className="hidden xl:flex items-center space-x-2 xl:space-x-3">
               <Link
                 href="/donate"
                 style={{
@@ -229,14 +201,14 @@ const Navbar = () => {
                 <span className="relative z-10">{isHomePage ? t("nav_donate") : "Donate"}</span>
               </Link>
               <a
-                href="https://bdjobs.com/h/company-insight/28456"
+                href="/careers"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   borderColor: `${primaryColor || "#004B8D"}30`,
                   color: primaryColor || "#004B8D"
                 }}
-                className="relative group px-3.5 xl:px-4.5 py-2 xl:py-2.5 rounded-xl font-bold text-xs xl:text-sm backdrop-blur-xl bg-white/70 dark:bg-white/5 border shadow-[0_4px_12px_rgba(0,75,141,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:bg-brand-primary hover:text-white hover:border-brand-primary hover:shadow-[0_8px_20px_rgba(0,75,141,0.2)] hover:scale-[1.03] active:scale-[0.98] transition-all inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+                className="relative group px-3.5 xl:px-4 py-2 xl:py-2.5 rounded-xl font-bold text-xs xl:text-sm backdrop-blur-xl bg-white/70 dark:bg-white/5 border shadow-[0_4px_12px_rgba(0,75,141,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:bg-brand-primary hover:text-white hover:border-brand-primary hover:shadow-[0_8px_20px_rgba(0,75,141,0.2)] hover:scale-[1.03] active:scale-[0.98] transition-all inline-flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
               >
                 <span>Career</span>
                 <ExternalLink size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -244,11 +216,14 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button (Morphic Button) */}
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="xl:hidden flex items-center gap-2">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2.5 rounded-xl backdrop-blur-xl bg-white/80 dark:bg-white/10 border border-slate-200/80 dark:border-white/15 text-slate-700 hover:text-brand-primary shadow-[0_2px_8px_rgba(0,75,141,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] transition-all cursor-pointer"
-                aria-label="Toggle Menu"
+                ref={menuButtonRef}
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isOpen}
+                aria-controls="mobile-navigation"
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -259,31 +234,17 @@ const Navbar = () => {
 
       {/* Mobile Menu (Frosted Glass Sheet) */}
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 backdrop-blur-2xl bg-white/95 dark:bg-slate-950/95 border-b border-white/80 dark:border-white/10 shadow-[0_20px_50px_rgba(0,75,141,0.15)] py-5 transition-all">
+        <div id="mobile-navigation" className="xl:hidden absolute top-full left-0 right-0 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain bg-white dark:bg-slate-950 border-b border-white/80 dark:border-white/10 shadow-[0_20px_50px_rgba(0,75,141,0.15)] py-5 transition-all">
           <div className="container-custom space-y-2">
             {navigation.map((item) => (
               <div key={item.name} className="border-b border-gray-100/60 pb-1">
-                <Link
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block py-2 text-base font-bold text-gray-900 hover:text-brand-primary"
-                >
-                  {item.name}
-                </Link>
-                {item.children && (
-                  <div className="pl-4 space-y-1 mb-2">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.name}
-                        href={child.href}
-                        onClick={() => setIsOpen(false)}
-                        className="block py-1.5 text-sm font-medium text-gray-600 hover:text-brand-primary hover:translate-x-1 transition-transform"
-                      >
-                        {child.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <Link href={item.href} onClick={() => setIsOpen(false)} className="flex-1 py-3 text-base font-bold text-gray-900 hover:text-brand-primary">{item.name}</Link>
+                  {item.children && <button type="button" aria-label={`Toggle ${item.name} submenu`} aria-expanded={expandedSection === item.name} aria-controls={`mobile-section-${item.href.slice(1)}`} onClick={() => setExpandedSection(expandedSection === item.name ? null : item.name)} className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-brand-primary">
+                    <ChevronDown size={18} className={expandedSection === item.name ? "rotate-180" : ""} />
+                  </button>}
+                </div>
+                {item.children && expandedSection === item.name && <div id={`mobile-section-${item.href.slice(1)}`} className="pb-3"><NavigationChildren items={item.children} pathname={pathname} close={() => setIsOpen(false)} /></div>}
               </div>
             ))}
             <div className="grid grid-cols-2 gap-3 pt-3">
@@ -298,7 +259,7 @@ const Navbar = () => {
                 {isHomePage ? t("nav_donate") : "Donate"}
               </Link>
               <a
-                href="https://bdjobs.com/h/company-insight/28456"
+                href="/careers"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}

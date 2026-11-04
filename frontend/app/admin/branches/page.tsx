@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import { Plus, Edit2, Trash2, MapPin, Building2, Phone, Mail, User, Search, X } from "lucide-react";
 import { useContent, BranchOffice } from "@/context/ContentContext";
 
+import { phoneHref, mapsSearchUrl, branchSearchScore } from "@/lib/branchDirectory";
+
+const emptyBranch: Omit<BranchOffice, "id"> = { name: "", code: "", branchType: "Branch Office", district: "", division: "Dhaka", upazila: "", postOffice: "", village: "", address: "", phone: "", email: "", manager: "", lat: undefined, lng: undefined };
+
 export default function AdminBranchesPage() {
   const { branches, addBranch, updateBranch, deleteBranch, primaryColor, theme } = useContent();
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,62 +15,36 @@ export default function AdminBranchesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState<BranchOffice | null>(null);
 
-  const [formData, setFormData] = useState<Omit<BranchOffice, "id">>({
-    name: "",
-    district: "Dhaka",
-    division: "Dhaka",
-    address: "",
-    phone: "",
-    email: "branch@vercbd.org",
-    manager: "",
-    lat: 23.856,
-    lng: 90.26
-  });
+  const [formData, setFormData] = useState<Omit<BranchOffice, "id">>({ ...emptyBranch });
+  const [formError, setFormError] = useState("");
 
   const divisions = ["All", ...Array.from(new Set(branches.map(b => b.division)))];
 
   const filteredBranches = branches.filter((b) => {
-    const matchesSearch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          b.district.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          b.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = branchSearchScore(b, searchTerm) >= 0;
     const matchesDivision = selectedDivision === "All" || b.division === selectedDivision;
     return matchesSearch && matchesDivision;
   });
 
   const openCreateModal = () => {
     setEditingBranch(null);
-    setFormData({
-      name: "",
-      district: "Dhaka",
-      division: "Dhaka",
-      address: "",
-      phone: "+880 1711-000000",
-      email: "branch@vercbd.org",
-      manager: "",
-      lat: 23.856,
-      lng: 90.26
-    });
+    setFormData({ ...emptyBranch });
+    setFormError("");
     setIsModalOpen(true);
   };
 
   const openEditModal = (b: BranchOffice) => {
     setEditingBranch(b);
-    setFormData({
-      name: b.name,
-      district: b.district,
-      division: b.division,
-      address: b.address,
-      phone: b.phone,
-      email: b.email,
-      manager: b.manager,
-      lat: b.lat,
-      lng: b.lng
-    });
+    const { id, ...fields } = b;
+    setFormData({ ...emptyBranch, ...fields });
+    setFormError("");
     setIsModalOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if ((formData.lat === undefined) !== (formData.lng === undefined)) { setFormError("Enter both latitude and longitude, or leave both empty."); return; }
+    if (branches.some(branch => branch.id !== editingBranch?.id && formData.code && branch.code === formData.code && branch.branchType === formData.branchType)) { setFormError("This branch code is already in use for this office type."); return; }
     if (editingBranch) {
       updateBranch(editingBranch.id, formData);
     } else {
@@ -80,7 +58,8 @@ export default function AdminBranchesPage() {
       {/* Apple-style Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Branches</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Branch directory</h1>
+          <p className="mt-1 text-xs text-gray-500">{branches.length} offices. Changes appear in Contact Us and the branch finder.</p>
         </div>
         <button
           onClick={openCreateModal}
@@ -156,6 +135,7 @@ export default function AdminBranchesPage() {
                       </div>
                       <div>
                         <div>{branch.name}</div>
+                        <div className="mt-1 text-[10px] text-gray-400">{branch.branchType || "Branch Office"} {branch.code ? `· #${branch.code}` : ""}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 font-normal">{branch.address}</div>
                       </div>
                     </div>
@@ -175,7 +155,8 @@ export default function AdminBranchesPage() {
                   </td>
 
                   <td className="py-4 px-6 text-gray-600 dark:text-gray-400">
-                    <div className="font-medium text-gray-800 dark:text-gray-200">{branch.phone}</div>
+                    <div className="font-medium text-gray-800 dark:text-gray-200">{branch.phone || "Not provided"}</div>
+                    {branch.phone && !phoneHref(branch.phone) && <span className="text-[10px] font-semibold text-amber-700">Verify number before enabling calls</span>}
                     <div className="text-xs text-gray-500 dark:text-gray-400">{branch.email}</div>
                   </td>
 
@@ -213,7 +194,7 @@ export default function AdminBranchesPage() {
       {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className={`w-full max-w-xl rounded-3xl p-8 border shadow-2xl transition-all my-8 ${
+          <div className={`w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-3xl p-5 sm:p-8 border shadow-2xl transition-all my-8 ${
             theme === "dark" ? "bg-[#1A1926] border-white/10 text-white" : "bg-white border-gray-200 text-gray-900"
           }`}>
             <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-white/5">
@@ -276,7 +257,8 @@ export default function AdminBranchesPage() {
                     }`}
                   >
                     <option value="Dhaka">Dhaka</option>
-                    <option value="Chittagong">Chittagong</option>
+                    <option value="Chattogram">Chattogram</option>
+                    <option value="Chittagong">Chittagong (legacy)</option>
                     <option value="Rajshahi">Rajshahi</option>
                     <option value="Khulna">Khulna</option>
                     <option value="Barisal">Barisal</option>
@@ -339,7 +321,6 @@ export default function AdminBranchesPage() {
                   <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1.5">Email Address</label>
                   <input
                     type="email"
-                    required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="branch@vercbd.org"
@@ -352,6 +333,23 @@ export default function AdminBranchesPage() {
                 </div>
               </div>
 
+              {formError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-xs text-red-700">{formError}</p>}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label className="font-bold">Office type<select value={formData.branchType || "Branch Office"} onChange={e => setFormData({ ...formData, branchType: e.target.value })} className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 font-medium dark:border-white/10 dark:bg-[#14141E]"><option>Branch Office</option><option>Head Office</option></select></label>
+                {([['code', 'Branch code'], ['upazila', 'Upazila'], ['postOffice', 'Post office'], ['village', 'Road / village']] as const).map(([key, label]) => <label key={key} className="font-bold">{label}<input value={formData[key] || ""} onChange={e => setFormData({ ...formData, [key]: e.target.value })} className="mt-2 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 font-medium dark:border-white/10" /></label>)}
+              </div>
+              <div className="rounded-2xl border border-sky-100 bg-sky-50/50 p-4 dark:border-white/10 dark:bg-white/5">
+                <h4 className="mb-2 font-bold">Map pin</h4><p className="mb-4 text-xs leading-5 text-gray-500">Coordinates power the map and nearest-office search. Leave both blank if the location is not confirmed.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className="font-bold">Latitude<input type="number" min={-90} max={90} step="any" value={formData.lat ?? ""} onChange={e => setFormData({ ...formData, lat: e.target.value === "" ? undefined : Number(e.target.value) })} className="mt-2 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 font-medium dark:border-white/10" /></label>
+                  <label className="font-bold">Longitude<input type="number" min={-180} max={180} step="any" value={formData.lng ?? ""} onChange={e => setFormData({ ...formData, lng: e.target.value === "" ? undefined : Number(e.target.value) })} className="mt-2 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 font-medium dark:border-white/10" /></label>
+                </div>
+                <label className="mt-4 block font-bold">Google Maps search text (optional)<input value={formData.mapsQuery || ""} onChange={e => setFormData({ ...formData, mapsQuery: e.target.value })} placeholder="VERC, branch name, full street address, district" className="mt-2 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 font-medium dark:border-white/10" /></label>
+                <label className="mt-4 block font-bold">Verified Google Place ID (optional)<input value={formData.googlePlaceId || ""} onChange={e => setFormData({ ...formData, googlePlaceId: e.target.value.trim() })} placeholder="Paste the Place ID of this office's Google listing" className="mt-2 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 font-medium dark:border-white/10" /></label>
+                <p className="mt-2 text-xs leading-5 text-gray-500">Directions use the office name and address. A verified Place ID connects to the exact Google listing.</p>
+                <a href={mapsSearchUrl({ ...formData, id: editingBranch?.id || "preview" })} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-10 items-center font-bold text-brand-primary underline underline-offset-4">Preview Google Maps search</a>
+                {formData.sourcePhone && <p className="mt-4 text-[11px] text-gray-500">Original supplied phone: {formData.sourcePhone}</p>}
+              </div>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/5">
                 <button
                   type="button"

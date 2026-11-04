@@ -89,3 +89,44 @@
   - Margins: **Default** or **Minimum**
   - Background graphics: **Checked**
 * Click **Save** to produce an executive, paginated PDF ready to hand to your board, committee, or evaluator!
+
+
+## About Us and mobile content updates
+
+- In **About Us CMS > Board of Directors**, add or edit approved names, board roles, biographies, portrait uploads, and display order. The public Board page is the third item in About Us. No board identities are prefilled.
+- In **About Us CMS > Vision, Mission & Values**, upload the About hero and journey photos and edit the public purpose statements. Use landscape photos around 1920 x 1080 px for banners and portraits of at least 600 x 750 px for board profiles.
+- Governance nodes and the official document remain managed in About Us CMS. The public organizational structure now follows those saved entries and adapts to mobile screens.
+- Microfinance sits under Livelihood in public navigation and has a dedicated section on the Livelihood page. Both Microfinance product views use **Admin > Microfinance**.
+- Eligibility details and the public process page are temporarily withdrawn; existing criteria and process data remain available in the admin for later review.
+- Raster uploads are resized without upscaling and converted to WebP when beneficial. Save after an upload completes, and check the global sync status before leaving the admin. New visitor sessions receive saved content from the existing server CMS API.
+
+
+## Contact Us and nearest-office finder
+
+- **Contact Us** and **Branch Network** share the supplied directory: 136 branches and one head office in 25 districts. Search accepts branch name/code, address, upazila and post office, including Cumilla/Comilla and Chattogram/Chittagong spellings.
+- **Admin > Branch directory** controls public names, addresses, phones, codes, office type and map coordinates. Leading zeroes in codes are preserved. Supply both coordinates to include a new office in distance ranking and the map.
+- **Use my location** asks for browser location permission only when clicked. Coordinates are used by the location endpoint and Geoapify to calculate the route; they are not saved in CMS records. Nearby candidates are compared by road using Geoapify; unchecked straight-line distances are labelled. The directions link opens Google Maps for navigation.
+- Contact submissions are saved to **Admin > Inquiries**. A branch-specific inquiry includes the office name and code. The page reports success only after a server save and retains the form if sending fails.
+- The supplied head-office mobile has ten digits and needs confirmation; it is flagged in the admin. Public head-office calling uses the existing Site Settings phone. Four mobile numbers missing only the initial zero were normalized, with the source numbers retained for reference.
+- Contact photos use the existing hero/gallery content and the selected WASH replacement image. Update those media through their existing CMS controls.
+- Office searches also accept small spelling mistakes, words in a different order, Bengali digits and codes without their leading zeroes. Exact matches appear first.
+- **Admin > Branch directory > Map pin** includes Google Maps search text and a verified Google Place ID. Use the preview to check the listing. The head-office link uses its verified VERC listing; other offices use the name and full address until a verified ID is supplied.
+
+## Photo gallery
+
+- **Admin > Gallery** manages the same photo collection displayed in the public gallery and Contact Us. All 24 unique project photographs are included, with duplicate source files grouped. The Southeast Bank agreement photo uses the supplied image and title.
+- Upload a file or select an image from **Library**, enter its caption and category, then save after the upload completes. The Library includes the project photo collection. Saving is disabled during an active upload.
+- Public visitors can search captions, filter themes and open a photograph without cropping the full view. Arrow keys move between photographs; Escape closes the viewer.
+- Imported photos have no invented event dates. Edit captions and descriptions with approved context. Deleting a photo removes it from the collection and does not reimport it on refresh.
+
+## Verified recruitment and road routes
+
+- Career applications use [VERC’s BDJobs company page](https://bdjobs.com/h/company-insight/28456). Sample vacancies and sample applicants have been removed. New CMS vacancies start as drafts; supply the approved circular's BDJobs application link and deadline before making a vacancy Active. Expired and draft notices stay off the public page. Existing genuine applications remain in the admin inbox.
+- The office finder compares up to eight nearby offices using Geoapify road distances, with a route and driving-time estimate for the selected office. Unchecked straight-line distances remain labelled. Time estimates exclude live traffic.
+- GPS accuracy is visible. If the location is wrong, select **Set starting point** and choose the correct point on the map. Office coordinates can still be corrected in **Admin > Branch directory**.
+
+## Website assistant
+
+- The assistant uses the current public CMS content and a generated index of public pages. Published content updates become available to the chatbot automatically. It excludes private inquiries, CVs, draft vacancies and withdrawn eligibility criteria.
+- Groq provides conversational wording, with rule-based answers retained for key intents and provider outages. Visitors can ask in English or Bangla and follow source links. The widget displays **Powered by Hellotek**.
+- Configure `GROQ_API_KEY` and `GEOAPIFY_API_KEY` on the hosting server when deploying. The local keys stay in the ignored environment file. Never enter them in public CMS fields.

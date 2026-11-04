@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { Award, Star, ShieldCheck, Trophy, Globe, ArrowRight, CheckCircle2, Medal } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
+import ContentImage from "@/components/ContentImage";
+
 export default function AwardsPage() {
   const { awards } = useContent();
 
@@ -84,13 +86,9 @@ export default function AwardsPage() {
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
       {/* 1. HERO HEADER */}
-      <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden">
+      <section className="relative pt-20 pb-20 sm:pt-28 sm:pb-24 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/assets/home_official_1.jpg" 
-            alt="VERC Awards Banner" 
-            className="w-full h-full object-cover opacity-20"
-          />
+          <ContentImage src="/assets/home_official_1.jpg" alt="VERC Awards Banner" sizes="100vw" priority className="object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
         </div>
 
@@ -105,7 +103,7 @@ export default function AwardsPage() {
               <Trophy size={14} className="text-amber-400" /> Recognition of Excellence
             </span>
             
-            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-tight">
               Legacy of <span className="text-brand-secondary">Excellence.</span>
             </h1>
             
@@ -206,7 +204,7 @@ export default function AwardsPage() {
       <section className="py-24 bg-brand-primary text-white relative overflow-hidden">
         <div className="container-custom relative z-10 text-center">
           <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-4xl lg:text-7xl font-black tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-tight">
               Partner with an <span className="text-brand-secondary">Award-Winning Organization.</span>
             </h2>
             <p className="text-xl text-gray-200 font-medium max-w-2xl mx-auto">
