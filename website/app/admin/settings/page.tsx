@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Save, Globe, Palette, Shield, Phone, Mail, MapPin, Share2, Check, RotateCcw, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Save, Globe, Palette, Shield, Phone, Mail, MapPin, Share2, Check, RotateCcw, Sparkles, Download, Upload, Database, Server, RefreshCw } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ThemeColorPicker } from "@/components/admin/ThemeColorPicker";
 
 export default function AdminSettingsPage() {
-  const { siteSettings, updateSiteSettings, resetToDefaults, primaryColor, setPrimaryColor, theme } = useContent();
+  const { siteSettings, updateSiteSettings, resetToDefaults, primaryColor, setPrimaryColor, theme, syncStatus, lastLiveSync, publishToLive } = useContent();
   const [formData, setFormData] = useState(siteSettings);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [backupMsg, setBackupMsg] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setFormData(siteSettings);
@@ -20,6 +23,66 @@ export default function AdminSettingsPage() {
     updateSiteSettings(formData);
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
+  };
+
+  const handleExportBackup = async () => {
+    setIsExporting(true);
+    try {
+      const res = await fetch("/api/content", { cache: "no-store" });
+      const json = await res.json();
+      const exportData = json?.data || siteSettings;
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `vercbd_content_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setBackupMsg("Backup downloaded successfully!");
+      setTimeout(() => setBackupMsg(null), 3500);
+    } catch (err: any) {
+      alert("Failed to export backup: " + err.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const text = event.target?.result as string;
+        const parsed = JSON.parse(text);
+        if (!parsed || typeof parsed !== "object") {
+          throw new Error("Invalid backup file format");
+        }
+
+        if (confirm("Restore content from this backup? This will update the entire live website!")) {
+          const res = await fetch("/api/content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(parsed)
+          });
+          const result = await res.json();
+          if (result?.success) {
+            localStorage.setItem("verc_live_content_v3", JSON.stringify(parsed));
+            setBackupMsg("Backup restored successfully! Reloading live content...");
+            setTimeout(() => window.location.reload(), 1200);
+          } else {
+            alert("Server failed to save backup: " + (result?.error || "Unknown error"));
+          }
+        }
+      } catch (err: any) {
+        alert("Failed to read backup file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -263,6 +326,83 @@ export default function AdminSettingsPage() {
                 }`}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Global Live Server Synchronization & Backup */}
+        <div className={`p-6 rounded-2xl border space-y-4 ${
+          theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
+        }`}>
+          <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-white/5">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <Server size={16} className="text-emerald-500" /> Global Live Server Persistence & Cloud Backup
+            </h3>
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+              syncStatus === "synced"
+                ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300"
+                : syncStatus === "saving"
+                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300"
+                : "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300"
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                syncStatus === "synced" ? "bg-emerald-500" : syncStatus === "saving" ? "bg-amber-500 animate-ping" : "bg-rose-500"
+              }`} />
+              {syncStatus === "synced" ? "Live Server In Sync" : syncStatus === "saving" ? "Syncing..." : "Offline / Unsaved"}
+            </span>
+          </div>
+
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            All modifications made in this Admin Panel are saved directly to the central server storage (<code className="text-[11px] font-mono bg-gray-100 dark:bg-white/10 px-1 py-0.5 rounded">data/content.json</code>) so that all global visitors and donors see your latest updates instantly.
+          </p>
+
+          {lastLiveSync && (
+            <div className="text-[11px] text-gray-400">
+              Last saved to live website: {new Date(lastLiveSync).toLocaleString()}
+            </div>
+          )}
+
+          {backupMsg && (
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-semibold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+              <Check size={15} /> {backupMsg}
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              type="button"
+              onClick={handleExportBackup}
+              disabled={isExporting}
+              className="px-4 py-2 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            >
+              <Download size={14} /> {isExporting ? "Exporting..." : "Download Full JSON Backup"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            >
+              <Upload size={14} /> Restore / Import Backup
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleImportBackup}
+            />
+
+            <button
+              type="button"
+              onClick={async () => {
+                const res = await publishToLive();
+                setBackupMsg(res.message);
+                setTimeout(() => setBackupMsg(null), 4000);
+              }}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs ml-auto"
+            >
+              <RefreshCw size={14} /> Force Live Server Sync
+            </button>
           </div>
         </div>
 

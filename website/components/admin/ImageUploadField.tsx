@@ -44,26 +44,52 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   const [activeTab, setActiveTab] = useState<"upload" | "url" | "presets">("upload");
   const [urlInput, setUrlInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [previewError, setPreviewError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const displayText = helperText || hint;
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image file (PNG, JPG, WEBP, SVG).");
+    if (!file.type.startsWith("image/") && !file.type.includes("pdf")) {
+      alert("Please select a valid image file (PNG, JPG, WEBP, SVG) or document.");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        setPreviewError(false);
-        onChange(e.target.result as string);
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.url) {
+          setPreviewError(false);
+          onChange(data.url);
+          setIsUploading(false);
+          return;
+        }
       }
-    };
-    reader.readAsDataURL(file);
+      throw new Error("Server upload returned non-OK status");
+    } catch (err) {
+      console.warn("[ImageUploadField] Direct server upload failed, falling back to base64 Data URL:", err);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setPreviewError(false);
+          onChange(e.target.result as string);
+        }
+        setIsUploading(false);
+      };
+      reader.onerror = () => setIsUploading(false);
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -157,12 +183,20 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             />
             <div className="flex flex-col items-center justify-center gap-1.5 py-2">
               <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/40 text-[#6C5DD3] flex items-center justify-center">
-                <UploadCloud size={20} />
+                {isUploading ? (
+                  <div className="w-5 h-5 border-2 border-[#6C5DD3] border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <UploadCloud size={20} />
+                )}
               </div>
               <p className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                Click to upload <span className="text-gray-500 font-normal">or drag & drop</span>
+                {isUploading ? "Uploading to live server..." : (
+                  <>Click to upload <span className="text-gray-500 font-normal">or drag & drop</span></>
+                )}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-normal">PNG, JPG, WebP, SVG up to 10MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-normal">
+                {isUploading ? "Optimizing & storing file globally..." : "PNG, JPG, WebP, SVG, PDF"}
+              </p>
             </div>
           </div>
         )}

@@ -10,7 +10,7 @@ const PRESET_PALETTES = [
   { name: "VERC NGO Green", hex: "#007A3D", description: "Sustainability & Climate" },
   { name: "Royal Purple", hex: "#6C5DD3", description: "Modern Studio Purple" },
   { name: "Deep Indigo", hex: "#4F46E5", description: "High Contrast Tech" },
-  { name: "Crimson Ruby", hex: "#E11D48", description: "Vibrant Impact Red" },
+  { name: "Crimson Ruby", hex: "#ea5172ff", description: "Vibrant Impact Red" },
   { name: "Sunset Amber", hex: "#EA580C", description: "Energy & Community" },
   { name: "Teal Emerald", hex: "#0D9488", description: "Health & Hygiene" },
   { name: "Midnight Navy", hex: "#0F172A", description: "Corporate & Elegant" },

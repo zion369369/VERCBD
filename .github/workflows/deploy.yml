@@ -61,9 +61,11 @@ jobs:
           cp website/next.config.js deploy-package/next.config.js
           cp website/.htaccess deploy-package/.htaccess
           
-          # 4. Create Phusion Passenger restart signal
+          # 4. Create Phusion Passenger restart signal and persistent storage dirs
           mkdir -p deploy-package/tmp
           touch deploy-package/tmp/restart.txt
+          mkdir -p deploy-package/data
+          mkdir -p deploy-package/public/uploads
           
           echo "Deployment package assembled successfully."
           ls -la deploy-package
@@ -83,3 +85,5 @@ jobs:
             **/node_modules/**
             .env
             .env*
+            data/**
+            public/uploads/**

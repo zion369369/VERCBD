@@ -428,6 +428,10 @@ interface ContentContextType {
   updateDashboardMetrics: (metrics: Partial<CharityDashboardMetric>) => void;
   resetToDefaults: () => void;
 
+  syncStatus: "synced" | "saving" | "error" | "offline";
+  lastLiveSync: number | null;
+  publishToLive: () => Promise<{ success: boolean; message: string }>;
+
   addCertification: (item: Omit<LegalCertification, "id">) => void;
   updateCertification: (id: string, item: Partial<LegalCertification>) => void;
   deleteCertification: (id: string) => void;
@@ -1466,44 +1470,97 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [primaryColor, setPrimaryColor] = useState<string>("#004B8D");
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from LocalStorage on mount
+  const [syncStatus, setSyncStatus] = useState<"synced" | "saving" | "error" | "offline">("synced");
+  const [lastLiveSync, setLastLiveSync] = useState<number | null>(null);
+  const isInitialServerFetchDone = React.useRef(false);
+
+  // Helper to apply incoming payload into component states
+  const applyPayload = (parsed: any) => {
+    if (!parsed || typeof parsed !== "object") return;
+    if (parsed.heroSlides && Array.isArray(parsed.heroSlides)) setHeroSlides(parsed.heroSlides);
+    if (parsed.impactStats && Array.isArray(parsed.impactStats)) setImpactStats(parsed.impactStats);
+    if (parsed.programs && Array.isArray(parsed.programs)) setPrograms(parsed.programs);
+    if (parsed.news && Array.isArray(parsed.news)) setNews(parsed.news);
+    if (parsed.stories && Array.isArray(parsed.stories)) setStories(parsed.stories);
+    if (parsed.microfinanceProducts && Array.isArray(parsed.microfinanceProducts)) setMicrofinanceProducts(parsed.microfinanceProducts);
+    if (parsed.teamMembers && Array.isArray(parsed.teamMembers)) setTeamMembers(parsed.teamMembers);
+    if (parsed.partners && Array.isArray(parsed.partners)) setPartners(parsed.partners);
+    if (parsed.gallery && Array.isArray(parsed.gallery)) setGallery(parsed.gallery);
+    if (parsed.branches && Array.isArray(parsed.branches)) setBranches(parsed.branches);
+    if (parsed.messages && Array.isArray(parsed.messages)) setMessages(parsed.messages);
+    if (parsed.subscribers && Array.isArray(parsed.subscribers)) setSubscribers(parsed.subscribers);
+    if (parsed.donations && Array.isArray(parsed.donations)) setDonations(parsed.donations);
+    if (parsed.campaigns && Array.isArray(parsed.campaigns)) setCampaigns(parsed.campaigns);
+    if (parsed.siteSettings && typeof parsed.siteSettings === "object") setSiteSettings(parsed.siteSettings);
+    if (parsed.dashboardMetrics && typeof parsed.dashboardMetrics === "object") setDashboardMetrics(parsed.dashboardMetrics);
+    if (parsed.legalCertifications && Array.isArray(parsed.legalCertifications)) setLegalCertifications(parsed.legalCertifications);
+    if (parsed.annualReports && Array.isArray(parsed.annualReports)) setAnnualReports(parsed.annualReports);
+    if (parsed.awards && Array.isArray(parsed.awards)) setAwards(parsed.awards);
+    if (parsed.organogramNodes && Array.isArray(parsed.organogramNodes)) setOrganogramNodes(parsed.organogramNodes);
+    if (parsed.aboutContent && typeof parsed.aboutContent === "object") setAboutContent(parsed.aboutContent);
+    if (parsed.microfinanceProcess && typeof parsed.microfinanceProcess === "object") setMicrofinanceProcess(parsed.microfinanceProcess);
+    if (parsed.jobOpenings && Array.isArray(parsed.jobOpenings)) setJobOpenings(parsed.jobOpenings);
+    if (parsed.jobApplications && Array.isArray(parsed.jobApplications)) setJobApplications(parsed.jobApplications);
+    if (parsed.departments && Array.isArray(parsed.departments)) setDepartments(parsed.departments);
+    if (parsed.theme) setTheme(parsed.theme);
+    if (parsed.primaryColor) setPrimaryColor(parsed.primaryColor);
+  };
+
+  // 1. Initial Load: instant local cache + authoritative live server sync
   useEffect(() => {
+    let localParsed: any = null;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.heroSlides) setHeroSlides(parsed.heroSlides);
-        if (parsed.impactStats) setImpactStats(parsed.impactStats);
-        if (parsed.programs) setPrograms(parsed.programs);
-        if (parsed.news) setNews(parsed.news);
-        if (parsed.stories) setStories(parsed.stories);
-        if (parsed.microfinanceProducts) setMicrofinanceProducts(parsed.microfinanceProducts);
-        if (parsed.teamMembers) setTeamMembers(parsed.teamMembers);
-        if (parsed.partners) setPartners(parsed.partners);
-        if (parsed.gallery) setGallery(parsed.gallery);
-        if (parsed.branches) setBranches(parsed.branches);
-        if (parsed.messages) setMessages(parsed.messages);
-        if (parsed.subscribers) setSubscribers(parsed.subscribers);
-        if (parsed.donations) setDonations(parsed.donations);
-        if (parsed.campaigns) setCampaigns(parsed.campaigns);
-        if (parsed.siteSettings) setSiteSettings(parsed.siteSettings);
-        if (parsed.dashboardMetrics) setDashboardMetrics(parsed.dashboardMetrics);
-        if (parsed.legalCertifications) setLegalCertifications(parsed.legalCertifications);
-        if (parsed.annualReports) setAnnualReports(parsed.annualReports);
-        if (parsed.awards) setAwards(parsed.awards);
-        if (parsed.organogramNodes) setOrganogramNodes(parsed.organogramNodes);
-        if (parsed.aboutContent) setAboutContent(parsed.aboutContent);
-        if (parsed.microfinanceProcess) setMicrofinanceProcess(parsed.microfinanceProcess);
-        if (parsed.jobOpenings) setJobOpenings(parsed.jobOpenings);
-        if (parsed.jobApplications) setJobApplications(parsed.jobApplications);
-        if (parsed.departments && Array.isArray(parsed.departments)) setDepartments(parsed.departments);
-        if (parsed.theme) setTheme(parsed.theme);
-        if (parsed.primaryColor) setPrimaryColor(parsed.primaryColor);
+        localParsed = JSON.parse(stored);
+        applyPayload(localParsed);
       }
     } catch (e) {
       console.warn("Could not load stored content from localStorage:", e);
     }
     setIsLoaded(true);
+
+    // Fetch authoritative server content from /api/content
+    fetch("/api/content", {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" }
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        if (json?.success && json?.data) {
+          applyPayload(json.data);
+          if (json.lastUpdated) setLastLiveSync(json.lastUpdated);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(json.data));
+          } catch (_) {}
+          setSyncStatus("synced");
+        } else if (localParsed) {
+          // If live server has no content file yet, auto-migrate existing local modifications to the server
+          fetch("/api/content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(localParsed)
+          })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res?.success) {
+                setLastLiveSync(res.lastUpdated || Date.now());
+                setSyncStatus("synced");
+              }
+            })
+            .catch(() => {});
+        }
+      })
+      .catch((err) => {
+        console.warn("[ContentContext] Live server fetch failed, running with local/default content:", err);
+        setSyncStatus("offline");
+      })
+      .finally(() => {
+        isInitialServerFetchDone.current = true;
+      });
   }, []);
 
   // Real-time synchronization across browser tabs and components
@@ -1576,45 +1633,70 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [primaryColor, siteSettings.primaryColor, siteSettings.secondaryColor]);
 
-  // Save to LocalStorage with 250ms debounce to keep admin UI snappy
+  // Build the complete snapshot payload
+  const getCurrentSnapshot = () => ({
+    heroSlides,
+    impactStats,
+    programs,
+    news,
+    stories,
+    microfinanceProducts,
+    teamMembers,
+    partners,
+    gallery,
+    branches,
+    messages,
+    subscribers,
+    donations,
+    campaigns,
+    siteSettings,
+    dashboardMetrics,
+    legalCertifications,
+    annualReports,
+    awards,
+    organogramNodes,
+    aboutContent,
+    microfinanceProcess,
+    jobOpenings,
+    jobApplications,
+    departments,
+    theme,
+    primaryColor
+  });
+
+  // Save to LocalStorage immediately and debounce auto-sync to live server (/api/content)
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || !isInitialServerFetchDone.current) return;
+
+    setSyncStatus("saving");
+    const payload = getCurrentSnapshot();
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+      console.warn("Could not save content to localStorage:", e);
+    }
+
     const timer = setTimeout(() => {
-      try {
-        const payload = {
-          heroSlides,
-          impactStats,
-          programs,
-          news,
-          stories,
-          microfinanceProducts,
-          teamMembers,
-          partners,
-          gallery,
-          branches,
-          messages,
-          subscribers,
-          donations,
-          campaigns,
-          siteSettings,
-          dashboardMetrics,
-          legalCertifications,
-          annualReports,
-          awards,
-          organogramNodes,
-          aboutContent,
-          microfinanceProcess,
-          jobOpenings,
-          jobApplications,
-          departments,
-          theme,
-          primaryColor
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      } catch (e) {
-        console.warn("Could not save content to localStorage:", e);
-      }
-    }, 250);
+      fetch("/api/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res?.success) {
+            setSyncStatus("synced");
+            setLastLiveSync(res.lastUpdated || Date.now());
+          } else {
+            setSyncStatus("error");
+          }
+        })
+        .catch((err) => {
+          console.warn("[ContentContext] Failed to sync content to live server:", err);
+          setSyncStatus("error");
+        });
+    }, 400);
 
     return () => clearTimeout(timer);
   }, [
@@ -1648,7 +1730,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isLoaded
   ]);
 
-  // Helper for immediate synchronous persistence to prevent data loss on quick navigation
+  // Helper for immediate synchronous persistence
   const saveToStorageImmediate = (key: string, value: any) => {
     if (typeof window === "undefined") return;
     try {
@@ -1659,6 +1741,51 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       window.dispatchEvent(new CustomEvent("verc_content_sync", { detail: { [key]: value } }));
     } catch (e) {
       console.warn(`Immediate save for ${key} failed:`, e);
+    }
+
+    // Also immediately push slice to live server
+    fetch("/api/content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: value })
+    })
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.success) {
+          setSyncStatus("synced");
+          setLastLiveSync(res.lastUpdated || Date.now());
+        }
+      })
+      .catch(() => {});
+  };
+
+  // Explicit publish function for Admin UI
+  const publishToLive = async (): Promise<{ success: boolean; message: string }> => {
+    setSyncStatus("saving");
+    const payload = getCurrentSnapshot();
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      const res = await fetch("/api/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data?.success) {
+        setSyncStatus("synced");
+        setLastLiveSync(data.lastUpdated || Date.now());
+        return {
+          success: true,
+          message: "All changes are now live! Any visitor across the globe will see these updates."
+        };
+      } else {
+        setSyncStatus("error");
+        return { success: false, message: data?.error || "Save to live server failed." };
+      }
+    } catch (err: any) {
+      setSyncStatus("error");
+      return { success: false, message: err?.message || "Failed to reach live server." };
     }
   };
 
@@ -2079,7 +2206,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         deleteOrganogramNode,
         updateAboutContent,
         updateMicrofinanceProcess,
-        resetToDefaults
+        resetToDefaults,
+        syncStatus,
+        lastLiveSync,
+        publishToLive
       }}
     >
       {children}

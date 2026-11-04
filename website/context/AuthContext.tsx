@@ -164,8 +164,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize from LocalStorage
+  // Initialize from LocalStorage and Live Server
   useEffect(() => {
+    let localUsers: AdminUser[] | null = null;
+    let localRoles: Role[] | null = null;
+
     try {
       const storedUsers = localStorage.getItem(STORAGE_USERS);
       const storedRoles = localStorage.getItem(STORAGE_ROLES);
@@ -174,6 +177,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (storedRoles) {
         const parsedRoles = JSON.parse(storedRoles);
         if (Array.isArray(parsedRoles) && parsedRoles.length > 0) {
+          localRoles = parsedRoles;
           setRoles(parsedRoles);
         }
       }
@@ -181,11 +185,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (storedUsers) {
         const parsedUsers = JSON.parse(storedUsers);
         if (Array.isArray(parsedUsers) && parsedUsers.length > 0) {
-          // Guarantee Superadmin.verc exists with default password if missing
           const hasSuper = parsedUsers.some((u: AdminUser) => u.username.toLowerCase() === "superadmin.verc");
           if (!hasSuper) {
             parsedUsers.unshift(defaultUsers[0]);
           }
+          localUsers = parsedUsers;
           setUsers(parsedUsers);
         }
       }
@@ -201,9 +205,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
+
+    // Fetch authoritative users and roles from live server
+    fetch("/api/auth/users", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success) {
+          let hasServerData = false;
+          if (Array.isArray(data.users) && data.users.length > 0) {
+            const hasSuper = data.users.some((u: AdminUser) => u.username.toLowerCase() === "superadmin.verc");
+            if (!hasSuper) data.users.unshift(defaultUsers[0]);
+            setUsers(data.users);
+            try { localStorage.setItem(STORAGE_USERS, JSON.stringify(data.users)); } catch (_) {}
+            hasServerData = true;
+          }
+          if (Array.isArray(data.roles) && data.roles.length > 0) {
+            setRoles(data.roles);
+            try { localStorage.setItem(STORAGE_ROLES, JSON.stringify(data.roles)); } catch (_) {}
+            hasServerData = true;
+          }
+
+          // If server didn't have saved auth yet, seed server with current local data
+          if (!hasServerData) {
+            fetch("/api/auth/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                users: localUsers || defaultUsers,
+                roles: localRoles || defaultRoles
+              })
+            }).catch(() => {});
+          }
+        }
+      })
+      .catch((err) => console.warn("[AuthContext] Live server auth fetch failed:", err));
   }, []);
 
-  // Sync users to LocalStorage
+  // Sync users to LocalStorage and Live Server
   useEffect(() => {
     if (!isLoading) {
       try {
@@ -211,10 +249,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (e) {
         console.warn("Failed saving users to localStorage:", e);
       }
+
+      const timer = setTimeout(() => {
+        fetch("/api/auth/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ users })
+        }).catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [users, isLoading]);
 
-  // Sync roles to LocalStorage
+  // Sync roles to LocalStorage and Live Server
   useEffect(() => {
     if (!isLoading) {
       try {
@@ -222,6 +269,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (e) {
         console.warn("Failed saving roles to localStorage:", e);
       }
+
+      const timer = setTimeout(() => {
+        fetch("/api/auth/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ roles })
+        }).catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [roles, isLoading]);
 

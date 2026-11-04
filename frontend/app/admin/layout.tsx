@@ -40,11 +40,35 @@ import AdminLoginPage from "./login/page";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme, primaryColor, messages, siteSettings, donations, programs, jobApplications } = useContent();
+  const { 
+    theme, 
+    setTheme, 
+    primaryColor, 
+    messages, 
+    siteSettings, 
+    donations, 
+    programs, 
+    jobApplications,
+    syncStatus,
+    publishToLive
+  } = useContent();
   const { language, setLanguage, t } = useLanguage();
   const { currentUser, isAuthenticated, isLoading, logout, hasPermission } = useAuth();
 
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishToast, setPublishToast] = useState<string | null>(null);
+
+  const handlePublishToLive = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await publishToLive();
+      setPublishToast(res.message);
+      setTimeout(() => setPublishToast(null), 4500);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   const isLoginPage = pathname === "/admin/login";
 
@@ -281,6 +305,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
+            {/* Live Website Global Sync Status & Button */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={handlePublishToLive}
+                disabled={isPublishing}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                  isPublishing || syncStatus === "saving"
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                    : syncStatus === "error"
+                    ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                    : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+                }`}
+                title="Force publish all current admin edits globally to the live website"
+              >
+                <span className={`w-2 h-2 rounded-full ${
+                  isPublishing || syncStatus === "saving"
+                    ? "bg-amber-500 animate-ping"
+                    : syncStatus === "error"
+                    ? "bg-rose-500"
+                    : "bg-emerald-500 animate-pulse"
+                }`} />
+                <span>
+                  {isPublishing || syncStatus === "saving"
+                    ? "Syncing Live..."
+                    : syncStatus === "error"
+                    ? "Sync Error (Retry)"
+                    : "🌐 Publish to Live"}
+                </span>
+              </button>
+
+              {publishToast && (
+                <div className="absolute right-0 top-11 z-50 w-72 p-3 bg-emerald-600 text-white rounded-xl shadow-2xl text-xs font-medium flex items-start gap-2">
+                  <Check size={16} className="flex-shrink-0 mt-0.5 text-white" />
+                  <span>{publishToast}</span>
+                </div>
+              )}
+            </div>
+
             {/* Language Switcher */}
             <div className="relative">
               <button
