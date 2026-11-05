@@ -4,8 +4,10 @@ import { readServerContent, writeServerContent } from "@/lib/serverStorage";
 import { ensureBranchDirectory, BRANCH_DIRECTORY_VERSION } from "@/lib/branchDirectory";
 import { ensurePhotoLibrary, PHOTO_LIBRARY_VERSION } from "@/lib/photoLibrary";
 import { ensureCareers, CAREERS_CONTENT_VERSION } from "@/lib/careers";
+import { ensurePartners, PARTNER_CATALOG_VERSION } from "@/lib/partnerLogos";
 
-const migrateContent = (data: Record<string, any>) => ensureCareers(ensurePhotoLibrary(ensureBranchDirectory(data)));
+const migrateContent = (data: Record<string, any>) =>
+  ensurePartners(ensureCareers(ensurePhotoLibrary(ensureBranchDirectory(data))));
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,7 +28,13 @@ const noCacheHeaders = {
 export async function GET() {
   try {
     let result = readServerContent();
-    if (result && (result.data.branchDirectoryVersion !== BRANCH_DIRECTORY_VERSION || result.data.photoLibraryVersion !== PHOTO_LIBRARY_VERSION || result.data.careersContentVersion !== CAREERS_CONTENT_VERSION)) {
+    if (
+      result &&
+      (result.data.branchDirectoryVersion !== BRANCH_DIRECTORY_VERSION ||
+        result.data.photoLibraryVersion !== PHOTO_LIBRARY_VERSION ||
+        result.data.careersContentVersion !== CAREERS_CONTENT_VERSION ||
+        result.data.partnerCatalogVersion !== PARTNER_CATALOG_VERSION)
+    ) {
       const migrated = migrateContent(result.data);
       const saved = writeServerContent(migrated);
       result = { data: migrated, lastUpdated: saved.lastUpdated };

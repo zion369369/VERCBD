@@ -456,7 +456,7 @@ export default function SdgSection() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/95 shadow-sm border border-slate-200/80 mb-6 backdrop-blur-md"
+            className="liquid-glass-pill-3d inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-6"
           >
             <motion.div
               animate={{ rotate: 360 }}
@@ -525,14 +525,15 @@ export default function SdgSection() {
                 onClick={() => setSelectedGoal(sdg)}
                 className="group relative cursor-pointer w-[calc(50%-8px)] sm:w-[calc(33.333%-14px)] md:w-[calc(25%-16px)] lg:w-[calc(16.666%-20px)] min-w-[160px] max-w-[200px]"
               >
-                {/* Outer Card with exact official SDG color */}
+                {/* Outer Card with exact official SDG color + 3D Liquid Glass Bevel Rim */}
                 <div 
                   style={{ 
                     backgroundColor: sdg.color,
-                    boxShadow: "0 10px 25px -5px rgba(0,0,0,0.18)"
                   }}
-                  className="relative h-full min-h-[220px] sm:min-h-[250px] p-4 sm:p-5 rounded-[26px] text-white overflow-hidden transition-all duration-500 hover:-translate-y-2.5 hover:shadow-[0_25px_45px_-10px_rgba(0,0,0,0.38)] flex flex-col justify-between border border-white/25 group-hover:border-white/50"
+                  className="relative h-full min-h-[220px] sm:min-h-[250px] p-4 sm:p-5 rounded-[28px] text-white overflow-hidden transition-all duration-500 hover:-translate-y-2.5 hover:scale-[1.02] shadow-[0_18px_36px_-8px_rgba(0,0,0,0.24),inset_0_2px_3px_rgba(255,255,255,0.48),inset_0_-3px_6px_rgba(0,0,0,0.22)] hover:shadow-[0_28px_52px_-10px_rgba(0,0,0,0.38),inset_0_2px_4px_rgba(255,255,255,0.65)] flex flex-col justify-between border-t-2 border-l-2 border-white/55 border-r border-b-[4px] border-r-black/15 border-b-black/25"
                 >
+                  {/* Top 3D Specular Glass Gloss Overlay */}
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/25 to-transparent" />
                   {/* Top liquid light shimmer streak */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
 
@@ -590,7 +591,7 @@ export default function SdgSection() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-16 sm:mt-20 p-6 sm:p-8 rounded-[36px] backdrop-blur-2xl backdrop-saturate-150 bg-white/80 border border-white/90 shadow-[0_24px_60px_-15px_rgba(0,75,141,0.15),0_4px_16px_rgba(15,23,42,0.04),inset_0_1px_2px_rgba(255,255,255,0.98)] max-w-5xl mx-auto"
+          className="liquid-glass-3d mt-16 sm:mt-20 p-6 sm:p-8 rounded-[36px] max-w-5xl mx-auto"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-100 text-center">
             <div className="pt-3 md:pt-0">

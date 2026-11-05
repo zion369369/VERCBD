@@ -22,6 +22,7 @@ import Image from "next/image";
 import Link from "next/link";
 import partnersHero from "@/app/assets/partners_hero.png";
 import { useContent } from "@/context/ContentContext";
+import { resolvePartnerLogo, getPartnerFallbackSvg } from "@/lib/partnerLogos";
 
 export default function PartnersPage() {
   const { partners } = useContent();
@@ -116,8 +117,12 @@ export default function PartnersPage() {
                 <div className="space-y-6">
                   <div className="h-24 bg-gray-50 rounded-2xl flex items-center justify-center p-4 overflow-hidden border border-gray-100/60">
                     <img
-                      src={partner.logoUrl}
+                      src={resolvePartnerLogo(partner)}
                       alt={partner.name}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = getPartnerFallbackSvg(partner.name);
+                      }}
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
                     />
                   </div>

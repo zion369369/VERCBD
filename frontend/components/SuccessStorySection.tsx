@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Heart, Sparkles, ArrowRight, ChevronLeft, ChevronRight,
   CheckCircle2, Quote, Award, Users, TrendingUp, ShieldCheck,
-  MapPin, BookOpen, ExternalLink
+  MapPin, BookOpen
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useContent } from "@/context/ContentContext";
@@ -218,20 +218,21 @@ export default function SuccessStorySection() {
 
   return (
     <section 
-      className="relative py-24 sm:py-32 overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-blue-50/20"
+      className="relative py-24 sm:py-32 overflow-hidden bg-gradient-to-b from-sky-50/50 via-slate-100/65 to-sky-100/40 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Subtle ambient luxury light glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-brand-secondary/8 to-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-10 right-10 w-80 h-80 bg-blue-100/40 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-100/30 rounded-full blur-[120px] pointer-events-none" />
+      {/* Subtle ambient 3D liquid glass light glows */}
+      <div className="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:30px_30px] opacity-[0.2] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-sky-400/20 to-brand-primary/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-10 right-10 w-80 h-80 bg-cyan-300/25 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-emerald-300/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-custom relative z-10">
         
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-50/90 border border-blue-200/60 text-brand-primary text-xs font-bold tracking-wider uppercase shadow-sm">
+          <div className="liquid-glass-pill-3d inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-brand-primary text-xs font-bold tracking-wider uppercase">
             <span className="w-2 h-2 rounded-full bg-brand-secondary animate-pulse" />
             <Heart size={14} className="text-brand-secondary fill-brand-secondary/20" />
             <span>
@@ -239,27 +240,27 @@ export default function SuccessStorySection() {
             </span>
           </div>
 
-          <h2 className={`text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 ${language === "bn" ? "leading-[1.25] tracking-normal" : "leading-[1.1] tracking-tight"}`}>
+          <h2 className={`text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white ${language === "bn" ? "leading-[1.25] tracking-normal" : "leading-[1.08] tracking-tight"}`}>
             {language === "bn" ? (
               <>
-                জীবন বদলে দেওয়ার <span className="bg-gradient-to-r from-brand-primary via-blue-700 to-brand-secondary bg-clip-text text-transparent">বাস্তব গল্প।</span>
+                জীবন বদলে দেওয়ার <span className="bg-gradient-to-r from-[#004B8D] via-sky-600 to-cyan-500 bg-clip-text text-transparent">বাস্তব গল্প।</span>
               </>
             ) : (
               <>
-                Stories of Resilient <span className="bg-gradient-to-r from-brand-primary via-blue-700 to-brand-secondary bg-clip-text text-transparent">Transformation.</span>
+                Stories of Resilient <span className="bg-gradient-to-r from-[#004B8D] via-sky-600 to-cyan-500 bg-clip-text text-transparent">Transformation.</span>
               </>
             )}
           </h2>
 
-          <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
             {language === "bn" 
               ? "১৯৭৭ সাল থেকে ভার্ক প্রান্তিক জনগোষ্ঠীর মাঝে আত্মবিশ্বাস ও স্থায়ী সক্ষমতা গড়ে তুলছে। দেখুন কীভাবে সাধারণ মানুষ নেতৃত্ব দিয়ে নিজেদের ভাগ্য পরিবর্তন করছেন।"
               : "Direct from the villages: how community ownership, non-formal education, and collective action break generational barriers across Bangladesh."}
           </p>
 
-          {/* 3D Morphic Segmented Control (Strictly 3 buttons in one line, 0 horizontal scroll) */}
+          {/* 3D Frosted Liquid Glass Segmented Control */}
           <div className="pt-4 max-w-2xl mx-auto w-full px-2 sm:px-0">
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 rounded-2xl sm:rounded-full bg-slate-100/95 backdrop-blur-xl border border-slate-200/90 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06),0_10px_25px_-5px_rgba(15,23,42,0.08)]">
+            <div className="liquid-glass-3d grid grid-cols-3 gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 rounded-2xl sm:rounded-full">
               {displayStories.map((story, idx) => {
                 const isActive = idx === activeIndex;
                 return (
@@ -268,14 +269,14 @@ export default function SuccessStorySection() {
                     onClick={() => setActiveIndex(idx)}
                     className={`group relative w-full px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer text-center ${
                       isActive 
-                        ? "bg-gradient-to-b from-[#00549f] via-brand-primary to-[#003463] text-white shadow-[0_8px_20px_-3px_rgba(0,75,141,0.5),inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_4px_rgba(0,0,0,0.2)] ring-2 ring-brand-secondary/40 -translate-y-0.5" 
-                        : "bg-gradient-to-b from-white via-white to-slate-50 text-slate-800 border border-slate-200/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,1)] hover:shadow-[0_6px_14px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:text-brand-primary hover:border-blue-200 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)]"
+                        ? "liquid-glass-primary-3d text-white -translate-y-0.5" 
+                        : "bg-white/75 hover:bg-white/95 text-slate-800 border-t border-l border-white border-r border-b-2 border-b-sky-200/70 shadow-xs hover:-translate-y-0.5 hover:text-brand-primary"
                     }`}
                   >
                     <span className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${
                       isActive 
                         ? "bg-gradient-to-tr from-cyan-400 to-sky-200 text-slate-900 shadow-sm" 
-                        : "bg-slate-100 text-slate-700 border border-slate-200 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)] group-hover:bg-blue-50 group-hover:text-brand-primary"
+                        : "bg-sky-50 text-slate-700 border border-sky-200/80 group-hover:bg-blue-50 group-hover:text-brand-primary"
                     }`}>
                       0{idx + 1}
                     </span>
@@ -292,15 +293,15 @@ export default function SuccessStorySection() {
           </div>
         </div>
 
-        {/* Master Story Showcase Card */}
-        <div className="bg-white/95 backdrop-blur-md rounded-[36px] sm:rounded-[48px] border border-slate-200/80 shadow-[0_20px_70px_-15px_rgba(15,23,42,0.08)] overflow-hidden">
+        {/* Master Story Showcase Card — 3D Frosted Liquid Glass Polymorphic Container */}
+        <div className="liquid-glass-3d rounded-[36px] sm:rounded-[48px] overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             
-            {/* Left Column: 100% UNTOUCHED, BRIGHT, CRISP IMAGE (No dark shading, No face occlusion) */}
-            <div className="lg:col-span-5 relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 bg-gradient-to-b from-slate-50/50 to-blue-50/30 border-b lg:border-b-0 lg:border-r border-slate-100">
+            {/* Left Column: 100% UNTOUCHED, BRIGHT, CRISP IMAGE inside 3D Glass Bezel */}
+            <div className="lg:col-span-5 relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 bg-gradient-to-b from-white/50 to-sky-50/40 border-b lg:border-b-0 lg:border-r border-white/80">
               
               {/* Photo Frame Container */}
-              <div className="relative rounded-[28px] overflow-hidden shadow-lg border border-slate-200/70 aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/5] bg-slate-100 group">
+              <div className="relative rounded-[28px] overflow-hidden shadow-[0_20px_45px_-12px_rgba(0,75,141,0.18)] border-2 border-white aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/5] bg-slate-100 group">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={current.id}
@@ -315,19 +316,19 @@ export default function SuccessStorySection() {
                 </AnimatePresence>
 
                 {/* Floating Frosted Pill Badge (Top-left: safe zone, non-intrusive) */}
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-md border border-white/80 text-xs font-bold text-slate-800">
+                <div className="liquid-glass-pill-3d absolute top-4 left-4 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-800">
                   <MapPin size={13} className="text-brand-secondary" />
                   <span>{language === "bn" ? current.locationBn : current.locationEn}</span>
                 </div>
 
                 {/* Verified Impact Pill (Top-right) */}
-                <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-emerald-500/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md text-white text-[11px] font-bold">
+                <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 bg-emerald-500/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md border border-emerald-300/60 text-white text-[11px] font-bold">
                   <CheckCircle2 size={13} className="text-white" />
                   <span>{language === "bn" ? "যাচাইকৃত প্রভাব" : "Verified Impact"}</span>
                 </div>
 
                 {/* Clean Bottom Caption Strip (At bottom edge so faces are completely clear) */}
-                <div className="absolute bottom-3 left-3 right-3 z-10 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-sm border border-white/80 flex items-center justify-between">
+                <div className="liquid-glass-pill-3d absolute bottom-3 left-3 right-3 z-10 px-4 py-2.5 rounded-2xl flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                     <span className="text-xs font-bold text-slate-800 line-clamp-1">
@@ -361,14 +362,14 @@ export default function SuccessStorySection() {
                   <button
                     onClick={handlePrev}
                     aria-label="Previous Story"
-                    className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-slate-100 border border-slate-200/90 shadow-[0_4px_10px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-slate-800 hover:text-brand-primary hover:shadow-[0_6px_14px_rgba(0,75,141,0.2)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] transition-all cursor-pointer"
+                    className="liquid-glass-pill-3d w-10 h-10 rounded-full flex items-center justify-center text-slate-800 hover:text-brand-primary hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
                   >
                     <ChevronLeft size={18} />
                   </button>
                   <button
                     onClick={handleNext}
                     aria-label="Next Story"
-                    className="w-10 h-10 rounded-full bg-gradient-to-b from-white to-slate-100 border border-slate-200/90 shadow-[0_4px_10px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-slate-800 hover:text-brand-primary hover:shadow-[0_6px_14px_rgba(0,75,141,0.2)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] transition-all cursor-pointer"
+                    className="liquid-glass-pill-3d w-10 h-10 rounded-full flex items-center justify-center text-slate-800 hover:text-brand-primary hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -390,71 +391,72 @@ export default function SuccessStorySection() {
                   className="space-y-6"
                 >
                   {/* Category Tracker Bar */}
-                  <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div className="flex items-center justify-between gap-4 border-b border-slate-200/70 pb-4">
                     <div className="flex items-center gap-2 text-brand-secondary font-black tracking-widest uppercase text-xs">
                       <Sparkles size={16} />
                       <span>{language === "bn" ? current.pillBn : current.pillEn}</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="liquid-glass-pill-3d text-xs font-bold text-slate-600 px-3.5 py-1 rounded-full">
                       {language === "bn" ? `গল্প ০${activeIndex + 1} / ০${STORIES.length}` : `Story 0${activeIndex + 1} of 0${STORIES.length}`}
                     </span>
                   </div>
 
                   {/* Headline */}
-                  <h3 className={`text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 ${
+                  <h3 className={`text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white ${
                     language === "bn" ? "leading-[1.25] tracking-normal" : "leading-tight tracking-tight"
                   }`}>
                     {language === "bn" ? current.titleBn : current.titleEn}
                   </h3>
 
                   {/* Refined Narrative Quote with Decorative Watermark */}
-                  <div className="relative pl-6 sm:pl-8 border-l-4 border-brand-secondary/40 py-1">
+                  <div className="relative pl-6 sm:pl-8 border-l-4 border-brand-secondary/50 py-1">
                     <Quote 
                       size={48} 
                       className="absolute -top-3 -left-3 text-brand-primary/10 -z-10 pointer-events-none" 
                     />
-                    <p className="text-slate-700 text-base sm:text-lg lg:text-xl leading-relaxed font-normal italic">
+                    <p className="text-slate-700 dark:text-slate-200 text-base sm:text-lg lg:text-xl leading-relaxed font-normal italic">
                       “{language === "bn" ? current.quoteBn : current.quoteEn}”
                     </p>
                   </div>
 
-                  {/* Beneficiary Attribution Card */}
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-primary to-brand-secondary flex items-center justify-center text-white font-black text-lg shadow-sm shrink-0">
+                  {/* Beneficiary Attribution Card — 3D Frosted Glass */}
+                  <div className="liquid-glass-pill-3d flex items-center gap-4 p-4 rounded-2xl">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#004B8D] to-sky-400 flex items-center justify-center text-white font-black text-lg shadow-md border border-white/60 shrink-0">
                       {(language === "bn" ? current.personNameBn : current.personNameEn).charAt(0)}
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-slate-900 text-sm sm:text-base">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
                           {language === "bn" ? current.personNameBn : current.personNameEn}
                         </h4>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100/85 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
                           <CheckCircle2 size={11} />
                           {language === "bn" ? "কমিউনিটি লিডার" : "Grassroots Leader"}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 font-medium">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                         {language === "bn" ? current.personRoleBn : current.personRoleEn} • {language === "bn" ? current.personCommunityBn : current.personCommunityEn}
                       </p>
                     </div>
                   </div>
 
-                  {/* Micro-Metrics Highlight Grid */}
+                  {/* Micro-Metrics Highlight Grid — 3D Frosted Glass */}
                   <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-2">
                     {current.metrics.map((metric, idx) => {
                       const IconComponent = metric.icon;
                       return (
                         <div 
                           key={idx}
-                          className="bg-blue-50/50 hover:bg-blue-50/80 transition-colors border border-blue-100/80 rounded-2xl p-3 sm:p-4 text-center sm:text-left space-y-1"
+                          className="liquid-glass-3d liquid-glass-3d-interactive rounded-2xl p-3.5 sm:p-4 text-center sm:text-left space-y-1 relative overflow-hidden"
                         >
+                          <div className="absolute inset-x-0 top-0 h-[2.5px] bg-gradient-to-r from-[#004B8D] via-sky-400 to-cyan-400" />
                           <div className="flex items-center justify-center sm:justify-start gap-1.5 text-brand-primary mb-1">
-                            <IconComponent className="w-4 h-4 text-brand-secondary" />
-                            <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+                            <IconComponent className="w-4 h-4 text-brand-secondary shrink-0" />
+                            <span className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                               {metric.value}
                             </span>
                           </div>
-                          <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-snug">
+                          <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-semibold leading-snug">
                             {language === "bn" ? metric.labelBn : metric.labelEn}
                           </p>
                         </div>
@@ -465,11 +467,11 @@ export default function SuccessStorySection() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Action Buttons Row with 3D Morphic Tactile Feel */}
-              <div className="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-4">
+              {/* Action Buttons Row with 3D Liquid Frosted Glass Feel */}
+              <div className="pt-6 border-t border-slate-200/70 flex flex-wrap items-center gap-4">
                 <Link 
                   href="/impact" 
-                  className="px-8 py-4 bg-gradient-to-b from-[#00549f] via-brand-primary to-[#003463] hover:from-[#0060b5] hover:to-[#003d75] text-white font-extrabold rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,75,141,0.45),inset_0_1px_1px_rgba(255,255,255,0.4),0_3px_5px_rgba(0,0,0,0.2)] hover:shadow-[0_14px_30px_-5px_rgba(0,75,141,0.55)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.3)] transition-all flex items-center gap-3 text-sm sm:text-base group cursor-pointer"
+                  className="liquid-glass-primary-3d px-8 py-4 text-white font-bold rounded-2xl flex items-center gap-3 text-sm sm:text-base group cursor-pointer"
                 >
                   <span>
                     {language === "bn" ? "সকল ফলাফল ও প্রতিবেদন দেখুন" : "View Comprehensive Impact"}
@@ -479,7 +481,7 @@ export default function SuccessStorySection() {
 
                 <Link 
                   href="/programs" 
-                  className="px-6 py-4 bg-gradient-to-b from-white to-slate-50 text-slate-800 hover:text-brand-primary font-bold rounded-2xl border border-slate-200/90 shadow-[0_6px_16px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.09)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)] transition-all flex items-center gap-2 text-sm sm:text-base cursor-pointer"
+                  className="liquid-glass-3d liquid-glass-3d-interactive px-6 py-4 text-slate-800 dark:text-white hover:text-brand-primary font-bold rounded-2xl flex items-center gap-2 text-sm sm:text-base cursor-pointer"
                 >
                   <BookOpen size={16} className="text-brand-secondary" />
                   <span>

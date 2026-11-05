@@ -21,11 +21,17 @@ if (Test-Path $nextBuildZip) {
     Remove-Item $nextBuildZip -Force
 }
 
-# For next_build.zip, we pack .next into an archive where top-level folder is .next
+# For next_build.zip, we pack .next and public/assets/*_logo* so partner logos and build artifacts deploy together
 $tempDir = Join-Path $env:TEMP ("next_patch_" + [System.Guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 $targetNext = Join-Path $tempDir ".next"
 Copy-Item -Path (Join-Path $websiteDir ".next") -Destination $targetNext -Recurse -Force
+
+$targetAssets = Join-Path $tempDir "public\assets"
+New-Item -ItemType Directory -Path $targetAssets -Force | Out-Null
+Get-ChildItem -Path (Join-Path $websiteDir "public\assets\*logo*") -ErrorAction SilentlyContinue | ForEach-Object {
+    Copy-Item -Path $_.FullName -Destination $targetAssets -Force
+}
 
 [System.IO.Compression.ZipFile]::CreateFromDirectory($tempDir, $nextBuildZip, [System.IO.Compression.CompressionLevel]::Optimal, $false)
 Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue

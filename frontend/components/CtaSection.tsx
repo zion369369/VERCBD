@@ -112,7 +112,7 @@ export default function CtaSection() {
           className="mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           {/* Pathway 1 */}
-          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.07] hover:bg-white/[0.11] backdrop-blur-xl border border-white/15 hover:border-white/30 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col justify-between space-y-6">
+          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.1] hover:bg-white/[0.15] backdrop-blur-2xl backdrop-saturate-150 border-t-2 border-l-2 border-white/35 border-r border-b-[3px] border-r-sky-300/20 border-b-cyan-400/35 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),inset_0_2px_3px_rgba(255,255,255,0.28),inset_0_-2px_5px_rgba(0,174,239,0.18)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500/30 to-amber-500/20 border border-white/20 flex items-center justify-center text-rose-300 shadow-inner group-hover:scale-110 transition-transform">
                 <HeartHandshake size={26} />
@@ -139,7 +139,7 @@ export default function CtaSection() {
           </div>
 
           {/* Pathway 2 */}
-          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.07] hover:bg-white/[0.11] backdrop-blur-xl border border-white/15 hover:border-white/30 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col justify-between space-y-6">
+          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.1] hover:bg-white/[0.15] backdrop-blur-2xl backdrop-saturate-150 border-t-2 border-l-2 border-white/35 border-r border-b-[3px] border-r-sky-300/20 border-b-cyan-400/35 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),inset_0_2px_3px_rgba(255,255,255,0.28),inset_0_-2px_5px_rgba(0,174,239,0.18)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500/30 to-blue-500/20 border border-white/20 flex items-center justify-center text-sky-300 shadow-inner group-hover:scale-110 transition-transform">
                 <Building2 size={26} />
@@ -166,7 +166,7 @@ export default function CtaSection() {
           </div>
 
           {/* Pathway 3 */}
-          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.07] hover:bg-white/[0.11] backdrop-blur-xl border border-white/15 hover:border-white/30 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col justify-between space-y-6">
+          <div className="relative p-6 sm:p-8 rounded-[32px] bg-white/[0.1] hover:bg-white/[0.15] backdrop-blur-2xl backdrop-saturate-150 border-t-2 border-l-2 border-white/35 border-r border-b-[3px] border-r-sky-300/20 border-b-cyan-400/35 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45),inset_0_2px_3px_rgba(255,255,255,0.28),inset_0_-2px_5px_rgba(0,174,239,0.18)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500/30 to-teal-500/20 border border-white/20 flex items-center justify-center text-emerald-300 shadow-inner group-hover:scale-110 transition-transform">
                 <Award size={26} />

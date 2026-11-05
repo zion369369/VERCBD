@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { branchDirectory, ensureBranchDirectory, BRANCH_DIRECTORY_VERSION } from "@/lib/branchDirectory";
 import { photoLibrary, ensurePhotoLibrary, PHOTO_LIBRARY_VERSION } from "@/lib/photoLibrary";
 import { ensureCareers, CAREERS_CONTENT_VERSION } from "@/lib/careers";
+import { ensurePartners, PARTNER_CATALOG_VERSION } from "@/lib/partnerLogos";
 
 export interface HeroSlide {
   id: string;
@@ -1411,6 +1412,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (Array.isArray(parsed.branches)) parsed = ensureBranchDirectory(parsed);
     if (Array.isArray(parsed.gallery)) parsed = ensurePhotoLibrary(parsed);
     if (Array.isArray(parsed.jobOpenings) || Array.isArray(parsed.jobApplications)) parsed = ensureCareers(parsed);
+    if (Array.isArray(parsed.partners)) parsed = ensurePartners(parsed);
     if (markAsSynced) {
       recordSyncedKeys(parsed);
       if (parsed.aboutContent && typeof parsed.aboutContent === "object") {

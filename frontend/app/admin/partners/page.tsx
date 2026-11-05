@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Plus, Edit2, Trash2, HeartHandshake, ExternalLink, Globe, X } from "lucide-react";
 import { useContent, PartnerItem } from "@/context/ContentContext";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { resolvePartnerLogo, getPartnerFallbackSvg } from "@/lib/partnerLogos";
 
 export default function AdminPartnersPage() {
   const { partners, addPartner, updatePartner, deletePartner, primaryColor, theme } = useContent();
@@ -113,9 +114,13 @@ export default function AdminPartnersPage() {
               {/* Logo Frame */}
               <div className="h-24 rounded-2xl bg-white p-4 flex items-center justify-center border border-gray-200 shadow-xs">
                 <img
-                  src={partner.logoUrl}
+                  src={resolvePartnerLogo(partner)}
                   alt={partner.name}
-                  className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = getPartnerFallbackSvg(partner.name);
+                  }}
+                  className="max-h-full max-w-full object-contain transition-all duration-300"
                 />
               </div>
 

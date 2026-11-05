@@ -106,13 +106,18 @@ export default function BangladeshOfficeMapSection() {
     <section
       id="bangladesh-office-map"
       aria-labelledby="bd-office-map-heading"
-      className="relative py-16 sm:py-24 bg-gradient-to-b from-slate-50 via-white to-sky-50/40 border-t border-slate-200/70 overflow-hidden"
+      className="relative py-16 sm:py-24 bg-gradient-to-b from-sky-100/45 via-slate-100/60 to-sky-50/45 border-t border-white/80 overflow-hidden"
     >
+      {/* Subtle Architectural Dot Pattern & 3D Liquid Glass Ambient Glows */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:28px_28px] opacity-[0.22]" />
+      <div className="pointer-events-none absolute -top-16 left-10 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-10 right-10 h-80 w-80 rounded-full bg-emerald-400/18 blur-3xl" />
+
       <div className="container-custom relative z-10">
         {/* Section Heading */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100/80 border border-sky-200 text-brand-primary text-xs font-semibold uppercase tracking-widest mb-4">
+            <div className="liquid-glass-pill-3d inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-brand-primary text-xs font-bold uppercase tracking-widest mb-4">
               <Building2 size={14} />
               <span>
                 {isBn
@@ -122,19 +127,19 @@ export default function BangladeshOfficeMapSection() {
             </div>
             <h2
               id="bd-office-map-heading"
-              className="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1]"
+              className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.08]"
             >
               {isBn ? (
                 <>
                   সারা বাংলাদেশে ভার্কের{" "}
-                  <span className="text-brand-primary">
+                  <span className="bg-gradient-to-r from-[#004B8D] via-sky-600 to-cyan-500 bg-clip-text text-transparent">
                     {branches.length}টি কার্যালয়।
                   </span>
                 </>
               ) : (
                 <>
                   Explore All{" "}
-                  <span className="text-brand-primary">
+                  <span className="bg-gradient-to-r from-[#004B8D] via-sky-600 to-cyan-500 bg-clip-text text-transparent">
                     {branches.length} VERC Offices
                   </span>{" "}
                   Across Bangladesh.
@@ -152,14 +157,14 @@ export default function BangladeshOfficeMapSection() {
             <button
               type="button"
               onClick={handleResetMap}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand-primary hover:border-brand-primary/40 text-xs sm:text-sm font-semibold shadow-xs transition-all cursor-pointer"
+              className="liquid-glass-3d liquid-glass-3d-interactive inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-700 hover:text-brand-primary text-xs sm:text-sm font-bold cursor-pointer"
             >
               <RotateCcw size={15} />
               <span>{isBn ? "সম্পূর্ণ বাংলাদেশ মানচিত্র" : "Full Bangladesh View"}</span>
             </button>
             <Link
               href="/resources/branches"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white hover:bg-sky-900 text-xs sm:text-sm font-semibold shadow-md transition-all"
+              className="liquid-glass-primary-3d inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-bold"
             >
               <span>{isBn ? "সকল শাখার তালিকা" : "Full Branch Directory"}</span>
               <ArrowUpRight size={16} />
@@ -167,8 +172,8 @@ export default function BangladeshOfficeMapSection() {
           </div>
         </div>
 
-        {/* Search & District Filter Bar */}
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-12 gap-3 p-3 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm">
+        {/* Search & District Filter Bar — 3D Frosted Liquid Glass */}
+        <div className="liquid-glass-3d mb-6 grid grid-cols-1 sm:grid-cols-12 gap-3 p-3.5 sm:p-4 rounded-2xl">
           <div className="sm:col-span-7 relative flex items-center">
             <Search
               size={17}
@@ -186,7 +191,7 @@ export default function BangladeshOfficeMapSection() {
                   ? "শাখার নাম, কোড (যেমন 0046), জেলা বা উপজেলা দিয়ে খুঁজুন..."
                   : "Search by branch name, code (e.g. 0046), district, upazila, or village..."
               }
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-xs sm:text-sm text-slate-900 outline-none focus:border-brand-primary"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/90 bg-white/80 focus:bg-white text-xs sm:text-sm text-slate-900 shadow-inner outline-none focus:border-brand-primary"
             />
           </div>
           <div className="sm:col-span-5 flex items-center gap-2">
@@ -197,7 +202,7 @@ export default function BangladeshOfficeMapSection() {
                 setMapFocus("all");
               }}
               aria-label="Filter offices by district"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-xs sm:text-sm font-semibold text-slate-800 outline-none focus:border-brand-primary"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-white/90 bg-white/80 focus:bg-white text-xs sm:text-sm font-semibold text-slate-800 shadow-inner outline-none focus:border-brand-primary"
             >
               <option value="All">
                 All Districts ({districts.length} Districts · {branches.length} Offices)
@@ -213,49 +218,52 @@ export default function BangladeshOfficeMapSection() {
 
         {/* Main Split Grid: Interactive Map (Left 7 cols) + Active Office Details & List (Right 5 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Interactive Bangladesh Map */}
-          <div className="lg:col-span-7 rounded-3xl overflow-hidden border border-slate-200/90 bg-white shadow-[0_20px_60px_-20px_rgba(0,75,141,0.18)]">
-            {/* Map Top Legend Strip */}
-            <div className="px-4 py-3 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="inline-flex items-center gap-1.5 font-semibold">
-                  <span className="w-3 h-3 rounded-sm bg-amber-500 inline-block border border-white" />
-                  Head Office (Savar, Dhaka)
-                </span>
-                <span className="inline-flex items-center gap-1.5 font-semibold">
-                  <span className="w-3 h-3 rounded-sm bg-sky-500 inline-block border border-white" />
-                  Branch Office Building ({filteredBranches.length})
+          {/* Left Column: Interactive Bangladesh Map Inside 3D Frosted Glass Frame */}
+          <div className="liquid-glass-3d lg:col-span-7 rounded-3xl p-2 sm:p-2.5 overflow-hidden">
+            <div className="rounded-2xl overflow-hidden border border-white/80">
+              {/* Map Top Legend Strip */}
+              <div className="px-4 py-3 bg-slate-900/95 backdrop-blur-xl text-white flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="inline-flex items-center gap-1.5 font-semibold">
+                    <span className="w-3 h-3 rounded-sm bg-amber-500 inline-block border border-white" />
+                    Head Office (Savar, Dhaka)
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 font-semibold">
+                    <span className="w-3 h-3 rounded-sm bg-sky-500 inline-block border border-white" />
+                    Branch Office Building ({filteredBranches.length})
+                  </span>
+                </div>
+                <span className="text-[11px] text-sky-200 font-medium">
+                  Hover for details · Click to focus office
                 </span>
               </div>
-              <span className="text-[11px] text-sky-200 font-medium">
-                Hover for details · Click to focus office
-              </span>
-            </div>
 
-            {/* Pass selectedId (NOT hoveredId) so hovering never triggers camera movement or marker resets */}
-            <BranchMap
-              branches={filteredBranches.length > 0 ? filteredBranches : branches}
-              selectedId={selectedId}
-              focus={mapFocus}
-              resetKey={resetKey}
-              onSelect={handleSelectBranch}
-              onHover={(id) => setHoveredId(id)}
-              heightClassName="h-[380px] sm:h-[520px] lg:h-[580px]"
-            />
+              {/* Pass selectedId (NOT hoveredId) so hovering never triggers camera movement or marker resets */}
+              <BranchMap
+                branches={filteredBranches.length > 0 ? filteredBranches : branches}
+                selectedId={selectedId}
+                focus={mapFocus}
+                resetKey={resetKey}
+                onSelect={handleSelectBranch}
+                onHover={(id) => setHoveredId(id)}
+                heightClassName="h-[380px] sm:h-[520px] lg:h-[580px]"
+              />
+            </div>
           </div>
 
           {/* Right Column: Full Office Details Card + Scrollable Office Directory */}
           <div className="lg:col-span-5 flex flex-col gap-5">
-            {/* Active Office Full Details Card */}
+            {/* Active Office Full Details Card — 3D Frosted Liquid Glass */}
             {activeBranch && (
-              <div className="rounded-3xl border-2 border-sky-200/90 bg-white p-5 sm:p-6 shadow-[0_16px_40px_-15px_rgba(0,75,141,0.15)] space-y-4">
-                <div className="flex items-start justify-between gap-3">
+              <div className="liquid-glass-3d rounded-3xl p-5 sm:p-6 space-y-4 relative overflow-hidden">
+                <div className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-[#004B8D] via-sky-400 to-cyan-400" />
+                <div className="flex items-start justify-between gap-3 pt-1">
                   <div className="flex items-start gap-3.5">
                     <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md shrink-0 ${
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg border border-white/50 shrink-0 ${
                         activeBranch.branchType === "Head Office"
-                          ? "bg-amber-600"
-                          : "bg-brand-primary"
+                          ? "bg-gradient-to-br from-amber-500 to-amber-700"
+                          : "bg-gradient-to-br from-[#004B8D] to-sky-600"
                       }`}
                     >
                       <Building2 size={24} />
@@ -265,20 +273,20 @@ export default function BangladeshOfficeMapSection() {
                         <span
                           className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
                             activeBranch.branchType === "Head Office"
-                              ? "bg-amber-100 text-amber-800"
-                              : "bg-sky-100 text-brand-primary"
+                              ? "bg-amber-100 text-amber-800 border border-amber-200"
+                              : "bg-sky-100 text-brand-primary border border-sky-200"
                           }`}
                         >
                           {activeBranch.branchType || "Branch Office"}
                         </span>
                         {activeBranch.code && (
-                          <span className="inline-flex items-center gap-0.5 text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                          <span className="liquid-glass-pill-3d inline-flex items-center gap-0.5 text-[11px] font-mono font-semibold text-slate-600 px-2 py-0.5 rounded-md">
                             <Hash size={11} />
                             {activeBranch.code}
                           </span>
                         )}
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1 leading-tight">
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1 leading-tight">
                         {activeBranch.name}
                         {activeBranch.branchType !== "Head Office" &&
                         !activeBranch.name.toLowerCase().includes("office")
@@ -295,7 +303,7 @@ export default function BangladeshOfficeMapSection() {
                 </div>
 
                 {/* Detailed Address & Location Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs bg-white/75 backdrop-blur-md p-3.5 rounded-2xl border border-white/90 shadow-inner">
                   <div className="sm:col-span-2">
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
                       Mailing Address
@@ -350,7 +358,7 @@ export default function BangladeshOfficeMapSection() {
                     href={directionsUrl(activeBranch)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand-primary text-white hover:bg-sky-900 text-xs font-semibold shadow-xs transition-all"
+                    className="liquid-glass-primary-3d inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-white text-xs font-bold"
                   >
                     <Navigation size={14} />
                     <span>Get Directions</span>
@@ -359,7 +367,7 @@ export default function BangladeshOfficeMapSection() {
                     href={mapsSearchUrl(activeBranch)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-brand-primary hover:text-brand-primary text-xs font-semibold transition-all"
+                    className="liquid-glass-pill-3d inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-brand-primary text-xs font-semibold transition-all"
                   >
                     <Compass size={14} />
                     <span>Google Maps</span>
@@ -367,7 +375,7 @@ export default function BangladeshOfficeMapSection() {
                   {activePhone && phoneHref(activePhone) && (
                     <a
                       href={phoneHref(activePhone)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-semibold transition-all"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/90 text-emerald-800 hover:bg-emerald-100 text-xs font-semibold transition-all"
                     >
                       <Phone size={13} />
                       <span>Call Office</span>
@@ -375,7 +383,7 @@ export default function BangladeshOfficeMapSection() {
                   )}
                   <Link
                     href={`/contact?branch=${encodeURIComponent(activeBranch.id)}#send-message`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-brand-primary text-xs font-semibold transition-all"
+                    className="liquid-glass-pill-3d inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-brand-primary text-xs font-semibold transition-all"
                   >
                     <Mail size={13} />
                     <span>Inquire</span>
@@ -384,9 +392,9 @@ export default function BangladeshOfficeMapSection() {
               </div>
             )}
 
-            {/* Quick-Select Scrollable Office List */}
-            <div className="rounded-3xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
-              <div className="px-4 py-3 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between text-xs font-semibold text-slate-700">
+            {/* Quick-Select Scrollable Office List — 3D Frosted Glass */}
+            <div className="liquid-glass-3d rounded-3xl overflow-hidden">
+              <div className="px-4 py-3 bg-white/70 border-b border-white/80 flex items-center justify-between text-xs font-bold text-slate-700">
                 <span>
                   Matching VERC Offices ({filteredBranches.length})
                 </span>
@@ -394,7 +402,7 @@ export default function BangladeshOfficeMapSection() {
                   Click to focus on map
                 </span>
               </div>
-              <div className="max-h-[250px] overflow-y-auto divide-y divide-slate-100 p-2 space-y-1">
+              <div className="max-h-[250px] overflow-y-auto divide-y divide-slate-100/70 p-2 space-y-1">
                 {filteredBranches.map((branch) => {
                   const isCurrent = selectedId === branch.id;
                   const isHQ = branch.branchType === "Head Office";
@@ -405,8 +413,8 @@ export default function BangladeshOfficeMapSection() {
                       onClick={() => handleSelectBranch(branch.id)}
                       className={`w-full text-left px-3.5 py-2.5 rounded-2xl transition-all flex items-center justify-between gap-3 cursor-pointer ${
                         isCurrent
-                          ? "bg-sky-50 border border-sky-200 shadow-2xs"
-                          : "hover:bg-slate-50 border border-transparent"
+                          ? "liquid-glass-pill-3d text-brand-primary"
+                          : "hover:bg-white/60 border border-transparent"
                       }`}
                     >
                       <div className="min-w-0">

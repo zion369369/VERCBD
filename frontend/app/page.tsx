@@ -172,7 +172,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col bg-white overflow-x-hidden">
+    <div className="flex flex-col liquid-glass-mesh-bg overflow-x-hidden">
       {/* 1. HERO SECTION */}
       {isBannerGloballyEnabled && activeHeroSlides.length > 0 ? (
         <section 
@@ -297,14 +297,14 @@ export default function Home() {
                     <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 relative z-40">
                       <Link 
                         href={normalizeHref(activeSlide.primaryBtnLink, "/about")} 
-                        className="group relative inline-flex items-center gap-2.5 px-8 py-4 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-100 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl text-sm sm:text-base cursor-pointer"
+                        className="group relative inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-b from-white via-white to-sky-50 text-slate-950 font-bold border-t-2 border-l border-white border-b-[3px] border-b-sky-200/90 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.45),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(14,165,233,0.15)] hover:shadow-[0_26px_50px_-8px_rgba(14,165,233,0.4),inset_0_2px_3px_rgba(255,255,255,1)] hover:-translate-y-0.5 hover:scale-[1.03] active:scale-[0.98] transition-all text-sm sm:text-base cursor-pointer"
                       >
                         <span>{currentSlideText.btnPrimary}</span>
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform text-brand-primary" />
                       </Link>
                       <Link 
                         href={normalizeHref(activeSlide.secondaryBtnLink, "/contact")} 
-                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl text-white border border-white/25 font-semibold rounded-2xl hover:bg-white/20 hover:border-white/40 hover:scale-[1.03] active:scale-[0.98] transition-all text-sm sm:text-base shadow-lg cursor-pointer"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/15 backdrop-blur-2xl backdrop-saturate-150 text-white border-t border-l border-white/45 border-r border-b-2 border-b-cyan-300/35 font-semibold rounded-2xl shadow-[0_18px_36px_-8px_rgba(0,0,0,0.4),inset_0_1.5px_2px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,174,239,0.2)] hover:bg-white/25 hover:border-white/60 hover:-translate-y-0.5 hover:scale-[1.03] active:scale-[0.98] transition-all text-sm sm:text-base cursor-pointer"
                       >
                         <span>{currentSlideText.btnSecondary}</span>
                       </Link>
@@ -334,25 +334,22 @@ export default function Home() {
                 key={stat.id}
                 {...fadeIn}
                 transition={{ delay: i * 0.1 }}
-                className="relative group rounded-[32px] sm:rounded-[36px] p-6 sm:p-8 lg:p-9 flex flex-col items-center text-center overflow-hidden transition-all duration-500 hover:-translate-y-2.5 cursor-pointer backdrop-blur-2xl bg-white/80 dark:bg-slate-900/80 border border-white/80 dark:border-white/15 shadow-[0_20px_50px_-10px_rgba(0,75,141,0.12),0_4px_12px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,75,141,0.06)] hover:shadow-[0_30px_70px_-12px_rgba(0,75,141,0.24),0_0_30px_rgba(0,174,239,0.2),inset_0_1px_2px_rgba(255,255,255,1)] hover:border-cyan-300/60"
+                className="liquid-glass-3d liquid-glass-3d-interactive relative group rounded-[32px] sm:rounded-[36px] p-6 sm:p-8 lg:p-9 flex flex-col items-center text-center overflow-hidden cursor-pointer"
               >
                 {/* Polymorphic Corner Light Flares */}
                 <div 
-                  style={{ backgroundColor: `${primaryColor || "#004B8D"}18` }}
-                  className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" 
+                  style={{ backgroundColor: `${primaryColor || "#004B8D"}22` }}
+                  className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" 
                 />
-                <div className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full bg-cyan-400/15 blur-xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-cyan-400/20 blur-xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
 
-                {/* Top Specular Edge Highlight Bar */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80 group-hover:via-cyan-300 group-hover:opacity-100 transition-all duration-500" />
+                {/* Top Specular 3D Prism Highlight Bar */}
+                <div className="absolute inset-x-6 top-0 h-[3px] rounded-b-full bg-gradient-to-r from-transparent via-sky-400/80 to-transparent opacity-85 group-hover:via-cyan-400 group-hover:opacity-100 transition-all duration-500" />
 
-                {/* Jewel-like Frosted Glass Icon Badge */}
+                {/* 3D Jewel-like Frosted Glass Icon Badge */}
                 <div className="relative mb-5 z-10">
                   <div 
-                    style={{
-                      borderColor: `${primaryColor || "#004B8D"}25`,
-                    }}
-                    className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-white/95 via-sky-50/70 to-white/90 dark:from-white/15 dark:to-white/5 border shadow-[0_8px_20px_rgba(0,75,141,0.1),inset_0_1px_2px_rgba(255,255,255,0.95)] flex items-center justify-center text-brand-primary group-hover:scale-110 group-hover:text-white transition-all duration-500 relative overflow-hidden"
+                    className="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-gradient-to-br from-white via-sky-50/90 to-sky-100/80 dark:from-white/15 dark:to-white/5 border-t-2 border-l-2 border-white border-r border-b-[3px] border-r-sky-200/70 border-b-sky-300/80 shadow-[0_14px_28px_-6px_rgba(0,75,141,0.18),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(0,75,141,0.1)] flex items-center justify-center text-brand-primary group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:text-white transition-all duration-500 relative overflow-hidden"
                   >
                     {/* Hover Fill with Brand Gradient */}
                     <div 
@@ -368,7 +365,7 @@ export default function Home() {
                 </div>
 
                 {/* Value with Classy Contrast & Smooth Animated Counter */}
-                <div className="relative z-10 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-brand-primary dark:group-hover:text-cyan-300 transition-colors duration-300">
+                <div className="relative z-10 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-brand-primary dark:group-hover:text-cyan-300 transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
                   <AnimatedCounter value={stat.value} duration={1.2} />
                 </div>
 
@@ -382,7 +379,7 @@ export default function Home() {
                   style={{ 
                     background: `linear-gradient(90deg, ${primaryColor || "#004B8D"}, #00AEEF)` 
                   }}
-                  className="w-8 h-1 rounded-full opacity-35 group-hover:opacity-100 group-hover:w-16 transition-all duration-500 mt-4 shadow-sm"
+                  className="w-10 h-1.5 rounded-full opacity-45 group-hover:opacity-100 group-hover:w-20 transition-all duration-500 mt-4 shadow-sm"
                 />
               </motion.div>
             ))}
@@ -390,26 +387,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. PROGRAM PILLARS — LIQUID FROSTED GLASS POLYMORPHIC DESIGN */}
-      <section id="program-pillars" aria-labelledby="program-pillars-title" className="relative overflow-hidden bg-gradient-to-b from-slate-50/70 via-sky-50/35 to-white py-16 sm:py-20 lg:py-26 dark:bg-slate-950">
-        {/* Ambient Liquid Glass Color Orbs Behind Frosted Cards */}
-        <div className="pointer-events-none absolute -top-20 left-1/4 h-80 w-80 -translate-x-1/2 rounded-full bg-sky-400/15 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/12 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute -bottom-20 right-1/4 h-80 w-80 translate-x-1/2 rounded-full bg-amber-400/15 blur-3xl" aria-hidden="true" />
+      {/* 3. PROGRAM PILLARS — 3D LIQUID FROSTED GLASS POLYMORPHIC DESIGN */}
+      <section id="program-pillars" aria-labelledby="program-pillars-title" className="relative overflow-hidden bg-gradient-to-b from-sky-100/55 via-slate-100/70 to-sky-50/45 py-16 sm:py-22 lg:py-28 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        {/* Subtle Architectural Dot Pattern + Ambient 3D Liquid Glass Color Orbs Behind Frosted Cards */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.45]"
+          style={{
+            backgroundImage: "radial-gradient(#0284c7 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+          aria-hidden="true"
+        />
+        <div className="pointer-events-none absolute -top-16 left-[12%] h-80 w-80 rounded-full bg-sky-400/25 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute top-1/3 left-[38%] h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute bottom-10 right-[28%] h-80 w-80 rounded-full bg-rose-400/18 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-16 right-[6%] h-80 w-80 rounded-full bg-amber-400/22 blur-3xl" aria-hidden="true" />
 
         <div className="container-custom relative z-10">
           <div className="mb-10 grid gap-5 sm:mb-14 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2.5 rounded-full border border-white/90 bg-white/75 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary shadow-[0_4px_14px_rgba(0,75,141,0.08),inset_0_1px_1px_rgba(255,255,255,1)] backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:text-sky-300">
-                <Target size={15} strokeWidth={2} />
+              <div className="liquid-glass-pill-3d mb-4 inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary dark:text-sky-300">
+                <Target size={15} strokeWidth={2.2} />
                 <span>{t("focus_badge")}</span>
               </div>
               <h2 id="program-pillars-title" className={`text-3xl font-extrabold text-slate-900 sm:text-5xl lg:text-[3.4rem] dark:text-white ${language === "bn" ? "leading-[1.25]" : "leading-[1.08] tracking-tight"}`}>
                 {t("focus_title")}<br />
-                <span className="text-brand-primary dark:text-sky-300">{t("focus_highlight")}</span>
+                <span className="bg-gradient-to-r from-[#004B8D] via-sky-600 to-cyan-500 bg-clip-text text-transparent dark:from-sky-300 dark:to-cyan-300">{t("focus_highlight")}</span>
               </h2>
             </div>
-            <p className="max-w-lg text-sm leading-7 text-slate-600 sm:text-base lg:mb-1 lg:border-l-2 lg:border-sky-200/80 lg:pl-6 dark:border-slate-800 dark:text-slate-400">{t("focus_subtitle")}</p>
+            <div className="liquid-glass-3d rounded-2xl px-5 py-4 lg:mb-1">
+              <p className="text-sm leading-7 text-slate-600 sm:text-base dark:text-slate-300">{t("focus_subtitle")}</p>
+            </div>
           </div>
 
           <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-7">
@@ -419,42 +427,42 @@ export default function Home() {
                 {
                   icon: GraduationCap,
                   href: "/programs/education",
-                  tint: "from-white/95 via-sky-50/85 to-sky-100/70 text-sky-700 border-sky-200/70 dark:from-sky-950/60 dark:to-sky-900/40 dark:text-sky-300",
+                  tint: "from-white via-sky-50/95 to-sky-100/90 text-sky-700 border-t-white border-l-white border-r-sky-200/80 border-b-sky-300/90 shadow-[0_14px_28px_-6px_rgba(2,132,199,0.28),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(2,132,199,0.18)] dark:from-sky-950/70 dark:to-sky-900/50 dark:text-sky-300",
                   top: "from-sky-400 via-cyan-400 to-sky-600",
-                  orb: "bg-sky-400/20",
-                  border: "hover:border-sky-300/80 focus-visible:ring-sky-500",
-                  text: "text-sky-700 dark:text-sky-300",
-                  arrow: "bg-sky-500/12 text-sky-700 border border-sky-200/70 group-hover:bg-sky-600 group-hover:text-white group-hover:border-sky-600 dark:bg-sky-950/50",
+                  orb: "bg-sky-400/25",
+                  cardBottom: "border-b-sky-300/85 hover:border-b-sky-400",
+                  ctaBg: "from-white/95 via-sky-50/85 to-sky-100/75 border-t-white border-l-white border-r-sky-200/70 border-b-sky-300/80 text-sky-800 group-hover:from-sky-600 group-hover:via-sky-600 group-hover:to-cyan-600 group-hover:text-white group-hover:border-sky-500",
+                  arrow: "bg-sky-500/15 text-sky-700 group-hover:bg-white/20 group-hover:text-white",
                 },
                 {
                   icon: Droplets,
                   href: "/programs/wash",
-                  tint: "from-white/95 via-emerald-50/85 to-emerald-100/70 text-emerald-700 border-emerald-200/70 dark:from-emerald-950/60 dark:to-emerald-900/40 dark:text-emerald-300",
+                  tint: "from-white via-emerald-50/95 to-emerald-100/90 text-emerald-700 border-t-white border-l-white border-r-emerald-200/80 border-b-emerald-300/90 shadow-[0_14px_28px_-6px_rgba(5,150,105,0.26),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(5,150,105,0.18)] dark:from-emerald-950/70 dark:to-emerald-900/50 dark:text-emerald-300",
                   top: "from-emerald-400 via-teal-400 to-emerald-600",
-                  orb: "bg-emerald-400/20",
-                  border: "hover:border-emerald-300/80 focus-visible:ring-emerald-500",
-                  text: "text-emerald-700 dark:text-emerald-300",
-                  arrow: "bg-emerald-500/12 text-emerald-700 border border-emerald-200/70 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 dark:bg-emerald-950/50",
+                  orb: "bg-emerald-400/25",
+                  cardBottom: "border-b-emerald-300/85 hover:border-b-emerald-400",
+                  ctaBg: "from-white/95 via-emerald-50/85 to-emerald-100/75 border-t-white border-l-white border-r-emerald-200/70 border-b-emerald-300/80 text-emerald-800 group-hover:from-emerald-600 group-hover:via-emerald-600 group-hover:to-teal-600 group-hover:text-white group-hover:border-emerald-500",
+                  arrow: "bg-emerald-500/15 text-emerald-700 group-hover:bg-white/20 group-hover:text-white",
                 },
                 {
                   icon: TrendingUp,
                   href: "/programs/livelihood",
-                  tint: "from-white/95 via-rose-50/85 to-rose-100/70 text-rose-700 border-rose-200/70 dark:from-rose-950/60 dark:to-rose-900/40 dark:text-rose-300",
+                  tint: "from-white via-rose-50/95 to-rose-100/90 text-rose-700 border-t-white border-l-white border-r-rose-200/80 border-b-rose-300/90 shadow-[0_14px_28px_-6px_rgba(225,29,72,0.24),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(225,29,72,0.16)] dark:from-rose-950/70 dark:to-rose-900/50 dark:text-rose-300",
                   top: "from-rose-400 via-pink-400 to-rose-600",
-                  orb: "bg-rose-400/20",
-                  border: "hover:border-rose-300/80 focus-visible:ring-rose-500",
-                  text: "text-rose-700 dark:text-rose-300",
-                  arrow: "bg-rose-500/12 text-rose-700 border border-rose-200/70 group-hover:bg-rose-600 group-hover:text-white group-hover:border-rose-600 dark:bg-rose-950/50",
+                  orb: "bg-rose-400/25",
+                  cardBottom: "border-b-rose-300/85 hover:border-b-rose-400",
+                  ctaBg: "from-white/95 via-rose-50/85 to-rose-100/75 border-t-white border-l-white border-r-rose-200/70 border-b-rose-300/80 text-rose-800 group-hover:from-rose-600 group-hover:via-rose-600 group-hover:to-pink-600 group-hover:text-white group-hover:border-rose-500",
+                  arrow: "bg-rose-500/15 text-rose-700 group-hover:bg-white/20 group-hover:text-white",
                 },
                 {
                   icon: Target,
                   href: "/programs/capacity",
-                  tint: "from-white/95 via-amber-50/85 to-amber-100/70 text-amber-700 border-amber-200/70 dark:from-amber-950/60 dark:to-amber-900/40 dark:text-amber-300",
+                  tint: "from-white via-amber-50/95 to-amber-100/90 text-amber-700 border-t-white border-l-white border-r-amber-200/80 border-b-amber-300/90 shadow-[0_14px_28px_-6px_rgba(217,119,6,0.24),inset_0_2px_2px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(217,119,6,0.16)] dark:from-amber-950/70 dark:to-amber-900/50 dark:text-amber-300",
                   top: "from-amber-400 via-orange-400 to-amber-500",
-                  orb: "bg-amber-400/20",
-                  border: "hover:border-amber-300/80 focus-visible:ring-amber-500",
-                  text: "text-amber-700 dark:text-amber-300",
-                  arrow: "bg-amber-500/12 text-amber-700 border border-amber-200/70 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 dark:bg-amber-950/50",
+                  orb: "bg-amber-400/25",
+                  cardBottom: "border-b-amber-300/85 hover:border-b-amber-400",
+                  ctaBg: "from-white/95 via-amber-50/85 to-amber-100/75 border-t-white border-l-white border-r-amber-200/70 border-b-amber-300/80 text-amber-800 group-hover:from-amber-600 group-hover:via-amber-600 group-hover:to-orange-500 group-hover:text-white group-hover:border-amber-500",
+                  arrow: "bg-amber-500/15 text-amber-700 group-hover:bg-white/20 group-hover:text-white",
                 },
               ];
               const cfg = styles[i % styles.length];
@@ -471,38 +479,44 @@ export default function Home() {
                   key={item.id}
                   href={resolvedHref}
                   aria-labelledby={`pillar-title-${item.id}`}
-                  className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[32px] border border-white/90 bg-white/75 p-6 sm:p-7 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_20px_50px_-12px_rgba(0,75,141,0.12),0_4px_14px_rgba(15,23,42,0.04),inset_0_1px_2px_rgba(255,255,255,0.98),inset_0_-1px_2px_rgba(0,75,141,0.05)] transition-all duration-500 hover:-translate-y-2.5 hover:bg-white/90 hover:shadow-[0_30px_70px_-12px_rgba(0,75,141,0.22),0_0_32px_rgba(0,174,239,0.15),inset_0_1px_2px_rgba(255,255,255,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-slate-900/75 ${cfg.border}`}
+                  className={`liquid-glass-3d liquid-glass-3d-interactive group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[34px] p-6 sm:p-7 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 ${cfg.cardBottom}`}
                 >
-                  {/* Liquid Top Specular Gradient Bar */}
-                  <div className={`absolute inset-x-0 top-0 h-[3.5px] bg-gradient-to-r ${cfg.top}`} aria-hidden="true" />
+                  {/* 3D Sculpted Top Specular Prism Bar */}
+                  <div className={`absolute inset-x-0 top-0 h-[5px] bg-gradient-to-r ${cfg.top} shadow-sm`} aria-hidden="true" />
+
+                  {/* Diagonal Glass Specular Reflection Overlay */}
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/70 to-transparent" aria-hidden="true" />
 
                   {/* Inner Liquid Glass Shimmer Sweep on Hover */}
-                  <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/55 to-transparent transition-transform duration-1000 group-hover:translate-x-full" aria-hidden="true" />
+                  <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/65 to-transparent transition-transform duration-1000 group-hover:translate-x-full" aria-hidden="true" />
 
                   {/* Polymorphic Corner Light Orbs */}
-                  <div className={`pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-150 ${cfg.orb}`} aria-hidden="true" />
-                  <div className={`pointer-events-none absolute -bottom-12 -left-12 h-28 w-28 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-125 ${cfg.orb}`} aria-hidden="true" />
+                  <div className={`pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-150 ${cfg.orb}`} aria-hidden="true" />
+                  <div className={`pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-125 ${cfg.orb}`} aria-hidden="true" />
 
-                  <div className="relative z-10 mb-6 flex items-center justify-between gap-4">
-                    <div className={`flex h-13 w-13 items-center justify-center rounded-2xl border bg-gradient-to-br shadow-[0_8px_20px_rgba(0,75,141,0.08),inset_0_1px_2px_rgba(255,255,255,0.98)] transition-transform duration-500 group-hover:scale-110 ${cfg.tint}`}>
-                      <Icon size={25} strokeWidth={1.9} aria-hidden="true" />
+                  <div className="relative z-10 mb-6 flex items-center justify-between gap-4 pt-1">
+                    {/* 3D Extruded Jewel Glass Icon Cube */}
+                    <div className={`flex h-14 w-14 items-center justify-center rounded-2xl border-t-2 border-l-2 border-r border-b-[3px] bg-gradient-to-br transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-0.5 ${cfg.tint}`}>
+                      <Icon size={26} strokeWidth={2.1} aria-hidden="true" />
                     </div>
-                    <span className="rounded-full border border-white/80 bg-white/70 px-3 py-1 font-mono text-xs font-semibold tabular-nums text-slate-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-slate-400" aria-hidden="true">
+                    {/* 3D Tactile Frosted Number Pill */}
+                    <span className="liquid-glass-pill-3d rounded-full px-3.5 py-1 font-mono text-xs font-bold tabular-nums text-slate-500 dark:text-slate-300" aria-hidden="true">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
 
-                  <h3 id={`pillar-title-${item.id}`} className="relative z-10 mb-3 text-xl font-bold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">
+                  <h3 id={`pillar-title-${item.id}`} className="relative z-10 mb-3 text-xl font-extrabold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">
                     {progInfo.title}
                   </h3>
-                  <p className="relative z-10 mb-6 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  <p className="relative z-10 mb-7 text-sm leading-6 text-slate-600 dark:text-slate-300">
                     {progInfo.desc}
                   </p>
 
-                  <div className={`relative z-10 mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-slate-200/60 pt-5 text-xs font-bold dark:border-slate-800 ${cfg.text}`}>
-                    <span>{t("explore_program")}</span>
-                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-xs backdrop-blur-md transition-all duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none ${cfg.arrow}`}>
-                      <ArrowRight size={17} aria-hidden="true" />
+                  {/* 3D Tactile Frosted Action Pill Footer */}
+                  <div className={`relative z-10 mt-auto flex items-center justify-between gap-3 rounded-2xl border-t border-l border-r border-b-[2.5px] bg-gradient-to-r px-4 py-3 text-xs font-bold shadow-[0_10px_20px_-6px_rgba(0,75,141,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.95)] transition-all duration-300 ${cfg.ctaBg}`}>
+                    <span className="tracking-wide">{t("explore_program")}</span>
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:translate-x-0.5 ${cfg.arrow}`}>
+                      <ArrowRight size={16} aria-hidden="true" />
                     </span>
                   </div>
                 </Link>
