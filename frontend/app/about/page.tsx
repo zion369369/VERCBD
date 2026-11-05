@@ -134,7 +134,59 @@ export default function AboutPage() {
             <div className="cms-copy text-base leading-relaxed text-slate-600" dangerouslySetInnerHTML={{ __html: item.text || "" }} />
           </article>)}
         </div>
-        <div className="container-custom mt-6"><Link href="/about/board" className="inline-flex min-h-11 items-center gap-2 font-bold text-brand-primary">Meet our Board of Directors <ArrowRight size={16} /></Link></div>
+      </section>
+
+      {/* 3. Board of Directors (3rd item in About Us section) */}
+      <section id="board-of-directors" className="py-14 sm:py-20 bg-slate-50/80 border-y border-slate-100" aria-labelledby="about-board-heading">
+        <div className="container-custom">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
+            <div>
+              <span className="inline-flex items-center gap-2 text-brand-primary font-black uppercase text-xs tracking-widest mb-3">
+                <Shield size={16} /> Governance & Oversight
+              </span>
+              <h2 id="about-board-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+                Board of <span className="text-brand-primary">Directors.</span>
+              </h2>
+              <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
+                Guided by distinguished leaders and development practitioners ensuring institutional integrity, strategic direction, and community accountability.
+              </p>
+            </div>
+            <Link
+              href="/about/board"
+              className="inline-flex min-h-11 items-center justify-center gap-2 self-start md:self-auto rounded-2xl bg-brand-primary px-6 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-brand-primary-dark transition-all"
+            >
+              <span>View Full Board Directory</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {(aboutContent.boardMembers || []).slice(0, 4).map((member, index) => (
+              <div
+                key={`${member.name}-${index}`}
+                className="rounded-3xl bg-white p-6 border border-slate-200/80 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <span className="inline-flex items-center rounded-full bg-sky-50 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-brand-primary border border-sky-100">
+                    {member.role}
+                  </span>
+                  <h3 className="mt-4 text-lg font-extrabold text-slate-900 leading-snug">
+                    {member.name}
+                  </h3>
+                  {member.bio && (
+                    <p className="mt-2 text-xs text-slate-500 leading-relaxed line-clamp-3">
+                      {member.bio}
+                    </p>
+                  )}
+                </div>
+                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400">
+                  <span>Executive Committee</span>
+                  <span className="text-brand-primary">#{String(index + 1).padStart(2, "0")}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Journey Begins */}

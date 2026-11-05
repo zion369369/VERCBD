@@ -218,8 +218,9 @@ export default function LivelihoodPage() {
             <p className="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">Financial inclusion is part of our livelihood work. Explore savings and enterprise finance alongside skills development and community support.</p>
             <div className="mt-6 flex flex-wrap gap-2">{microfinanceProducts.slice(0, 3).map(product => <span key={product.id} className="rounded-full border border-sky-100 bg-white px-3 py-2 text-xs font-bold text-slate-600">{product.title}</span>)}</div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link href="/microfinance" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-bold text-white shadow-lg">Explore Microfinance <ArrowRight size={16} /></Link>
-              <Link href="/microfinance/products" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-6 py-3 text-sm font-bold text-brand-primary">Loan & Savings Products <ArrowRight size={16} /></Link>
+              <Link href="/microfinance" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-brand-primary-dark transition-colors">Microfinance Overview <ArrowRight size={16} /></Link>
+              <Link href="/microfinance/products?tab=loans#loans" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-5 py-3 text-sm font-bold text-brand-primary hover:bg-sky-50 transition-colors">Option 1: Loans <ArrowRight size={16} /></Link>
+              <Link href="/microfinance/products?tab=savings#savings" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/70 px-5 py-3 text-sm font-bold text-emerald-700 hover:bg-emerald-100/80 transition-colors">Option 2: Savings <ArrowRight size={16} /></Link>
             </div>
           </div>
         </div>

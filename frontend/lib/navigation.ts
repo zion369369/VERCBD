@@ -19,8 +19,9 @@ export const programNavigation: NavigationItem[] = [
   { name: "Life Skill Education", href: "/programs/education" },
   { name: "WASH (Water & Sanitation)", href: "/programs/wash" },
   { name: "Livelihood & Empowerment", href: "/programs/livelihood", children: [
-    { name: "Microfinance Program", href: "/microfinance" },
-    { name: "Loan & Savings Products", href: "/microfinance/products" },
+    { name: "Microfinance Overview", href: "/microfinance" },
+    { name: "Loans", href: "/microfinance/products?tab=loans#loans" },
+    { name: "Savings", href: "/microfinance/products?tab=savings#savings" },
   ] },
   { name: "Capacity Building", href: "/programs/capacity" },
 ];

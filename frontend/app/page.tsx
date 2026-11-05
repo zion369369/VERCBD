@@ -15,6 +15,7 @@ import AnimatedCounter from "@/components/AnimatedCounter";
 import SdgSection from "@/components/SdgSection";
 import GlobalCollaborationsSection from "@/components/GlobalCollaborationsSection";
 import SuccessStorySection from "@/components/SuccessStorySection";
+import BangladeshOfficeMapSection from "@/components/BangladeshOfficeMapSection";
 import CtaSection from "@/components/CtaSection";
 
 export default function Home() {
@@ -200,7 +201,7 @@ export default function Home() {
                     alt={activeSlide.title || "VERC Bangladesh"} 
                     fetchPriority={currentSlide === 0 ? "high" : "auto"}
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                     onError={() => {
                       if (requestedHeroImage !== fallbackHeroImage) {
                         setFailedHeroImages(images => new Set(images).add(requestedHeroImage));
@@ -454,7 +455,10 @@ export default function Home() {
       {/* 6. SUCCESS STORY */}
       <SuccessStorySection />
 
-      {/* 7. CALL TO ACTION */}
+      {/* 7. BANGLADESH OFFICE NETWORK MAP */}
+      <BangladeshOfficeMapSection />
+
+      {/* 8. CALL TO ACTION */}
       <CtaSection />
     </div>
   );

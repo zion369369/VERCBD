@@ -30,7 +30,7 @@ import ContentImage from "@/components/ContentImage";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function MicrofinancePage() {
-  const { microfinanceProducts, microfinanceProcess, impactStats } = useContent();
+  const { microfinanceProducts } = useContent();
 
   const stats = [
     { label: "Villages", value: "2,477", icon: <MapPin size={18} /> },
@@ -228,69 +228,70 @@ export default function MicrofinancePage() {
         </div>
       </section>
 
-      {/* Application Process & Eligibility - Dynamic from Admin */}
-      {microfinanceProcess && (
-        <section className="py-16 sm:py-24 bg-white border-t border-gray-100">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-14">
-              <span className="inline-flex items-center gap-2 text-brand-primary font-black uppercase tracking-widest text-xs mb-3">
-                <ShieldCheck size={16} /> Transparent Enrollment
-              </span>
-              <h3 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900">
-                Application Process &amp; <span className="text-brand-primary">Eligibility.</span>
-              </h3>
+      {/* Distinct Loans & Savings Options */}
+      <section className="py-16 sm:py-24 bg-white border-t border-gray-100">
+        <div className="container-custom">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="inline-flex items-center gap-2 text-brand-primary font-black uppercase tracking-widest text-xs mb-3">
+              <Sparkles size={16} /> Two Core Pillars of Microfinance
+            </span>
+            <h3 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900">
+              Explore <span className="text-brand-primary">Loans</span> &amp; <span className="text-brand-primary">Savings.</span>
+            </h3>
+            <p className="mt-3 text-sm sm:text-base text-gray-600">
+              Choose between our tailored credit programs for rural entrepreneurs and our transparent member savings schemes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div className="rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50/80 to-white p-6 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all">
+              <div className="space-y-4">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary text-white text-xs font-bold uppercase tracking-wider">
+                  Option 01 · Loans
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-black text-slate-900">
+                  Microcredit &amp; Enterprise Loans
+                </h4>
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                  Accessible revolving credit for rural women entrepreneurs, climate-resilient agriculture, seasonal farming, and small businesses across Bangladesh.
+                </p>
+              </div>
+              <div className="pt-6 mt-6 border-t border-sky-100">
+                <Link
+                  href="/microfinance/products?tab=loans#loans"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-brand-primary text-white font-bold text-sm hover:bg-sky-900 transition-all shadow-md"
+                >
+                  <span>Explore Loan Products</span>
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
             </div>
 
-            {microfinanceProcess.steps && microfinanceProcess.steps.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
-                {microfinanceProcess.steps.map((step) => (
-                  <div key={step.id} className="p-6 rounded-3xl bg-gray-50 border border-gray-100 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="w-9 h-9 rounded-xl bg-brand-primary text-white text-xs font-black flex items-center justify-center">
-                        0{step.stepNumber}
-                      </span>
-                      <span className="text-[11px] font-bold text-brand-primary bg-blue-50 px-3 py-1 rounded-full">
-                        {step.duration}
-                      </span>
-                    </div>
-                    <h4 className="text-lg font-black text-gray-900">{step.title}</h4>
-                    <p className="text-xs text-gray-600 leading-relaxed">{step.desc}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="p-8 rounded-3xl bg-blue-50/50 border border-blue-100 space-y-4">
-                <h4 className="text-lg font-black text-gray-900 flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-brand-primary" /> Eligibility Criteria
+            <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-white p-6 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all">
+              <div className="space-y-4">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider">
+                  Option 02 · Savings
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-black text-slate-900">
+                  Member Savings Schemes
                 </h4>
-                <ul className="space-y-2.5 text-xs sm:text-sm text-gray-700 font-medium">
-                  {(microfinanceProcess.eligibilityCriteria || []).map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                  Build long-term household resilience through General Savings, flexible Voluntary Savings, and Term Deposit (DPS) plans managed with 100% transparency.
+                </p>
               </div>
-              <div className="p-8 rounded-3xl bg-emerald-50/50 border border-emerald-100 space-y-4">
-                <h4 className="text-lg font-black text-gray-900 flex items-center gap-2">
-                  <ShieldCheck size={18} className="text-emerald-600" /> Required Documents
-                </h4>
-                <ul className="space-y-2.5 text-xs sm:text-sm text-gray-700 font-medium">
-                  {(microfinanceProcess.requiredDocuments || []).map((doc, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
-                      <span>{doc}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="pt-6 mt-6 border-t border-emerald-100">
+                <Link
+                  href="/microfinance/products?tab=savings#savings"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-md"
+                >
+                  <span>Explore Savings Schemes</span>
+                  <ArrowRight size={16} />
+                </Link>
               </div>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
@@ -23,6 +23,26 @@ import { useContent } from "@/context/ContentContext";
 
 export default function MicrofinanceProductsPage() {
   const { microfinanceProducts } = useContent();
+  const [activeOption, setActiveOption] = useState<"all" | "loans" | "savings">("all");
+
+  useEffect(() => {
+    const syncOptionFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab")?.toLowerCase();
+      const hash = window.location.hash.replace("#", "").toLowerCase();
+      if (tab === "loans" || hash === "loans") setActiveOption("loans");
+      else if (tab === "savings" || hash === "savings") setActiveOption("savings");
+      else setActiveOption("all");
+    };
+    syncOptionFromUrl();
+    window.addEventListener("hashchange", syncOptionFromUrl);
+    window.addEventListener("popstate", syncOptionFromUrl);
+    return () => {
+      window.removeEventListener("hashchange", syncOptionFromUrl);
+      window.removeEventListener("popstate", syncOptionFromUrl);
+    };
+  }, []);
+
   const products = microfinanceProducts.map(product => ({ ...product, desc: product.description, limit: product.loanLimit, color: "bg-white" }));
 
   const fadeIn = {
@@ -68,8 +88,50 @@ export default function MicrofinanceProductsPage() {
         </div>
       </section>
 
+      {/* Distinct Loans & Savings Selector Bar */}
+      <div className="sticky top-20 z-30 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 py-3.5">
+        <div className="container-custom flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => setActiveOption("all")}
+            className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+              activeOption === "all"
+                ? "bg-slate-900 text-white shadow-md"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }`}
+          >
+            All Microfinance Options
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveOption("loans")}
+            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+              activeOption === "loans"
+                ? "bg-brand-primary text-white shadow-md"
+                : "bg-sky-50 text-brand-primary hover:bg-sky-100"
+            }`}
+          >
+            <Banknote size={16} />
+            <span>Loans ({products.length})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveOption("savings")}
+            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+              activeOption === "savings"
+                ? "bg-emerald-600 text-white shadow-md"
+                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+            }`}
+          >
+            <PieChart size={16} />
+            <span>Savings Schemes (3)</span>
+          </button>
+        </div>
+      </div>
+
       {/* 2. SAVINGS PRODUCTS */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-white">
+      {activeOption !== "loans" && (
+      <section id="savings" className="scroll-mt-32 py-16 sm:py-24 lg:py-32 bg-white">
         <div className="container-custom">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-center">
                 <motion.div {...fadeIn}>
@@ -89,8 +151,8 @@ export default function MicrofinanceProductsPage() {
                             { title: "Voluntary Savings", desc: "Flexible savings that can be withdrawn at any time for emergencies." },
                             { title: "Term Savings (DPS)", desc: "Long-term savings plans with competitive interest rates for future goals." }
                         ].map((item, i) => (
-                            <div key={i} className="flex gap-6 p-8 bg-brand-light rounded-[32px] border border-brand-primary/5">
-                                <div className="p-3 bg-white rounded-xl text-brand-primary shadow-sm"><CheckCircle2 size={20} /></div>
+                            <div key={i} className="flex gap-6 p-6 sm:p-8 bg-brand-light rounded-[32px] border border-brand-primary/5">
+                                <div className="p-3 bg-white rounded-xl text-brand-primary shadow-sm h-fit"><CheckCircle2 size={20} /></div>
                                 <div>
                                     <h4 className="font-black text-gray-900 text-lg">{item.title}</h4>
                                     <p className="text-sm text-gray-500 font-medium">{item.desc}</p>
@@ -112,9 +174,11 @@ export default function MicrofinanceProductsPage() {
             </div>
         </div>
       </section>
+      )}
 
       {/* 3. LOAN PRODUCTS GRID */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-gray-50">
+      {activeOption !== "savings" && (
+      <section id="loans" className="scroll-mt-32 py-16 sm:py-24 lg:py-32 bg-gray-50">
         <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-24">
                 <div className="flex items-center justify-center gap-3 text-brand-primary mb-6">
@@ -153,6 +217,7 @@ export default function MicrofinanceProductsPage() {
             </div>
         </div>
       </section>
+      )}
 
       {/* 4. CTA */}
       <section className="py-16 sm:py-24 lg:py-40 bg-brand-primary text-white">

@@ -116,3 +116,19 @@ export function directionsUrl(branch: BranchOffice, origin?: { lat: number; lng:
   if (origin) params.set("origin", `${origin.lat},${origin.lng}`);
   return `https://www.google.com/maps/dir/?${params}`;
 }
+
+
+export function divisionForDistrict(district: string): string {
+  const norm = normalizePlace(district);
+  if (!norm) return "Dhaka";
+  const matched = branchDirectory.find(b => normalizePlace(b.district) === norm);
+  if (matched?.division) return matched.division;
+  if (["rajshahi", "naogaon", "natore", "chapai nababganj", "pabna", "bogura", "bogra", "sirajganj", "joypurhat"].includes(norm)) return "Rajshahi";
+  if (["rangpur", "dinajpur", "kurigram", "gaibandha", "nilphamari", "panchagarh", "thakurgaon", "lalmonirhat"].includes(norm)) return "Rangpur";
+  if (["chittagong", "coxs bazar", "cox s bazar", "comilla", "brahmanbaria", "chandpur", "feni", "lakshmipur", "noakhali", "khagrachhari", "rangamati", "bandarban"].includes(norm)) return "Chattogram";
+  if (["khulna", "jashore", "jessore", "satkhira", "bagerhat", "kushtia", "chuadanga", "meherpur", "jhenaidah", "magura", "narail"].includes(norm)) return "Khulna";
+  if (["barisal", "patuakhali", "bhola", "pirojpur", "barguna", "jhalokati"].includes(norm)) return "Barisal";
+  if (["sylhet", "moulvibazar", "habiganj", "sunamganj"].includes(norm)) return "Sylhet";
+  if (["mymensingh", "jamalpur", "netrokona", "sherpur"].includes(norm)) return "Mymensingh";
+  return "Dhaka";
+}

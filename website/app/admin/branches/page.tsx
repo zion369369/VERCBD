@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, MapPin, Building2, Phone, Mail, User, Search, X } from "lucide-react";
+import Link from "next/link";
+import { Plus, Edit2, Trash2, MapPin, Building2, Phone, Mail, User, Search, X, ExternalLink, CheckCircle2 } from "lucide-react";
 import { useContent, BranchOffice } from "@/context/ContentContext";
 
-import { phoneHref, mapsSearchUrl, branchSearchScore } from "@/lib/branchDirectory";
+import { phoneHref, mapsSearchUrl, branchSearchScore, divisionForDistrict } from "@/lib/branchDirectory";
 
 const emptyBranch: Omit<BranchOffice, "id"> = { name: "", code: "", branchType: "Branch Office", district: "", division: "Dhaka", upazila: "", postOffice: "", village: "", address: "", phone: "", email: "", manager: "", lat: undefined, lng: undefined };
 
@@ -14,9 +15,15 @@ export default function AdminBranchesPage() {
   const [selectedDivision, setSelectedDivision] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState<BranchOffice | null>(null);
+  const [statusMessage, setStatusMessage] = useState("");
 
   const [formData, setFormData] = useState<Omit<BranchOffice, "id">>({ ...emptyBranch });
   const [formError, setFormError] = useState("");
+
+  const showToast = (msg: string) => {
+    setStatusMessage(msg);
+    setTimeout(() => setStatusMessage(""), 4000);
+  };
 
   const divisions = ["All", ...Array.from(new Set(branches.map(b => b.division)))];
 
@@ -47,27 +54,54 @@ export default function AdminBranchesPage() {
     if (branches.some(branch => branch.id !== editingBranch?.id && formData.code && branch.code === formData.code && branch.branchType === formData.branchType)) { setFormError("This branch code is already in use for this office type."); return; }
     if (editingBranch) {
       updateBranch(editingBranch.id, formData);
+      showToast(`Updated "${formData.name}" — changes are synced to the Homepage Bangladesh Map and Branch Directory.`);
     } else {
       addBranch(formData);
+      showToast(`Added new branch "${formData.name}" — now live on the Homepage Bangladesh Map and Branch Directory.`);
     }
     setIsModalOpen(false);
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto font-valley font-sans">
+      {statusMessage && (
+        <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-800 shadow-sm dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+          <CheckCircle2 size={16} className="shrink-0" />
+          <span>{statusMessage}</span>
+        </div>
+      )}
+
       {/* Apple-style Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Branch directory</h1>
-          <p className="mt-1 text-xs text-gray-500">{branches.length} offices. Changes appear in Contact Us and the branch finder.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">Branch directory & Bangladesh map pins</h1>
+          <p className="mt-1 text-xs text-gray-500">{branches.length} offices ({branches.filter(b => typeof b.lat === "number" && typeof b.lng === "number").length} mapped with GPS coordinates). Changes sync immediately to the Homepage Map & Branch Directory.</p>
         </div>
-        <button
-          onClick={openCreateModal}
-          style={{ backgroundColor: primaryColor }}
-          className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
-        >
-          <Plus size={16} /> Add Branch
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            href="/#bangladesh-office-map"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center gap-1.5"
+          >
+            <span>Homepage Map</span>
+            <ExternalLink size={13} />
+          </Link>
+          <Link
+            href="/resources/branches"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center gap-1.5"
+          >
+            <span>Branch Directory</span>
+            <ExternalLink size={13} />
+          </Link>
+          <button
+            onClick={openCreateModal}
+            style={{ backgroundColor: primaryColor }}
+            className="px-4 py-2 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:opacity-90"
+          >
+            <Plus size={16} /> Add New Branch
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search */}
@@ -79,11 +113,10 @@ export default function AdminBranchesPage() {
             placeholder="Search branches by name, district, or address..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs outline-none border transition-all ${
-              theme === "dark"
+            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs outline-none border transition-all ${theme === "dark"
                 ? "bg-[#1A1926] border-white/10 text-white placeholder-gray-500 focus:border-white/20"
                 : "bg-white border-gray-200 text-gray-900 placeholder-gray-400 shadow-sm focus:border-gray-300"
-            }`}
+              }`}
           />
         </div>
 
@@ -93,11 +126,10 @@ export default function AdminBranchesPage() {
               key={div}
               onClick={() => setSelectedDivision(div)}
               style={selectedDivision === div ? { backgroundColor: primaryColor, color: '#fff' } : {}}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                selectedDivision === div
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${selectedDivision === div
                   ? "shadow-sm"
                   : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              }`}
+                }`}
             >
               {div}
             </button>
@@ -106,14 +138,12 @@ export default function AdminBranchesPage() {
       </div>
 
       {/* Branches Table */}
-      <div className={`rounded-2xl border overflow-hidden transition-all ${
-        theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
-      }`}>
+      <div className={`rounded-2xl border overflow-hidden transition-all ${theme === "dark" ? "bg-[#1A1926] border-white/10" : "bg-white border-gray-200 shadow-sm"
+        }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className={`border-b text-xs font-semibold ${
-              theme === "dark" ? "bg-white/[0.02] border-white/10 text-gray-400" : "bg-gray-50/50 border-gray-200 text-gray-500"
-            }`}>
+            <thead className={`border-b text-xs font-semibold ${theme === "dark" ? "bg-white/[0.02] border-white/10 text-gray-400" : "bg-gray-50/50 border-gray-200 text-gray-500"
+              }`}>
               <tr>
                 <th className="py-3.5 px-6">Branch Name</th>
                 <th className="py-3.5 px-6">Location</th>
@@ -144,10 +174,22 @@ export default function AdminBranchesPage() {
                   <td className="py-4 px-6">
                     <span
                       style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                      className="px-2.5 py-1 rounded-full text-xs font-medium"
+                      className="px-2.5 py-1 rounded-full text-xs font-medium inline-block"
                     >
                       {branch.district}, {branch.division}
                     </span>
+                    {(branch.upazila || branch.postOffice) && (
+                      <div className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+                        {[branch.upazila ? `Upazila: ${branch.upazila}` : "", branch.postOffice ? `P.O.: ${branch.postOffice}` : ""].filter(Boolean).join(" · ")}
+                      </div>
+                    )}
+                    {typeof branch.lat === "number" && typeof branch.lng === "number" ? (
+                      <div className="mt-1 text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                        GPS: {branch.lat.toFixed(4)}, {branch.lng.toFixed(4)}
+                      </div>
+                    ) : (
+                      <div className="mt-1 text-[10px] text-amber-600">No map coordinates</div>
+                    )}
                   </td>
 
                   <td className="py-4 px-6 text-gray-700 dark:text-gray-300 font-medium">
@@ -164,16 +206,18 @@ export default function AdminBranchesPage() {
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => openEditModal(branch)}
-                        className="p-1.5 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all cursor-pointer"
-                        title="Edit Branch"
+                        className="px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white bg-gray-100/80 hover:bg-gray-200/80 dark:bg-white/5 dark:hover:bg-white/10 rounded-lg transition-all cursor-pointer inline-flex items-center gap-1.5"
+                        title="Edit / Update Branch"
                       >
-                        <Edit2 size={15} />
+                        <Edit2 size={13} />
+                        <span>Update</span>
                       </button>
                       {branches.length > 1 && (
                         <button
                           onClick={() => {
                             if (confirm(`Delete branch "${branch.name}"?`)) {
                               deleteBranch(branch.id);
+                              showToast(`Deleted branch "${branch.name}".`);
                             }
                           }}
                           className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition-all cursor-pointer"
@@ -194,9 +238,8 @@ export default function AdminBranchesPage() {
       {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className={`w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-3xl p-5 sm:p-8 border shadow-2xl transition-all my-8 ${
-            theme === "dark" ? "bg-[#1A1926] border-white/10 text-white" : "bg-white border-gray-200 text-gray-900"
-          }`}>
+          <div className={`w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-3xl p-5 sm:p-8 border shadow-2xl transition-all my-8 ${theme === "dark" ? "bg-[#1A1926] border-white/10 text-white" : "bg-white border-gray-200 text-gray-900"
+            }`}>
             <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-white/5">
               <h3 className="text-lg font-black text-gray-900 dark:text-white">
                 {editingBranch ? "Edit Branch Office" : "Add Branch Office"}
@@ -219,11 +262,10 @@ export default function AdminBranchesPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Savar Central Branch"
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   />
                 </div>
 
@@ -233,13 +275,20 @@ export default function AdminBranchesPage() {
                     type="text"
                     required
                     value={formData.district}
-                    onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                    placeholder="e.g. Dhaka, Rangpur"
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    onChange={(e) => {
+                      const nextDistrict = e.target.value;
+                      const inferredDivision = divisionForDistrict(nextDistrict);
+                      setFormData({
+                        ...formData,
+                        district: nextDistrict,
+                        division: nextDistrict.trim() ? inferredDivision : formData.division,
+                      });
+                    }}
+                    placeholder="e.g. Dhaka, Rangpur, Naogaon"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   />
                 </div>
               </div>
@@ -250,11 +299,10 @@ export default function AdminBranchesPage() {
                   <select
                     value={formData.division}
                     onChange={(e) => setFormData({ ...formData, division: e.target.value })}
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   >
                     <option value="Dhaka">Dhaka</option>
                     <option value="Chattogram">Chattogram</option>
@@ -275,11 +323,10 @@ export default function AdminBranchesPage() {
                     value={formData.manager}
                     onChange={(e) => setFormData({ ...formData, manager: e.target.value })}
                     placeholder="Manager Name"
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   />
                 </div>
               </div>
@@ -292,11 +339,10 @@ export default function AdminBranchesPage() {
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="e.g. Anandapur, Savar, Dhaka-1340"
-                  className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                    theme === "dark"
+                  className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                       ? "bg-[#14141E] border-white/10 text-white"
                       : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                  }`}
+                    }`}
                 />
               </div>
 
@@ -309,11 +355,10 @@ export default function AdminBranchesPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="+880 1711-000000"
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   />
                 </div>
 
@@ -324,11 +369,10 @@ export default function AdminBranchesPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="branch@vercbd.org"
-                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${
-                      theme === "dark"
+                    className={`w-full px-4 py-2.5 rounded-xl border outline-none font-medium ${theme === "dark"
                         ? "bg-[#14141E] border-white/10 text-white"
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
-                    }`}
+                      }`}
                   />
                 </div>
               </div>
