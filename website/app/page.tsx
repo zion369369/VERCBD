@@ -177,7 +177,7 @@ export default function Home() {
         <section 
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative min-h-[580px] sm:min-h-[660px] lg:min-h-[740px] flex items-center pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+          className="relative min-h-[82vh] lg:min-h-[90vh] flex items-end pt-44 sm:pt-52 lg:pt-60 pb-14 sm:pb-16 lg:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
         >
           {/* Ambient Decorative Lighting */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
@@ -261,8 +261,8 @@ export default function Home() {
             </div>
           )}
           
-          {/* Main Slide Content - Centered with proper spacing above Impact Stats */}
-          <div className="container-custom relative z-30 text-white text-center my-auto py-6">
+          {/* Main Slide Content - Positioned lower in the hero banner so upper/mid photo faces stay clear */}
+          <div className="container-custom relative z-30 text-white text-center mt-auto pt-16 sm:pt-24 lg:pt-32 pb-2">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
               <AnimatePresence mode="wait">
                 {activeSlide && (
@@ -316,8 +316,8 @@ export default function Home() {
         </section>
       ) : null}
 
-      {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN (Positioned downward) */}
-      <section className={`relative z-20 ${isBannerGloballyEnabled && activeHeroSlides.length > 0 ? "-mt-4 sm:-mt-6 lg:-mt-8" : "pt-28 sm:pt-32"} pb-6`}>
+      {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN (Positioned cleanly below Hero) */}
+      <section className={`relative z-20 ${isBannerGloballyEnabled && activeHeroSlides.length > 0 ? "mt-6 sm:mt-8 lg:mt-10" : "pt-28 sm:pt-32"} pb-6`}>
         <div className="container-custom relative">
           {/* Subtle Ambient Color Reflection Glow Behind Glass Cards */}
           <div 

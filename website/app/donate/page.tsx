@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { 
-  Heart, 
-  Globe, 
-  CheckCircle2, 
-  ArrowRight, 
-  ShieldCheck, 
+import {
+  Heart,
+  Globe,
+  CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
   Zap,
   Users,
   Handshake,
@@ -65,31 +65,24 @@ export default function DonatePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const programMap: Record<string, "WaSH & Clean Water" | "Child Education" | "Mother & Child Health" | "Emergency Flood Relief" | "Microfinance Capital" | "General Humanitarian Fund"> = {
-      general: "General Humanitarian Fund",
-      wash: "WaSH & Clean Water",
-      education: "Child Education",
-      health: "Mother & Child Health",
-      livelihood: "Microfinance Capital",
-    };
-    const methodLabel: "bKash / Nagad" | "Credit Card" | "Bank Transfer" =
+    const causeObj = causes.find((c) => c.id === selectedCause);
+    const methodLabel =
       paymentMethod === "mfs"
         ? "bKash / Nagad"
         : paymentMethod === "card"
-        ? "Credit Card"
-        : "Bank Transfer";
+          ? "Card / Online"
+          : "Bank Transfer";
+    const formattedAmount =
+      currency === "BDT"
+        ? `৳${activeAmount.toLocaleString()}`
+        : `$${activeAmount.toLocaleString()}`;
     addDonation({
       donorName: isAnonymous ? "Anonymous Donor" : donorName.trim() || "Valued Donor",
-      donorType: "Individual",
-      donorEmail: donorEmail.trim() || "anonymous@vercbd.org",
-      amount: activeAmount,
-      currency: currency,
-      program: programMap[selectedCause] || "General Humanitarian Fund",
-      date: new Date().toISOString().slice(0, 10),
-      paymentMethod: methodLabel,
-      receiptNumber: `VERC-${Date.now().toString().slice(-6)}`,
+      email: donorEmail.trim() || "anonymous@vercbd.org",
+      amount: formattedAmount,
+      cause: causeObj ? causeObj.label : "Where Needed Most",
+      paymentMethod: `${methodLabel}${donationType === "monthly" ? " (Monthly)" : ""}`,
       status: "Completed",
-      notes: `${donationType === "monthly" ? "Monthly recurring" : "One-time"} donation${donorPhone ? ` • Phone: ${donorPhone}` : ""}`,
     });
     setIsSubmitted(true);
   };
@@ -106,9 +99,9 @@ export default function DonatePage() {
       {/* 1. HERO HEADER */}
       <section className="relative pt-36 pb-24 lg:pt-44 lg:pb-32 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/assets/home_official_1.jpg" 
-            alt="Support VERC Community" 
+          <img
+            src="/assets/home_official_1.jpg"
+            alt="Support VERC Community"
             className="w-full h-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-900"></div>
@@ -153,9 +146,9 @@ export default function DonatePage() {
       <section className="py-20 -mt-10 relative z-20">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
+
             {/* LEFT COLUMN: INTERACTIVE DONATION BUILDER */}
-            <motion.div 
+            <motion.div
               {...fadeIn}
               className="lg:col-span-7 bg-white p-8 sm:p-12 rounded-[40px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] space-y-10"
             >
@@ -164,22 +157,20 @@ export default function DonatePage() {
                 <button
                   type="button"
                   onClick={() => setDonationType("one-time")}
-                  className={`flex-1 py-3 text-sm font-black rounded-xl transition-all cursor-pointer ${
-                    donationType === "one-time" 
-                      ? "bg-white text-gray-900 shadow-sm" 
+                  className={`flex-1 py-3 text-sm font-black rounded-xl transition-all cursor-pointer ${donationType === "one-time"
+                      ? "bg-white text-gray-900 shadow-sm"
                       : "text-gray-500 hover:text-gray-900"
-                  }`}
+                    }`}
                 >
                   One-Time Donation
                 </button>
                 <button
                   type="button"
                   onClick={() => setDonationType("monthly")}
-                  className={`flex-1 py-3 text-sm font-black rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                    donationType === "monthly" 
-                      ? "bg-brand-primary text-white shadow-sm" 
+                  className={`flex-1 py-3 text-sm font-black rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${donationType === "monthly"
+                      ? "bg-brand-primary text-white shadow-sm"
                       : "text-gray-500 hover:text-gray-900"
-                  }`}
+                    }`}
                 >
                   <Sparkles size={14} className="text-brand-secondary" /> Monthly Sustainer
                 </button>
@@ -215,11 +206,10 @@ export default function DonatePage() {
                       key={val}
                       type="button"
                       onClick={() => { setSelectedAmount(val); setCustomAmount(""); }}
-                      className={`py-4 px-3 rounded-2xl border text-center transition-all cursor-pointer ${
-                        selectedAmount === val && !customAmount
+                      className={`py-4 px-3 rounded-2xl border text-center transition-all cursor-pointer ${selectedAmount === val && !customAmount
                           ? "bg-brand-primary text-white border-brand-primary font-black shadow-lg shadow-brand-primary/20 scale-[1.02]"
                           : "bg-gray-50/80 border-gray-200/80 text-gray-800 font-bold hover:border-brand-primary/40 hover:bg-white"
-                      }`}
+                        }`}
                     >
                       <div className="text-lg font-black">
                         {currency === "BDT" ? `৳${val.toLocaleString()}` : `$${val}`}
@@ -253,11 +243,10 @@ export default function DonatePage() {
                     <div
                       key={cause.id}
                       onClick={() => setSelectedCause(cause.id)}
-                      className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3.5 ${
-                        selectedCause === cause.id
+                      className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3.5 ${selectedCause === cause.id
                           ? "bg-emerald-50/50 border-emerald-500 text-emerald-950 ring-1 ring-emerald-500"
                           : "bg-gray-50/60 border-gray-200/70 hover:bg-white text-gray-800"
-                      }`}
+                        }`}
                     >
                       <span className="text-2xl">{cause.icon}</span>
                       <div className="space-y-1">
@@ -278,11 +267,10 @@ export default function DonatePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("mfs")}
-                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${
-                      paymentMethod === "mfs"
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${paymentMethod === "mfs"
                         ? "bg-brand-primary text-white border-brand-primary shadow-md"
                         : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-white"
-                    }`}
+                      }`}
                   >
                     <SmartphoneIcon size={20} />
                     <span className="text-xs font-bold">bKash / Nagad</span>
@@ -290,11 +278,10 @@ export default function DonatePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("card")}
-                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${
-                      paymentMethod === "card"
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${paymentMethod === "card"
                         ? "bg-brand-primary text-white border-brand-primary shadow-md"
                         : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-white"
-                    }`}
+                      }`}
                   >
                     <CreditCard size={20} />
                     <span className="text-xs font-bold">Card / Gateway</span>
@@ -302,11 +289,10 @@ export default function DonatePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("bank")}
-                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${
-                      paymentMethod === "bank"
+                    className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all cursor-pointer ${paymentMethod === "bank"
                         ? "bg-brand-primary text-white border-brand-primary shadow-md"
                         : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-white"
-                    }`}
+                      }`}
                   >
                     <Building size={20} />
                     <span className="text-xs font-bold">Bank Wire / EFT</span>
@@ -316,8 +302,8 @@ export default function DonatePage() {
             </motion.div>
 
             {/* RIGHT COLUMN: DONOR DETAILS & SUMMARY CARD */}
-            <motion.div 
-              {...fadeIn} 
+            <motion.div
+              {...fadeIn}
               transition={{ delay: 0.1 }}
               className="lg:col-span-5 space-y-8 sticky top-28"
             >
@@ -343,7 +329,7 @@ export default function DonatePage() {
                     <p className="text-xs text-emerald-700 leading-relaxed font-medium">
                       Our donor relations department has received your commitment. An official acknowledgement and tax invoice will be sent to <strong>{donorEmail || "your email"}</strong>.
                     </p>
-                    <button 
+                    <button
                       onClick={() => setIsSubmitted(false)}
                       className="text-xs font-bold text-emerald-800 underline pt-2"
                     >
@@ -354,8 +340,8 @@ export default function DonatePage() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-1">
                       <label className="text-[11px] font-bold text-gray-600">Full Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         required={!isAnonymous}
                         disabled={isAnonymous}
                         placeholder={isAnonymous ? "Anonymous Donor" : "e.g. Dr. A. K. Rahman"}
@@ -368,8 +354,8 @@ export default function DonatePage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-[11px] font-bold text-gray-600">Email Address</label>
-                        <input 
-                          type="email" 
+                        <input
+                          type="email"
                           required
                           placeholder="donor@example.com"
                           value={donorEmail}
@@ -379,8 +365,8 @@ export default function DonatePage() {
                       </div>
                       <div className="space-y-1">
                         <label className="text-[11px] font-bold text-gray-600">Phone (Optional)</label>
-                        <input 
-                          type="tel" 
+                        <input
+                          type="tel"
                           placeholder="+880 17..."
                           value={donorPhone}
                           onChange={(e) => setDonorPhone(e.target.value)}
@@ -391,19 +377,19 @@ export default function DonatePage() {
 
                     <div className="space-y-2 pt-2 text-xs">
                       <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={isAnonymous} 
-                          onChange={(e) => setIsAnonymous(e.target.checked)} 
+                        <input
+                          type="checkbox"
+                          checked={isAnonymous}
+                          onChange={(e) => setIsAnonymous(e.target.checked)}
                           className="rounded text-brand-primary focus:ring-brand-primary"
                         />
                         <span>Make this an anonymous donation</span>
                       </label>
                       <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={wantsTaxReceipt} 
-                          onChange={(e) => setWantsTaxReceipt(e.target.checked)} 
+                        <input
+                          type="checkbox"
+                          checked={wantsTaxReceipt}
+                          onChange={(e) => setWantsTaxReceipt(e.target.checked)}
                           className="rounded text-brand-primary focus:ring-brand-primary"
                         />
                         <span>Email official tax-exemption certificate (NBR 84A)</span>
@@ -449,8 +435,8 @@ export default function DonatePage() {
                     <span className="text-gray-400">Account No:</span>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-amber-400">4408001000215</span>
-                      <button 
-                        onClick={() => handleCopy("4408001000215", "sonali")} 
+                      <button
+                        onClick={() => handleCopy("4408001000215", "sonali")}
                         className="text-gray-400 hover:text-white"
                         title="Copy Account Number"
                       >
@@ -528,14 +514,14 @@ export default function DonatePage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="px-8 py-4 bg-brand-secondary text-gray-900 font-black rounded-2xl hover:scale-105 transition-all text-center text-sm shadow-xl"
               >
                 Inquire for CSR Partnership
               </Link>
-              <Link 
-                href="/partners" 
+              <Link
+                href="/partners"
                 className="px-8 py-4 bg-white/10 border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all text-center text-sm"
               >
                 View Current Partners
@@ -568,19 +554,19 @@ export default function DonatePage() {
 
 function SmartphoneIcon(props: React.SVGProps<SVGSVGElement> & { size?: number }) {
   return (
-    <svg 
-      width={props.size || 24} 
-      height={props.size || 24} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      width={props.size || 24}
+      height={props.size || 24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       {...props}
     >
-      <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
-      <path d="M12 18h.01"/>
+      <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+      <path d="M12 18h.01" />
     </svg>
   );
 }
