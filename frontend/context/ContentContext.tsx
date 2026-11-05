@@ -512,7 +512,7 @@ const defaultHeroSlides: HeroSlide[] = [
     title: "Empowering Through",
     highlightText: "Non-Formal Education.",
     subtitle: "Creating innovative learning models, early childhood centers, and adult literacy programs across Bangladesh.",
-    imageUrl: "/assets/edu_1.png",
+    imageUrl: "/assets/education-classroom-enhanced.webp",
     primaryBtnText: "Education Programs",
     primaryBtnLink: "/programs/education",
     secondaryBtnText: "Donate Now",

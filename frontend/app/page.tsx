@@ -44,9 +44,10 @@ export default function Home() {
   }, [activeHeroSlides.length, currentSlide]);
 
   const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
+  const slideImage = activeSlide?.imageUrl || "/assets/home_official_1.jpg";
   const requestedHeroImage = currentSlide === 0
     ? "/assets/homepage-child-monochrome.webp"
-    : activeSlide?.imageUrl || "/assets/home_official_1.jpg";
+    : slideImage === "/assets/edu_1.png" ? "/assets/education-classroom-enhanced.webp" : slideImage;
   const fallbackHeroImage = requestedHeroImage.startsWith("/photos/") ? "/assets/community_success_hero.png" : "/assets/home_official_1.jpg";
   const heroImage = failedHeroImages.has(requestedHeroImage) || requestedHeroImage.startsWith("/photos/") ? fallbackHeroImage : requestedHeroImage;
   const primaryStats = impactStats.slice(0, 4);

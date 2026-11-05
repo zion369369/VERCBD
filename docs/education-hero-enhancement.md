@@ -1,0 +1,9 @@
+# Education hero photograph enhancement
+
+Built-in image generation editing was used to make a restrained AI-assisted restoration of `frontend/public/assets/edu_1.png`. The source is retained. Final asset: `frontend/public/assets/education-classroom-enhanced.webp`.
+
+Only the Education hero uses the enhanced image. Existing CMS slides pointing to the original photo resolve to the enhanced asset on the homepage; newly uploaded administrator images retain their own URLs. The first monochrome portrait and other photo uses are unchanged.
+
+## Prompt
+
+Edit intent: careful photographic restoration / quality enhancement only. This reference is the original photograph of Bangladeshi schoolchildren playing a learning game inside a corrugated-metal classroom. Preserve the photograph faithfully: exact same children, recognizable facial identities, clothing, skin tones, poses, positions, number of people, expressions, classroom structure, wall posters, clocks, floor mat and books. Do not add or remove anyone, restage the activity, alter anatomy, redraw the room, invent lettering or beautify the children's faces. Improve image quality modestly: reduce JPEG-like artifacts and noisy blur, recover natural edge clarity and genuine-looking fabric detail without oversharpening, balance exposure so faces are clear, lift muddy shadows slightly, tame the excessive red/green saturation for a natural professional editorial photograph, neutralize distracting color casts while retaining vivid authentic clothing. Preserve natural skin texture and the existing motion softness of hands. Keep original landscape framing and full scene, not a crop. Output a clean high-resolution natural COLOR photograph suitable as an NGO website's Education hero background. No text overlays, no UI, no buttons, no logo or watermark, no dramatic relighting, no black-and-white conversion, no stylization, no smooth artificial skin. Only subtle restoration and tonal polish.
