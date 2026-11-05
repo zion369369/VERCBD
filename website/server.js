@@ -20,6 +20,18 @@ const NEXT_DIR = path.join(APP_DIR, '.next');
 const PUBLIC_DIR = path.join(APP_DIR, 'public');
 const STATIC_DIR = path.join(NEXT_DIR, 'static');
 const PRERENDER_DIR = path.join(NEXT_DIR, 'server', 'app');
+const RUNTIME_CONFIG = path.join(APP_DIR, 'runtime-config.json');
+
+if (fs.existsSync(RUNTIME_CONFIG)) {
+  const runtimeConfig = JSON.parse(fs.readFileSync(RUNTIME_CONFIG, 'utf8'));
+  const browserKey = runtimeConfig.GOOGLE_MAPS_BROWSER_KEY;
+  if (typeof browserKey !== 'string' || !/^AIza[0-9A-Za-z_-]{30,}$/.test(browserKey)) {
+    throw new Error('Invalid runtime configuration: GOOGLE_MAPS_BROWSER_KEY');
+  }
+  if (!process.env.GOOGLE_MAPS_BROWSER_KEY) {
+    process.env.GOOGLE_MAPS_BROWSER_KEY = browserKey;
+  }
+}
 
 let handle = null;
 let initError = null;

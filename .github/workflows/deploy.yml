@@ -60,6 +60,13 @@ jobs:
           cp website/package.json deploy-package/package.json
           cp website/next.config.js deploy-package/next.config.js
           cp website/.htaccess deploy-package/.htaccess
+
+          # Keep the browser key out of source and the build output; load it at runtime.
+          if [ -z "$GOOGLE_MAPS_BROWSER_KEY" ]; then
+            echo "::error::GOOGLE_MAPS_BROWSER_KEY repository secret is required for deployment."
+            exit 1
+          fi
+          node -e "require('fs').writeFileSync('deploy-package/runtime-config.json', JSON.stringify({ GOOGLE_MAPS_BROWSER_KEY: process.env.GOOGLE_MAPS_BROWSER_KEY }) + '\n', { mode: 0o600 })"
           
           # 4. Create Phusion Passenger restart signal and persistent storage dirs
           mkdir -p deploy-package/tmp
@@ -69,6 +76,8 @@ jobs:
           
           echo "Deployment package assembled successfully."
           ls -la deploy-package
+        env:
+          GOOGLE_MAPS_BROWSER_KEY: ${{ secrets.GOOGLE_MAPS_BROWSER_KEY }}
 
       - name: 🚀 Deploy to cPanel via FTPS / FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

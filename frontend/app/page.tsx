@@ -22,6 +22,7 @@ export default function Home() {
   const { language, t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [failedHeroImages, setFailedHeroImages] = useState<Set<string>>(() => new Set());
 
   // Filter only active / enabled slides
   const activeHeroSlides = heroSlides.filter((s) => s.enabled !== false);
@@ -43,6 +44,9 @@ export default function Home() {
   }, [activeHeroSlides.length, currentSlide]);
 
   const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
+  const requestedHeroImage = activeSlide?.imageUrl || "/assets/home_official_1.jpg";
+  const fallbackHeroImage = requestedHeroImage.startsWith("/photos/") ? "/assets/community_success_hero.png" : "/assets/home_official_1.jpg";
+  const heroImage = failedHeroImages.has(requestedHeroImage) || requestedHeroImage.startsWith("/photos/") ? fallbackHeroImage : requestedHeroImage;
   const primaryStats = impactStats.slice(0, 4);
 
   const fadeIn = {
@@ -172,13 +176,14 @@ export default function Home() {
                   className="absolute inset-0"
                 >
                   <img 
-                    src={activeSlide.imageUrl || "/assets/home_official_1.jpg"} 
+                    src={heroImage}
                     alt={activeSlide.title || "VERC Bangladesh"} 
+                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                    decoding="async"
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (!target.src.includes("/assets/home_official_1.jpg")) {
-                        target.src = "/assets/home_official_1.jpg";
+                    onError={() => {
+                      if (requestedHeroImage !== fallbackHeroImage) {
+                        setFailedHeroImages(images => new Set(images).add(requestedHeroImage));
                       }
                     }}
                   />

@@ -160,7 +160,7 @@ export default function MicrofinanceProductsPage() {
             <motion.div {...fadeIn} className="max-w-4xl mx-auto">
                 <h3 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-12 leading-[1] tracking-tighter">Apply for a <br/> <span className="text-brand-secondary">Prosperous Future.</span></h3>
                 <p className="text-2xl text-brand-light font-medium mb-16">
-                    Join thousands of successful entrepreneurs who have transformed their lives through VERC's microfinance support.
+                    Join thousands of successful entrepreneurs who have transformed their lives through VERC’s microfinance support.
                 </p>
                 <div className="flex justify-center">
                     <Link 

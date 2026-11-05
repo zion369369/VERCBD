@@ -6,6 +6,9 @@
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+  # Runtime credentials are read by server.js and must never be served as files.
+  RewriteRule ^runtime-config\.json$ - [F,L]
+
   # Pass static assets directly if existing
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]

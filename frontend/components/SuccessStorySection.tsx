@@ -398,7 +398,7 @@ export default function SuccessStorySection() {
                       className="absolute -top-3 -left-3 text-brand-primary/10 -z-10 pointer-events-none" 
                     />
                     <p className="text-slate-700 text-base sm:text-lg lg:text-xl leading-relaxed font-normal italic">
-                      "{language === "bn" ? current.quoteBn : current.quoteEn}"
+                      “{language === "bn" ? current.quoteBn : current.quoteEn}”
                     </p>
                   </div>
 

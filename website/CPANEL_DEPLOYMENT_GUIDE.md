@@ -67,7 +67,12 @@ On the same **Setup Node.js App** page, scroll down to the **"Environment variab
    - **Value**: *(Your Google Gemini API Key)*
    - Click *Done*.
 
-4. Click **"Add Variable"** *(Optional)*:
+4. Click **"Add Variable"** for the public branch map:
+   - **Name**: `GOOGLE_MAPS_BROWSER_KEY`
+   - **Value**: *(A browser key restricted to Maps JavaScript API and your website's HTTP referrers)*
+   - Click *Done*.
+
+5. Click **"Add Variable"** *(Optional)*:
    - **Name**: `GEMINI_MODEL`
    - **Value**: `gemini-1.5-flash`
    - Click *Done*.

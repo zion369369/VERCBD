@@ -47,6 +47,7 @@ GitHub Actions will automatically:
 | **`CPANEL_FTP_SERVER`** | Your FTP server hostname or server IP | `ftp.vercbd.org` or `vercbd.org` |
 | **`CPANEL_FTP_USERNAME`** | The FTP username | `deploy@vercbd.org` *(or your cPanel username)* |
 | **`CPANEL_FTP_PASSWORD`** | The password you set in Step 1 | `YourSecurePassword123` |
+| **`GOOGLE_MAPS_BROWSER_KEY`** | Restricted browser key for the VERC Maps JavaScript map | Create it in Google Cloud; restrict it to `https://vercbd.org/*`, `https://www.vercbd.org/*`, and Maps JavaScript API |
 
 *(Optional)* If you set the FTP directory in Step 1 directly to `/home/vercbd/website`, add a 4th secret:
 - **Name**: `CPANEL_TARGET_DIR`
@@ -76,6 +77,8 @@ git push origin main
    - ✔ Assemble Production Deployment Package
    - ✔ Deploy to cPanel via FTPS / FTP
 4. Once it turns **Green (Success)**, open **`https://www.vercbd.org`** — your changes are live!
+
+   The workflow writes the restricted browser key to `runtime-config.json` in the deployment package. The cPanel server loads it at startup, and Apache denies direct requests for that file; the key is not stored in the repository or included in the Next.js build output.
 
 ---
 

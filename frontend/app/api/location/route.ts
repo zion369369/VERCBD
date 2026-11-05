@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 const headers = { "Cache-Control": "no-store" };
 // Maps JavaScript keys are browser-visible by design. Use a separate,
 // HTTP-referrer-restricted browser key in production.
-export async function GET() { return NextResponse.json({ key:process.env.GOOGLE_MAPS_BROWSER_KEY || process.env.GOOGLE_MAPS_API_KEY || "" },{headers}); }
+export async function GET() { return NextResponse.json({ key:process.env.GOOGLE_MAPS_BROWSER_KEY || "" },{headers}); }
 const cache = new Map<string, { expires: number; data: unknown }>();
 let queue: Promise<unknown> = Promise.resolve();
 let lastRequest = 0;

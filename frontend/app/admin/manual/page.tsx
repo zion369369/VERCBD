@@ -153,14 +153,14 @@ export default function AdminManualPage() {
             About Us CMS Hub (`/admin/about`)
           </h2>
           <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 font-medium">
-            Controls all sub-pages under the "About Us" dropdown on the public website. Divided into 5 specialized tabs:
+            Controls all sub-pages under the &quot;About Us&quot; dropdown on the public website. Divided into 5 specialized tabs:
           </p>
 
           <div className="space-y-4 text-xs">
             <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10">
               <strong className="text-sm font-bold text-gray-900 dark:text-white block mb-1">1. Legal Status & Certifications (`/about/legal`)</strong>
               <p className="text-gray-500 leading-relaxed mb-2">
-                Click <strong>"Add Certificate"</strong> to register new government licenses. Enter the License Title (e.g. NGO Affairs Bureau, Microcredit Regulatory Authority), Regulatory Authority, Registration Number, Validity Status (Active / Expired), and Document Verification URL.
+                Click <strong>&quot;Add Certificate&quot;</strong> to register new government licenses. Enter the License Title (e.g. NGO Affairs Bureau, Microcredit Regulatory Authority), Regulatory Authority, Registration Number, Validity Status (Active / Expired), and Document Verification URL.
               </p>
               <div className="text-[11px] text-brand-primary font-bold">Public Impact: Directly powers the interactive verification table and official registry links on `/about/legal`.</div>
             </div>
@@ -168,7 +168,7 @@ export default function AdminManualPage() {
             <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10">
               <strong className="text-sm font-bold text-gray-900 dark:text-white block mb-1">2. Annual Reports & Financial Statements (`/about/annual-report`)</strong>
               <p className="text-gray-500 leading-relaxed mb-2">
-                Publish audited reports by clicking <strong>"Upload Annual Report"</strong>. Enter the Fiscal Year (e.g. 2024-2025), Document Title, Executive Summary using the Rich Text Word Editor, PDF Download URL, File Size, and toggle "Feature on Top" for primary highlight cards.
+                Publish audited reports by clicking <strong>&quot;Upload Annual Report&quot;</strong>. Enter the Fiscal Year (e.g. 2024-2025), Document Title, Executive Summary using the Rich Text Word Editor, PDF Download URL, File Size, and toggle &quot;Feature on Top&quot; for primary highlight cards.
               </p>
             </div>
 
@@ -182,14 +182,14 @@ export default function AdminManualPage() {
             <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10">
               <strong className="text-sm font-bold text-gray-900 dark:text-white block mb-1">4. Governance Organogram Node Builder (`/about/organogram`)</strong>
               <p className="text-gray-500 leading-relaxed mb-2">
-                Dynamically build VERC's organizational hierarchy tree. Add roles (General Body, Executive Committee, Executive Director, Department Directors) and assign "Reports To" parent nodes.
+                Dynamically build VERC&apos;s organizational hierarchy tree. Add roles (General Body, Executive Committee, Executive Director, Department Directors) and assign &quot;Reports To&quot; parent nodes.
               </p>
             </div>
 
             <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10">
               <strong className="text-sm font-bold text-gray-900 dark:text-white block mb-1">5. Vision, Mission & Official PDF Link (`/about`)</strong>
               <p className="text-gray-500 leading-relaxed mb-2">
-                Directly edit VERC's institutional Vision and Mission statements using the Word-style editor. Update the link to the official downloadable governance PDF.
+                Directly edit VERC&apos;s institutional Vision and Mission statements using the Word-style editor. Update the link to the official downloadable governance PDF.
               </p>
             </div>
           </div>
@@ -211,8 +211,8 @@ export default function AdminManualPage() {
             <div className="p-5 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 space-y-2">
               <strong className="font-bold text-gray-900 dark:text-white block text-sm">Managing Job Circulars</strong>
               <ul className="space-y-1.5 text-gray-500">
-                <li>• Click <strong>"Post New Job Opening"</strong> to create a circular.</li>
-                <li>• <strong>Adding Custom Departments:</strong> Click <strong>"+ Add New Department"</strong> right above the Department dropdown (or select <em>"+ Add Custom Department..."</em>) to type any new department on the fly, or use the <strong>"Manage Departments"</strong> button in the header.</li>
+                <li>• Click <strong>&quot;Post New Job Opening&quot;</strong> to create a circular.</li>
+                <li>• <strong>Adding Custom Departments:</strong> Click <strong>&quot;+ Add New Department&quot;</strong> right above the Department dropdown (or select <em>&quot;+ Add Custom Department...&quot;</em>) to type any new department on the fly, or use the <strong>&quot;Manage Departments&quot;</strong> button in the header.</li>
                 <li>• Enter Role Title, Location, and Job Type.</li>
                 <li>• Set Application Deadline and Salary Range.</li>
                 <li>• Use the <strong>Rich Text WYSIWYG Word Editor</strong> for Role Description.</li>
@@ -224,10 +224,10 @@ export default function AdminManualPage() {
             <div className="p-5 rounded-2xl border border-blue-200 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/20 space-y-2">
               <strong className="font-bold text-gray-900 dark:text-white block text-sm">Reviewing CVs & Downloading Resumes</strong>
               <ul className="space-y-1.5 text-gray-600 dark:text-gray-400">
-                <li>• Switch to the <strong>"Candidate Applications"</strong> tab.</li>
+                <li>• Switch to the <strong>&quot;Candidate Applications&quot;</strong> tab.</li>
                 <li>• View candidate Name, Position, Email, Phone, and Date.</li>
-                <li>• Click <strong>"Download PDF"</strong> to instantly save the applicant's original PDF resume to your computer.</li>
-                <li>• Click the view icon to read the candidate's Cover Letter and profile.</li>
+                <li>• Click <strong>&quot;Download PDF&quot;</strong> to instantly save the applicant&apos;s original PDF resume to your computer.</li>
+                <li>• Click the view icon to read the candidate&apos;s Cover Letter and profile.</li>
                 <li>• Update status: <strong>Pending ➔ Reviewed ➔ Shortlisted ➔ Rejected</strong>.</li>
               </ul>
             </div>
@@ -327,7 +327,7 @@ export default function AdminManualPage() {
             <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10">
               <strong className="font-bold text-gray-900 dark:text-white block mb-1">Branding & Dynamic Theme (`/admin/settings`)</strong>
               <p className="text-gray-500 leading-relaxed">
-                Use the interactive <strong>Theme Color Picker</strong> to update the organization's primary accent color (VERC Classic Blue, Forest Green, Vibrant Teal, Deep Navy). The chosen color updates instantaneously across all buttons, badges, and headers site-wide.
+                Use the interactive <strong>Theme Color Picker</strong> to update the organization&apos;s primary accent color (VERC Classic Blue, Forest Green, Vibrant Teal, Deep Navy). The chosen color updates instantaneously across all buttons, badges, and headers site-wide.
               </p>
             </div>
           </div>
