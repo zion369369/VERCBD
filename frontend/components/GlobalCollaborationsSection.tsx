@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Globe, ArrowRight, ShieldCheck, CheckCircle2,
-  ExternalLink, Sparkles, ChevronLeft, ChevronRight,
+import { 
+  Globe, ArrowRight, ShieldCheck, CheckCircle2, 
+  ExternalLink, Sparkles, ChevronLeft, ChevronRight, 
   Building2, Award, Users, HeartHandshake
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -82,7 +82,7 @@ export default function GlobalCollaborationsSection() {
   const [isPaused, setIsPaused] = useState(false);
 
   const displayedPartners = partners && partners.length > 0
-    ? partners.map((p) => ({ name: p.name, logo: p.logo, type: p.type, website: p.website }))
+    ? partners.map((p) => ({ name: p.name, logo: p.logoUrl, type: p.category, website: p.websiteUrl }))
     : PARTNER_LOGOS.map((p) => ({ ...p, website: "/partners" }));
 
   const isBn = language === "bn";
@@ -108,7 +108,7 @@ export default function GlobalCollaborationsSection() {
 
       <div className="container-custom relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
-
+          
           {/* ===================================================================
               LEFT COLUMN: Prestigious Content & Credibility Badges
               =================================================================== */}
@@ -162,7 +162,7 @@ export default function GlobalCollaborationsSection() {
               transition={{ delay: 0.15 }}
               className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed"
             >
-              {isBn
+              {isBn 
                 ? "ভার্ক ইউনিসেফ, বিশ্বব্যাংক, পিকেএসএফ এবং বাংলাদেশ সরকারের মতো শীর্ষস্থানীয় উন্নয়ন সংস্থার সাথে অংশীদারিত্বের ভিত্তিতে প্রান্তিক জনগোষ্ঠীর জন্য রূপান্তরকারী স্বাস্থ্য, নিরাপদ পানি ও শিক্ষা অবকাঠামো গড়ে তুলছে।"
                 : "VERC collaborates with premier global institutions—including UNICEF, the World Bank, WaterAid, and PKSF—to design, finance, and execute life-changing community infrastructure across Bangladesh."
               }
@@ -216,8 +216,8 @@ export default function GlobalCollaborationsSection() {
                     title={`${partner.name} (${partner.type})`}
                     className="group relative px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white shadow-xs border border-slate-200/90 hover:border-brand-primary/50 hover:shadow-md transition-all duration-300 flex items-center justify-center h-11 sm:h-12 w-24 sm:w-28"
                   >
-                    <img
-                      src={partner.logo}
+                    <img 
+                      src={partner.logo} 
                       alt={partner.name}
                       className="max-h-7 max-w-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-300 opacity-80 group-hover:opacity-100"
                     />
@@ -234,15 +234,15 @@ export default function GlobalCollaborationsSection() {
               transition={{ delay: 0.3 }}
               className="flex flex-wrap items-center gap-4 pt-2"
             >
-              <Link
+              <Link 
                 href="/partners"
                 className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-brand-primary text-white font-extrabold text-sm shadow-xl shadow-brand-primary/25 hover:shadow-2xl hover:shadow-brand-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden"
               >
                 {/* Gloss streak sweep on hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-
+                
                 <span className="relative z-10">{t("global_btn")}</span>
-
+                
                 <div className="relative z-10 w-6 h-6 rounded-full bg-white/20 group-hover:bg-white group-hover:text-brand-primary flex items-center justify-center transition-colors">
                   <ArrowRight size={13} strokeWidth={2.8} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
@@ -264,7 +264,7 @@ export default function GlobalCollaborationsSection() {
               - Story panel is elegantly integrated below the photo, leaving the
                 entire photo completely unobstructed!
               =================================================================== */}
-          <div
+          <div 
             className="flex-1 w-full"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
@@ -318,10 +318,11 @@ export default function GlobalCollaborationsSection() {
                       <button
                         key={idx}
                         onClick={() => setCurrentSlideIndex(idx)}
-                        className={`h-2 rounded-full transition-all duration-300 ${idx === currentSlideIndex
-                            ? "w-6 bg-brand-primary"
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          idx === currentSlideIndex 
+                            ? "w-6 bg-brand-primary" 
                             : "w-2 bg-slate-200 hover:bg-slate-300"
-                          }`}
+                        }`}
                         aria-label={`Slide ${idx + 1}`}
                       />
                     ))}

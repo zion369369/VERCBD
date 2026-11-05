@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import {
+import { 
   Heart, Sparkles, ArrowRight, ChevronLeft, ChevronRight,
   CheckCircle2, Quote, Award, Users, TrendingUp, ShieldCheck,
   MapPin, BookOpen, ExternalLink
@@ -183,16 +183,16 @@ export default function SuccessStorySection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const publishedCmsStories = (stories || []).filter((s) => s.status !== "Draft");
+  const publishedCmsStories = stories || [];
   const displayStories: ImpactStory[] = STORIES.map((base, idx) => {
     const cms = publishedCmsStories[idx];
     if (!cms) return base;
     return {
       ...base,
       titleEn: cms.title || base.titleEn,
-      quoteEn: cms.excerpt || base.quoteEn,
+      quoteEn: cms.story || base.quoteEn,
       locationEn: cms.location || base.locationEn,
-      programEn: cms.category || base.programEn,
+      personNameEn: cms.beneficiaryName || base.personNameEn,
       image: cms.imageUrl || base.image,
     };
   });
@@ -217,7 +217,7 @@ export default function SuccessStorySection() {
   };
 
   return (
-    <section
+    <section 
       className="relative py-24 sm:py-32 overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-blue-50/20"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -228,7 +228,7 @@ export default function SuccessStorySection() {
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-100/30 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-custom relative z-10">
-
+        
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16 space-y-4">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-50/90 border border-blue-200/60 text-brand-primary text-xs font-bold tracking-wider uppercase shadow-sm">
@@ -252,7 +252,7 @@ export default function SuccessStorySection() {
           </h2>
 
           <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-            {language === "bn"
+            {language === "bn" 
               ? "১৯৭৭ সাল থেকে ভার্ক প্রান্তিক জনগোষ্ঠীর মাঝে আত্মবিশ্বাস ও স্থায়ী সক্ষমতা গড়ে তুলছে। দেখুন কীভাবে সাধারণ মানুষ নেতৃত্ব দিয়ে নিজেদের ভাগ্য পরিবর্তন করছেন।"
               : "Direct from the villages: how community ownership, non-formal education, and collective action break generational barriers across Bangladesh."}
           </p>
@@ -266,15 +266,17 @@ export default function SuccessStorySection() {
                   <button
                     key={story.id}
                     onClick={() => setActiveIndex(idx)}
-                    className={`group relative w-full px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer text-center ${isActive
-                        ? "bg-gradient-to-b from-[#00549f] via-brand-primary to-[#003463] text-white shadow-[0_8px_20px_-3px_rgba(0,75,141,0.5),inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_4px_rgba(0,0,0,0.2)] ring-2 ring-brand-secondary/40 -translate-y-0.5"
+                    className={`group relative w-full px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer text-center ${
+                      isActive 
+                        ? "bg-gradient-to-b from-[#00549f] via-brand-primary to-[#003463] text-white shadow-[0_8px_20px_-3px_rgba(0,75,141,0.5),inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_4px_rgba(0,0,0,0.2)] ring-2 ring-brand-secondary/40 -translate-y-0.5" 
                         : "bg-gradient-to-b from-white via-white to-slate-50 text-slate-800 border border-slate-200/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,1)] hover:shadow-[0_6px_14px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:text-brand-primary hover:border-blue-200 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)]"
-                      }`}
+                    }`}
                   >
-                    <span className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${isActive
-                        ? "bg-gradient-to-tr from-cyan-400 to-sky-200 text-slate-900 shadow-sm"
+                    <span className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${
+                      isActive 
+                        ? "bg-gradient-to-tr from-cyan-400 to-sky-200 text-slate-900 shadow-sm" 
                         : "bg-slate-100 text-slate-700 border border-slate-200 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)] group-hover:bg-blue-50 group-hover:text-brand-primary"
-                      }`}>
+                    }`}>
                       0{idx + 1}
                     </span>
                     <span className="truncate tracking-tight hidden md:inline">
@@ -293,10 +295,10 @@ export default function SuccessStorySection() {
         {/* Master Story Showcase Card */}
         <div className="bg-white/95 backdrop-blur-md rounded-[36px] sm:rounded-[48px] border border-slate-200/80 shadow-[0_20px_70px_-15px_rgba(15,23,42,0.08)] overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-
+            
             {/* Left Column: 100% UNTOUCHED, BRIGHT, CRISP IMAGE (No dark shading, No face occlusion) */}
             <div className="lg:col-span-5 relative flex flex-col justify-between p-6 sm:p-8 lg:p-10 bg-gradient-to-b from-slate-50/50 to-blue-50/30 border-b lg:border-b-0 lg:border-r border-slate-100">
-
+              
               {/* Photo Frame Container */}
               <div className="relative rounded-[28px] overflow-hidden shadow-lg border border-slate-200/70 aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/5] bg-slate-100 group">
                 <AnimatePresence mode="wait">
@@ -345,10 +347,11 @@ export default function SuccessStorySection() {
                     <button
                       key={i}
                       onClick={() => setActiveIndex(i)}
-                      className={`h-2 rounded-full transition-all cursor-pointer ${i === activeIndex
-                          ? "w-8 bg-brand-primary"
+                      className={`h-2 rounded-full transition-all cursor-pointer ${
+                        i === activeIndex 
+                          ? "w-8 bg-brand-primary" 
                           : "w-2 bg-slate-300 hover:bg-slate-400"
-                        }`}
+                      }`}
                       aria-label={`Go to story ${i + 1}`}
                     />
                   ))}
@@ -376,7 +379,7 @@ export default function SuccessStorySection() {
 
             {/* Right Column: Narrative Storytelling, Beneficiary Profile, Metrics & CTAs */}
             <div className="lg:col-span-7 p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-8">
-
+              
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current.id}
@@ -398,16 +401,17 @@ export default function SuccessStorySection() {
                   </div>
 
                   {/* Headline */}
-                  <h3 className={`text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 ${language === "bn" ? "leading-[1.25] tracking-normal" : "leading-tight tracking-tight"
-                    }`}>
+                  <h3 className={`text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 ${
+                    language === "bn" ? "leading-[1.25] tracking-normal" : "leading-tight tracking-tight"
+                  }`}>
                     {language === "bn" ? current.titleBn : current.titleEn}
                   </h3>
 
                   {/* Refined Narrative Quote with Decorative Watermark */}
                   <div className="relative pl-6 sm:pl-8 border-l-4 border-brand-secondary/40 py-1">
-                    <Quote
-                      size={48}
-                      className="absolute -top-3 -left-3 text-brand-primary/10 -z-10 pointer-events-none"
+                    <Quote 
+                      size={48} 
+                      className="absolute -top-3 -left-3 text-brand-primary/10 -z-10 pointer-events-none" 
                     />
                     <p className="text-slate-700 text-base sm:text-lg lg:text-xl leading-relaxed font-normal italic">
                       “{language === "bn" ? current.quoteBn : current.quoteEn}”
@@ -440,7 +444,7 @@ export default function SuccessStorySection() {
                     {current.metrics.map((metric, idx) => {
                       const IconComponent = metric.icon;
                       return (
-                        <div
+                        <div 
                           key={idx}
                           className="bg-blue-50/50 hover:bg-blue-50/80 transition-colors border border-blue-100/80 rounded-2xl p-3 sm:p-4 text-center sm:text-left space-y-1"
                         >
@@ -463,8 +467,8 @@ export default function SuccessStorySection() {
 
               {/* Action Buttons Row with 3D Morphic Tactile Feel */}
               <div className="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/impact"
+                <Link 
+                  href="/impact" 
                   className="px-8 py-4 bg-gradient-to-b from-[#00549f] via-brand-primary to-[#003463] hover:from-[#0060b5] hover:to-[#003d75] text-white font-extrabold rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,75,141,0.45),inset_0_1px_1px_rgba(255,255,255,0.4),0_3px_5px_rgba(0,0,0,0.2)] hover:shadow-[0_14px_30px_-5px_rgba(0,75,141,0.55)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.3)] transition-all flex items-center gap-3 text-sm sm:text-base group cursor-pointer"
                 >
                   <span>
@@ -473,8 +477,8 @@ export default function SuccessStorySection() {
                   <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
                 </Link>
 
-                <Link
-                  href="/programs"
+                <Link 
+                  href="/programs" 
                   className="px-6 py-4 bg-gradient-to-b from-white to-slate-50 text-slate-800 hover:text-brand-primary font-bold rounded-2xl border border-slate-200/90 shadow-[0_6px_16px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.09)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)] transition-all flex items-center gap-2 text-sm sm:text-base cursor-pointer"
                 >
                   <BookOpen size={16} className="text-brand-secondary" />

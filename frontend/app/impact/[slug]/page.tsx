@@ -52,12 +52,12 @@ export default function ImpactStoryPage({ params }: { params: { slug: string } }
   const fallback = getFallbackStoryData(params.slug);
   const story = cmsStory
     ? {
-      title: cmsStory.title,
-      location: cmsStory.location,
-      date: cmsStory.date,
-      image: cmsStory.imageUrl || fallback.image,
-      content: cmsStory.excerpt,
-    }
+        title: cmsStory.title,
+        location: cmsStory.location,
+        date: cmsStory.date,
+        image: cmsStory.imageUrl || fallback.image,
+        content: cmsStory.story,
+      }
     : fallback;
 
   return (
@@ -66,7 +66,7 @@ export default function ImpactStoryPage({ params }: { params: { slug: string } }
       <div className="relative h-[500px] w-full overflow-hidden">
         <div className="absolute inset-0 bg-black/30 z-10" />
         <img src={story.image} alt={story.title} className="object-cover w-full h-full" />
-
+        
         <div className="container-custom relative z-20 h-full flex flex-col justify-end pb-12 text-white">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-200 hover:text-white mb-8 transition-colors">
             <ArrowLeft size={16} /> Back to Impact Stories
