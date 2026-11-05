@@ -22,6 +22,7 @@ export default function Home() {
   const { language, t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [failedHeroImages, setFailedHeroImages] = useState<Set<string>>(() => new Set());
 
   // Filter only active / enabled slides
   const activeHeroSlides = heroSlides.filter((s) => s.enabled !== false);
@@ -43,6 +44,11 @@ export default function Home() {
   }, [activeHeroSlides.length, currentSlide]);
 
   const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
+  const requestedHeroImage = currentSlide === 0
+    ? "/assets/homepage-community-hero.webp"
+    : activeSlide?.imageUrl || "/assets/home_official_1.jpg";
+  const fallbackHeroImage = requestedHeroImage.startsWith("/photos/") ? "/assets/community_success_hero.png" : "/assets/home_official_1.jpg";
+  const heroImage = failedHeroImages.has(requestedHeroImage) || requestedHeroImage.startsWith("/photos/") ? fallbackHeroImage : requestedHeroImage;
   const primaryStats = impactStats.slice(0, 4);
 
   const fadeIn = {
@@ -172,13 +178,14 @@ export default function Home() {
                   className="absolute inset-0"
                 >
                   <img 
-                    src={activeSlide.imageUrl || "/assets/home_official_1.jpg"} 
+                    src={heroImage}
                     alt={activeSlide.title || "VERC Bangladesh"} 
+                    fetchPriority={currentSlide === 0 ? "high" : "auto"}
+                    decoding="async"
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (!target.src.includes("/assets/home_official_1.jpg")) {
-                        target.src = "/assets/home_official_1.jpg";
+                    onError={() => {
+                      if (requestedHeroImage !== fallbackHeroImage) {
+                        setFailedHeroImages(images => new Set(images).add(requestedHeroImage));
                       }
                     }}
                   />
@@ -365,212 +372,48 @@ export default function Home() {
       </section>
 
       {/* 3. PROGRAM PILLARS */}
-      <section className="relative py-20 sm:py-28 lg:py-32 bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 overflow-hidden">
-        {/* Ambient Polymorphic Light Blobs */}
-        <div 
-          style={{ 
-            background: `radial-gradient(circle at 18% 25%, ${primaryColor || "#004B8D"}12 0%, transparent 60%)` 
-          }}
-          className="absolute inset-0 -top-24 blur-3xl -z-10 rounded-full pointer-events-none transform scale-y-75" 
-        />
-        <div 
-          className="absolute right-0 bottom-10 w-96 h-96 rounded-full bg-cyan-400/10 blur-3xl -z-10 pointer-events-none" 
-        />
-
-        <div className="container-custom relative z-10">
-          {/* Header Row */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 sm:mb-16 lg:mb-20 gap-6 sm:gap-8">
-            <div className="max-w-2xl">
-              {/* Classy Frosted Glass Focus Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full backdrop-blur-xl bg-brand-primary/[0.08] dark:bg-white/10 border border-brand-primary/20 dark:border-white/15 shadow-[0_2px_10px_rgba(0,75,141,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] text-brand-primary dark:text-cyan-300 mb-4 sm:mb-5">
-                <Target size={16} className="stroke-[2.5]" />
-                <h2 className="font-black uppercase tracking-[0.22em] text-[11px] sm:text-xs">
-                  {t("focus_badge")}
-                </h2>
+      <section id="program-pillars" aria-labelledby="program-pillars-title" className="bg-slate-50/60 py-16 sm:py-20 lg:py-24 dark:bg-slate-950">
+        <div className="container-custom">
+          <div className="mb-9 grid gap-5 sm:mb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary dark:text-sky-300">
+                <Target size={16} strokeWidth={2} />
+                <span>{t("focus_badge")}</span>
               </div>
-              <h3 className={`text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white ${language === "bn" ? "leading-[1.25] tracking-normal py-1" : "leading-[1.08] tracking-tight"}`}>
-                {t("focus_title")} <br/> 
-                <span 
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${primaryColor || "#004B8D"}, #00AEEF)`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent"
-                  }}
-                  className="text-brand-primary"
-                >
-                  {t("focus_highlight")}
-                </span>
-              </h3>
+              <h2 id="program-pillars-title" className={`text-3xl font-extrabold text-slate-900 sm:text-5xl lg:text-[3.4rem] dark:text-white ${language === "bn" ? "leading-[1.25]" : "leading-[1.08] tracking-tight"}`}>
+                {t("focus_title")}<br />
+                <span className="text-brand-primary dark:text-sky-300">{t("focus_highlight")}</span>
+              </h2>
             </div>
-            
-            {/* Subtitle with Classy Architectural Border Accent */}
-            <div className="max-w-md lg:pl-6 lg:border-l-2 lg:border-brand-primary/20">
-              <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                {t("focus_subtitle")}
-              </p>
-            </div>
+            <p className="max-w-lg text-sm leading-7 text-slate-600 sm:text-base lg:mb-1 lg:border-l-2 lg:border-sky-100 lg:pl-6 dark:border-slate-800 dark:text-slate-400">{t("focus_subtitle")}</p>
           </div>
 
-          {/* Polymorphic 4-Column Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-6 xl:gap-8">
+          <div className="grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
             {programs.slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
-              
-              const pillarCards = [
-                {
-                  icon: GraduationCap,
-                  tagNumber: "01",
-                  // Signature Pastel Glass Color (shown normally)
-                  lightBg: "from-sky-100/90 via-sky-50/70 to-blue-50/60",
-                  darkBg: "dark:from-sky-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
-                  cardBorder: "border-sky-200/90 dark:border-sky-800/50",
-                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(2,132,199,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(2,132,199,0.05)]",
-                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(2,132,199,0.38),0_0_40px_rgba(56,189,248,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
-                  normalFlare: "via-sky-400 opacity-90",
-                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
-                  topGlowColor: "rgba(0, 122, 255, 0.22)",
-                  bottomGlowColor: "rgba(0, 174, 239, 0.18)",
-                  badgeGradient: "from-sky-500 via-blue-600 to-indigo-600",
-                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(2,132,199,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
-                  tagStyle: "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-300/70 dark:border-sky-700/60",
-                  btnGradient: "from-sky-600 to-blue-700",
-                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(2,132,199,0.4)]",
-                  hoverRing: "group-hover:ring-sky-400/50",
-                },
-                {
-                  icon: Droplets,
-                  tagNumber: "02",
-                  lightBg: "from-emerald-100/90 via-emerald-50/70 to-teal-50/60",
-                  darkBg: "dark:from-emerald-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
-                  cardBorder: "border-emerald-200/90 dark:border-emerald-800/50",
-                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(5,150,105,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(5,150,105,0.05)]",
-                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(5,150,105,0.38),0_0_40px_rgba(52,211,153,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
-                  normalFlare: "via-emerald-400 opacity-90",
-                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
-                  topGlowColor: "rgba(16, 185, 129, 0.22)",
-                  bottomGlowColor: "rgba(20, 184, 166, 0.18)",
-                  badgeGradient: "from-emerald-500 via-teal-600 to-cyan-600",
-                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(5,150,105,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
-                  tagStyle: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300/70 dark:border-emerald-700/60",
-                  btnGradient: "from-emerald-600 to-teal-700",
-                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(5,150,105,0.4)]",
-                  hoverRing: "group-hover:ring-emerald-400/50",
-                },
-                {
-                  icon: TrendingUp,
-                  tagNumber: "03",
-                  lightBg: "from-rose-100/90 via-rose-50/70 to-orange-50/60",
-                  darkBg: "dark:from-rose-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
-                  cardBorder: "border-rose-200/90 dark:border-rose-800/50",
-                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(244,63,94,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(244,63,94,0.05)]",
-                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(244,63,94,0.38),0_0_40px_rgba(251,113,133,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
-                  normalFlare: "via-rose-400 opacity-90",
-                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
-                  topGlowColor: "rgba(244, 63, 94, 0.22)",
-                  bottomGlowColor: "rgba(249, 115, 22, 0.18)",
-                  badgeGradient: "from-rose-500 via-amber-500 to-orange-500",
-                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(244,63,94,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
-                  tagStyle: "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-300/70 dark:border-rose-700/60",
-                  btnGradient: "from-rose-600 to-amber-600",
-                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(244,63,94,0.4)]",
-                  hoverRing: "group-hover:ring-rose-400/50",
-                },
-                {
-                  icon: Target,
-                  tagNumber: "04",
-                  lightBg: "from-amber-100/90 via-amber-50/70 to-yellow-50/60",
-                  darkBg: "dark:from-amber-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
-                  cardBorder: "border-amber-200/90 dark:border-amber-800/50",
-                  normalShadow: "shadow-[0_16px_36px_-10px_rgba(245,158,11,0.14),0_4px_12px_rgba(0,0,0,0.02),inset_0_1.5px_2px_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(245,158,11,0.05)]",
-                  hoverShadow: "hover:shadow-[0_30px_70px_-10px_rgba(245,158,11,0.38),0_0_40px_rgba(252,211,77,0.22),inset_0_2px_3px_rgba(255,255,255,1)]",
-                  normalFlare: "via-amber-400 opacity-90",
-                  hoverFlare: "group-hover:via-white group-hover:h-[3px] group-hover:opacity-100",
-                  topGlowColor: "rgba(245, 158, 11, 0.22)",
-                  bottomGlowColor: "rgba(234, 179, 8, 0.18)",
-                  badgeGradient: "from-amber-500 via-orange-500 to-red-500",
-                  badgeShadow: "shadow-[0_10px_25px_-4px_rgba(245,158,11,0.45),inset_0_1.5px_2px_rgba(255,255,255,0.7)]",
-                  tagStyle: "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-300/70 dark:border-amber-700/60",
-                  btnGradient: "from-amber-600 to-orange-600",
-                  btnShadow: "shadow-[0_8px_20px_-4px_rgba(245,158,11,0.4)]",
-                  hoverRing: "group-hover:ring-amber-400/50",
-                },
+              const styles = [
+                { icon: GraduationCap, href: "/programs/education", tint: "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300", top: "bg-sky-500", border: "hover:border-sky-200 focus-visible:ring-sky-500", text: "text-sky-700 dark:text-sky-300", arrow: "bg-sky-50 group-hover:bg-sky-600 group-hover:text-white dark:bg-sky-950/50" },
+                { icon: Droplets, href: "/programs/wash", tint: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300", top: "bg-emerald-500", border: "hover:border-emerald-200 focus-visible:ring-emerald-500", text: "text-emerald-700 dark:text-emerald-300", arrow: "bg-emerald-50 group-hover:bg-emerald-600 group-hover:text-white dark:bg-emerald-950/50" },
+                { icon: TrendingUp, href: "/programs/livelihood", tint: "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300", top: "bg-rose-400", border: "hover:border-rose-200 focus-visible:ring-rose-500", text: "text-rose-700 dark:text-rose-300", arrow: "bg-rose-50 group-hover:bg-rose-600 group-hover:text-white dark:bg-rose-950/50" },
+                { icon: Target, href: "/programs/capacity", tint: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300", top: "bg-amber-400", border: "hover:border-amber-200 focus-visible:ring-amber-500", text: "text-amber-700 dark:text-amber-300", arrow: "bg-amber-50 group-hover:bg-amber-600 group-hover:text-white dark:bg-amber-950/50" },
               ];
-
-              const cfg = pillarCards[i % pillarCards.length];
-              const IconComp = cfg.icon;
-
+              const cfg = styles[i];
+              const Icon = cfg.icon;
               return (
-                <motion.div 
-                  key={item.id} 
-                  {...fadeIn}
-                  transition={{ delay: i * 0.12 }}
-                  className={`group relative rounded-[32px] sm:rounded-[36px] lg:rounded-[40px] p-6 sm:p-8 xl:p-9 flex flex-col h-full overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3.5 hover:scale-[1.015] cursor-pointer backdrop-blur-2xl bg-gradient-to-br ${cfg.lightBg} ${cfg.darkBg} border ${cfg.cardBorder} ${cfg.normalShadow} ${cfg.hoverShadow} hover:border-white hover:ring-2 ${cfg.hoverRing}`}
-                >
-                  {/* Polymorphic Ambient Corner Glow Flares */}
-                  <div 
-                    style={{ backgroundColor: cfg.topGlowColor }}
-                    className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl group-hover:scale-160 transition-transform duration-700 pointer-events-none" 
-                  />
-                  <div 
-                    style={{ backgroundColor: cfg.bottomGlowColor }}
-                    className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-xl group-hover:scale-140 transition-transform duration-700 pointer-events-none" 
-                  />
-
-                  {/* Top Specular Edge Highlight Flare Bar (Colored normally, brilliant white diamond on hover) */}
-                  <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent ${cfg.normalFlare} to-transparent ${cfg.hoverFlare} transition-all duration-500`} />
-
-                  {/* Prismatic Crystal Light Beam Sweep on Hover */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
-
-                  {/* Card Header Row: Jewel Badge + Tag Number */}
-                  <div className="relative z-10 flex items-center justify-between mb-6">
-                    {/* Jewel-like Frosted Glass Icon Badge - Richly Colored Normally, 3D Elevate & Halo Ring on Hover */}
-                    <div className={`relative p-[1.5px] rounded-[22px] bg-gradient-to-br from-white via-white/80 to-white/30 ${cfg.badgeShadow} group-hover:scale-115 group-hover:-rotate-3 group-hover:ring-4 group-hover:ring-white/80 group-hover:shadow-[0_14px_32px_rgba(0,0,0,0.35)] transition-all duration-500`}>
-                      <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-[20px] bg-gradient-to-br ${cfg.badgeGradient} backdrop-blur-md flex items-center justify-center relative overflow-hidden`}>
-                        {/* Shimmering specular sheen over the icon on hover */}
-                        <div className="absolute inset-0 bg-radial from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                        
-                        {/* Crisp White Icon shown normally */}
-                        <span className="relative z-10">
-                          <IconComp className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-md transition-transform duration-500 group-hover:scale-110" strokeWidth={2.3} />
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Polymorphic Tag Number Capsule - Thematically Colored Normally, Frosts on Hover */}
-                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-black tracking-widest backdrop-blur-md border shadow-[0_2px_6px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.9)] transition-all duration-300 ${cfg.tagStyle} group-hover:bg-white group-hover:text-slate-900 group-hover:border-white group-hover:shadow-sm`}>
-                      {cfg.tagNumber}
-                    </div>
+                <Link key={item.id} href={cfg.href} aria-labelledby={`pillar-title-${item.id}`}
+                  className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_4px_20px_-8px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_-12px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none sm:p-7 dark:border-slate-800 dark:bg-slate-900 ${cfg.border}`}>
+                  <div className={`absolute inset-x-0 top-0 h-[3px] ${cfg.top}`} aria-hidden="true" />
+                  <div className="mb-6 flex items-center justify-between gap-4">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cfg.tint}`}><Icon size={25} strokeWidth={1.8} aria-hidden="true" /></div>
+                    <span className="font-mono text-sm font-medium tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                   </div>
-
-                  {/* Pillar Title */}
-                  <h3 className={`relative z-10 text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-brand-primary dark:group-hover:text-cyan-300 transition-colors duration-300 mb-3 ${language === "bn" ? "leading-snug tracking-normal" : "leading-tight tracking-tight"}`}>
-                    {progInfo.title}
-                  </h3>
-
-                  {/* Pillar Description */}
-                  <p className="relative z-10 text-slate-600 dark:text-slate-300 font-medium text-sm sm:text-[14px] leading-relaxed line-clamp-3 mb-8 flex-grow">
-                    {progInfo.desc}
-                  </p>
-
-                  {/* Polymorphic Interactive CTA Action Pill - Distinctly Colored Normally, Expands & Illuminates on Hover */}
-                  <Link 
-                    href={`/programs/${item.slug}`} 
-                    className={`relative z-10 mt-auto group/btn inline-flex items-center justify-between w-full px-4 sm:px-5 py-3 rounded-2xl bg-gradient-to-r ${cfg.btnGradient} text-white border border-white/40 ${cfg.btnShadow} group-hover:scale-[1.02] group-hover:shadow-[0_12px_28px_-2px_rgba(0,0,0,0.3)] transition-all duration-300 overflow-hidden`}
-                  >
-                    {/* Liquid light gloss streak on hover */}
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
-                    
-                    <span className="relative z-10 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white drop-shadow-xs">
-                      {t("explore_program")}
-                    </span>
-
-                    {/* Arrow Circle Inverts and Illuminates on Hover */}
-                    <div className="relative z-10 w-7 h-7 rounded-full bg-white/20 group-hover:bg-white group-hover:text-slate-900 flex items-center justify-center text-white transition-all duration-300 group-hover:translate-x-1.5 group-hover:scale-110 shadow-xs">
-                      <ArrowRight size={13} strokeWidth={2.6} />
-                    </div>
-                  </Link>
-                </motion.div>
+                  <h3 id={`pillar-title-${item.id}`} className="mb-3 text-xl font-bold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">{progInfo.title}</h3>
+                  <p className="mb-6 text-sm leading-6 text-slate-600 dark:text-slate-400">{progInfo.desc}</p>
+                  <div className={`mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-slate-100 pt-5 text-xs font-bold dark:border-slate-800 ${cfg.text}`}>
+                    <span>{t("explore_program")}</span>
+                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${cfg.arrow}`}><ArrowRight size={17} aria-hidden="true" /></span>
+                  </div>
+                </Link>
               );
             })}
           </div>

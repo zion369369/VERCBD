@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { UploadCloud, Image as ImageIcon, Link as LinkIcon, X, Check, FolderOpen } from "lucide-react";
+
+import { optimizeImage } from "@/lib/optimizeImage";
+import { photoLibrary } from "@/lib/photoLibrary";
 
 interface ImageUploadFieldProps {
   label?: string;
@@ -10,19 +13,11 @@ interface ImageUploadFieldProps {
   className?: string;
   helperText?: string;
   hint?: string;
+  onUploadingChange?: (uploading: boolean) => void;
 }
 
 const PRESET_IMAGES = [
-  { name: "Home Official", url: "/assets/home_official_1.jpg" },
-  { name: "WaSH Hero", url: "/assets/wash_hero.png" },
-  { name: "Education 1", url: "/assets/edu_1.png" },
-  { name: "Education 2", url: "/assets/edu_2.png" },
-  { name: "Education 3", url: "/assets/edu_3.png" },
-  { name: "Impact Hero", url: "/assets/impact_hero.png" },
-  { name: "Microfinance 1", url: "/assets/microfinance_hero.png" },
-  { name: "Microfinance Woman", url: "/assets/microfinance_woman_hero.png" },
-  { name: "Capacity Building", url: "/assets/capacity_building_hero.png" },
-  { name: "About Official", url: "/assets/about_official.jpg" },
+  ...photoLibrary.map(photo => ({ name: photo.title, url: photo.imageUrl })),
   { name: "Logo", url: "/assets/logo.png" },
   { name: "GoB Logo", url: "/assets/gob_logo.png" },
   { name: "UNICEF Logo", url: "/assets/unicef_logo.png" },
@@ -39,16 +34,20 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   onChange,
   className = "",
   helperText,
-  hint
+  hint,
+  onUploadingChange
 }) => {
   const [activeTab, setActiveTab] = useState<"upload" | "url" | "presets">("upload");
   const [urlInput, setUrlInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [previewError, setPreviewError] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [dimensions, setDimensions] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const displayText = helperText || hint;
+  useEffect(() => { setPreviewError(false); setDimensions(""); }, [value]);
 
   // Compresses an image client-side on an HTML5 canvas to guarantee lightweight payloads (~80-120KB)
   const compressFileToDataUrl = (file: File): Promise<string> => {
@@ -96,42 +95,43 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   };
 
   const handleFile = async (file: File) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/") && !file.type.includes("pdf")) {
-      alert("Please select a valid image file (PNG, JPG, WEBP, SVG) or document.");
+    if (!file || isUploading) return;
+    setUploadError("");
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Please select an image (JPEG, PNG, WebP, GIF or SVG). Use the document field for PDFs.");
       return;
     }
-
+    if (file.size > 12 * 1024 * 1024) {
+      setUploadError("Please choose an image smaller than 12 MB.");
+      return;
+    }
     setIsUploading(true);
+    onUploadingChange?.(true);
     try {
+      const optimized = await optimizeImage(file);
       const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.url) {
-          setPreviewError(false);
-          onChange(data.url);
-          setIsUploading(false);
-          return;
-        }
-      }
-      throw new Error("Server upload returned non-OK status");
-    } catch (err) {
-      console.warn("[ImageUploadField] Direct server upload failed, falling back to optimized Data URL:", err);
-      try {
-        const optimized = await compressFileToDataUrl(file);
+      formData.append("file", optimized);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok && data?.url) {
         setPreviewError(false);
-        onChange(optimized);
-      } catch (readErr) {
-        console.error("Failed to read file:", readErr);
+        onChange(data.url);
+      } else {
+        throw new Error(data?.error || "Server upload unavailable");
       }
+    } catch (error) {
+      console.warn("[ImageUploadField] Server upload failed, falling back to local compressed Data URL:", error);
+      try {
+        const compressed = await compressFileToDataUrl(file);
+        setPreviewError(false);
+        onChange(compressed);
+      } catch (fallbackErr) {
+        setUploadError(error instanceof Error ? error.message : "Upload failed. Please try again.");
+      }
+    } finally {
       setIsUploading(false);
+      onUploadingChange?.(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -152,8 +152,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     }
   };
 
-  const handleUrlSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleUrlSubmit = () => {
     if (urlInput.trim()) {
       setPreviewError(false);
       onChange(urlInput.trim());
@@ -164,7 +163,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap justify-between items-center gap-2">
           <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
             {label}
           </label>
@@ -205,6 +204,11 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         {/* Upload Mode */}
         {activeTab === "upload" && (
           <div
+            role="button"
+            tabIndex={0}
+            aria-label={`Choose ${label.toLowerCase()}`}
+            aria-disabled={isUploading}
+            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -218,6 +222,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             <input
               ref={fileInputRef}
               type="file"
+              disabled={isUploading}
               accept="image/*"
               className="hidden"
               onChange={(e) => {
@@ -238,7 +243,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                 )}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-normal">
-                {isUploading ? "Optimizing & storing file globally..." : "PNG, JPG, WebP, SVG, PDF"}
+                {isUploading ? "Optimizing & storing file globally..." : "JPEG, PNG, WebP, GIF, SVG · Max 12 MB"}
               </p>
             </div>
           </div>
@@ -284,7 +289,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
         {/* URL Mode */}
         {activeTab === "url" && (
-          <form onSubmit={handleUrlSubmit} className="flex gap-2">
+          <div className="flex gap-2">
             <div className="relative flex-1">
               <LinkIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -296,12 +301,13 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               />
             </div>
             <button
-              type="submit"
+              type="button"
+              onClick={handleUrlSubmit}
               className="px-4 py-2 bg-[#6C5DD3] hover:bg-[#5b4ec2] text-white rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer"
             >
               Apply
             </button>
-          </form>
+          </div>
         )}
 
         {/* Current Preview Card */}
@@ -312,6 +318,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                 <img
                   src={value}
                   alt="Preview"
+                  onLoad={e => setDimensions(`${e.currentTarget.naturalWidth} x ${e.currentTarget.naturalHeight} px`)}
                   className="w-full h-full object-cover"
                   onError={() => setPreviewError(true)}
                 />
@@ -325,7 +332,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{value}</div>
               <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5 flex items-center gap-1">
-                <Check size={12} /> Ready for Frontend
+                <Check size={12} /> Image uploaded / selected
               </div>
             </div>
             <button
@@ -340,6 +347,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         )}
       </div>
 
+      {uploadError && <p role="alert" className="text-xs font-semibold text-red-600">{uploadError}</p>}
+      {value && dimensions && !previewError && <p className="text-xs text-gray-500">{dimensions}. Raster uploads are optimized to WebP when smaller, up to 1920 px, without upscaling.</p>}
       {displayText && <p className="text-xs text-gray-500 dark:text-gray-400">{displayText}</p>}
     </div>
   );

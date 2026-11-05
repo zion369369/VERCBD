@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
+import { aboutNavigation, programNavigation } from "@/lib/navigation";
+
 const Footer = () => {
   const pathname = usePathname();
   const { siteSettings } = useContent();
@@ -27,28 +29,14 @@ const Footer = () => {
     return null;
   }
 
-  const footerLinks = [
+  const footerLinks: { title: string; links: import("@/lib/navigation").NavigationItem[] }[] = [
     {
       title: "Organization",
-      links: [
-        { name: "About VERC", href: "/about" },
-        { name: "Governance & Leadership", href: "/about/organogram" },
-        { name: "Senior Staff Members", href: "/about/staff" },
-        { name: "Our Awards", href: "/about/awards" },
-        { name: "Annual Reports", href: "/about/annual-report" },
-      ]
+      links: aboutNavigation
     },
     {
       title: "Social Programs",
-      links: [
-        { name: "Programs Overview", href: "/programs" },
-        { name: "Life Skill Education", href: "/programs/education" },
-        { name: "WASH (Water & Sanitation)", href: "/programs/wash" },
-        { name: "Livelihood & Empowerment", href: "/programs/livelihood" },
-        { name: "Capacity Building", href: "/programs/capacity" },
-        { name: "Microfinance Program", href: "/microfinance" },
-        { name: "Partnerships", href: "/partners" },
-      ]
+      links: programNavigation
     },
     {
       title: "Resources",
@@ -64,11 +52,11 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white pt-32 pb-12 overflow-hidden relative">
+    <footer className="bg-gray-900 text-white pt-16 sm:pt-24 pb-12 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-primary/5 blur-[120px] -mr-40 mt-20"></div>
       
       <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-5 space-y-10">
             <Link href="/" className="inline-block">
@@ -103,7 +91,7 @@ const Footer = () => {
           </div>
 
           {/* Links Columns */}
-          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+          <div className="lg:col-span-7 grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-8">
             {footerLinks.map((group, i) => (
               <div key={i} className="space-y-8">
                 <h4 className="text-xs font-black uppercase tracking-[0.3em] text-brand-secondary">{group.title}</h4>
@@ -117,6 +105,7 @@ const Footer = () => {
                         {link.name}
                         <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0" />
                       </Link>
+                      {link.children && <ul className="mt-3 space-y-3 border-l border-white/10 pl-4">{link.children.map(child => <li key={child.href}><Link href={child.href} className="text-sm text-gray-400 hover:text-white">{child.name}</Link></li>)}</ul>}
                     </li>
                   ))}
                 </ul>
@@ -128,21 +117,21 @@ const Footer = () => {
         {/* Contact Strip */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12 border-y border-white/10 mb-12">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><MapPin size={24} /></div>
+            <div className="w-14 h-14 shrink-0 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><MapPin size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Visit Us</p>
                 <p className="text-sm font-bold truncate max-w-[240px]">{siteSettings.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Mail size={24} /></div>
+            <div className="w-14 h-14 shrink-0 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Mail size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Email Us</p>
                 <p className="text-sm font-bold">{siteSettings.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Phone size={24} /></div>
+            <div className="w-14 h-14 shrink-0 bg-white/5 rounded-2xl flex items-center justify-center text-brand-secondary"><Phone size={24} /></div>
             <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Call Us</p>
                 <p className="text-sm font-bold">{siteSettings.phone}</p>
@@ -152,12 +141,12 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 font-bold text-xs uppercase tracking-widest">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap justify-center items-center gap-2">
                 <span>© {currentYear} {siteSettings.siteTitle.split("|")[0]}</span>
                 <span className="hidden md:inline">•</span>
                 <span>All Rights Reserved</span>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
                 <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                 <Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
                 <div className="flex items-center gap-2 text-brand-secondary">

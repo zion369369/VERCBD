@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
@@ -29,7 +29,9 @@ import {
   ArrowRight,
   Check,
   Briefcase,
-  BookMarked
+  BookMarked,
+  Menu,
+  X
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -54,6 +56,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   } = useContent();
   const { language, setLanguage, t } = useLanguage();
   const { currentUser, isAuthenticated, isLoading, logout, hasPermission } = useAuth();
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => { setSidebarOpen(false); }, [pathname]);
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const dismiss = (event: KeyboardEvent) => { if (event.key === "Escape") setSidebarOpen(false); };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, [sidebarOpen]);
 
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -153,10 +165,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className={`min-h-screen flex font-valley font-sans ${theme === "dark" ? "bg-[#13131D] text-white" : "bg-[#F8F9FC] text-gray-900"}`}>
+      {sidebarOpen && <button type="button" aria-label="Close admin navigation" onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden" />}
       {/* Clean, Elegant Sidebar */}
-      <aside className={`w-64 flex-shrink-0 flex flex-col justify-between border-r transition-colors z-30 ${
+      <aside id="admin-navigation" className={`fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 flex flex-col justify-between border-r transition-transform lg:relative lg:z-30 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full invisible lg:visible"} ${
         theme === "dark" ? "bg-[#181824] border-white/5" : "bg-white border-gray-200/80"
       }`}>
+        <button type="button" onClick={() => setSidebarOpen(false)} aria-label="Close admin navigation" className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700 lg:hidden"><X size={20} /></button>
         {/* Brand Logo Header */}
         <div className="p-5 border-b border-gray-100 dark:border-white/5">
           <Link href="/admin" className="flex items-center gap-3">
@@ -291,12 +305,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Navbar */}
-        <header className={`h-16 flex-shrink-0 flex items-center justify-between px-8 border-b transition-colors ${
+        <header className={`h-16 flex-shrink-0 flex items-center justify-between gap-2 px-4 sm:px-8 border-b transition-colors ${
           theme === "dark" ? "bg-[#181824] border-white/5" : "bg-white border-gray-200/80"
         }`}>
           {/* Page Title */}
-          <div>
-            <h1 className="text-lg font-extrabold text-gray-900 dark:text-white capitalize">
+          <button type="button" aria-label="Open admin navigation" aria-controls="admin-navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen(true)} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 lg:hidden"><Menu size={22} /></button>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-sm sm:text-lg font-extrabold text-gray-900 dark:text-white capitalize">
               {pathname === "/admin" 
                 ? t("admin_nav_overview") 
                 : pathname.replace("/admin/", "").replace("-", " ")}
@@ -345,7 +360,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             {/* Language Switcher */}
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setLangMenuOpen(!langMenuOpen)}
@@ -404,12 +419,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             {/* Theme Color Picker */}
-            <ThemeColorPicker variant="dropdown" />
+            <div className="hidden sm:block"><ThemeColorPicker variant="dropdown" /></div>
 
             {hasPermission("/admin/users") && (
               <Link
                 href="/admin/users"
-                className="p-2 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                className="hidden sm:block p-2 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                 title="Users & Roles"
               >
                 <KeyRound size={17} />
@@ -419,7 +434,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {hasPermission("/admin/settings") && (
               <Link
                 href="/admin/settings"
-                className="p-2 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                className="hidden sm:block p-2 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                 title="Settings"
               >
                 <Settings size={17} />
@@ -429,7 +444,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Content View */}
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
           {currentRouteAuthorized ? (
             children
           ) : (

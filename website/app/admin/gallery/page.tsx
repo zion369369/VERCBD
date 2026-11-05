@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Plus, Edit2, Trash2, Image as ImageIcon, Search, Filter, X } from "lucide-react";
 import { useContent, GalleryItem } from "@/context/ContentContext";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { galleryCategories, galleryCategoryLabel } from "@/lib/photoLibrary";
 
 export default function AdminGalleryPage() {
   const { gallery, addGalleryItem, updateGalleryItem, deleteGalleryItem, primaryColor, theme } = useContent();
@@ -11,11 +12,12 @@ export default function AdminGalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const [formData, setFormData] = useState<Omit<GalleryItem, "id">>({
     title: "",
     category: "Education",
-    imageUrl: "/assets/edu_1.png",
+    imageUrl: "",
     description: "",
     date: new Date().toISOString().split("T")[0]
   });
@@ -32,7 +34,7 @@ export default function AdminGalleryPage() {
     setFormData({
       title: "",
       category: "Education",
-      imageUrl: "/assets/edu_1.png",
+      imageUrl: "",
       description: "",
       date: new Date().toISOString().split("T")[0]
     });
@@ -53,6 +55,7 @@ export default function AdminGalleryPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading || !formData.imageUrl) return;
     if (editingItem) {
       updateGalleryItem(editingItem.id, formData);
     } else {
@@ -95,7 +98,7 @@ export default function AdminGalleryPage() {
         </div>
 
         <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 p-1 bg-gray-100 dark:bg-white/5 rounded-xl">
-          {["All", "Education", "WASH", "Microfinance", "Health", "Climate"].map((cat) => (
+          {Array.from(new Set(["All", ...galleryCategories, ...gallery.map(item => item.category)])).map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
@@ -106,7 +109,7 @@ export default function AdminGalleryPage() {
                   : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
-              {cat}
+              {galleryCategoryLabel(cat)}
             </button>
           ))}
         </div>
@@ -223,11 +226,7 @@ export default function AdminGalleryPage() {
                         : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
                     }`}
                   >
-                    <option value="Education">Education</option>
-                    <option value="WASH">WASH & Sanitation</option>
-                    <option value="Livelihood">Livelihood & Empowerment</option>
-                    <option value="Health">Health & Nutrition</option>
-                    <option value="Events">Events & Community</option>
+                    {Array.from(new Set([...galleryCategories, formData.category])).map(category => <option key={category} value={category}>{galleryCategoryLabel(category)}</option>)}
                   </select>
                 </div>
 
@@ -236,6 +235,7 @@ export default function AdminGalleryPage() {
                 label="Photo File / URL"
                 value={formData.imageUrl}
                 onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                onUploadingChange={setUploading}
                 hint="Supports uploading from local computer or pasting URL"
               />
 
@@ -264,10 +264,11 @@ export default function AdminGalleryPage() {
                 </button>
                 <button
                   type="submit"
+                  disabled={uploading || !formData.imageUrl}
                   style={{ backgroundColor: primaryColor }}
-                  className="px-6 py-2.5 text-white rounded-xl font-bold shadow-md cursor-pointer hover:opacity-90"
+                  className="px-6 py-2.5 text-white rounded-xl font-bold shadow-md cursor-pointer hover:opacity-90 disabled:cursor-wait disabled:opacity-50"
                 >
-                  {editingItem ? "Save Changes" : "Upload to Gallery"}
+                  {uploading ? "Uploading…" : editingItem ? "Save Changes" : "Upload to Gallery"}
                 </button>
               </div>
             </form>

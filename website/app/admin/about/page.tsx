@@ -33,6 +33,8 @@ import {
   OrganogramNode 
 } from "@/context/ContentContext";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import BoardMembersEditor from "@/components/admin/BoardMembersEditor";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { DocumentUploadField } from "@/components/admin/DocumentUploadField";
 
 export default function AdminAboutPage() {
@@ -59,7 +61,7 @@ export default function AdminAboutPage() {
     theme 
   } = useContent();
 
-  const [activeTab, setActiveTab] = useState<"certifications" | "reports" | "awards" | "organogram" | "mission">("certifications");
+  const [activeTab, setActiveTab] = useState<"certifications" | "reports" | "awards" | "organogram" | "mission" | "board">("certifications");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Modals state
@@ -110,11 +112,14 @@ export default function AdminAboutPage() {
   });
 
   // Mission & Core Values Form State
-  const [missionForm, setMissionForm] = useState({
-    visionText: aboutContent?.visionText || "",
-    missionText: aboutContent?.missionText || "",
-    organogramPdfUrl: aboutContent?.organogramPdfUrl || ""
-  });
+  const [missionDraft, setMissionForm] = useState<{ visionText: string; missionText: string; organogramPdfUrl: string; heroImageUrl: string; journeyImageUrl: string } | null>(null);
+  const missionForm = missionDraft || {
+    visionText: aboutContent?.visionText ?? aboutContent?.vision ?? "",
+    missionText: aboutContent?.missionText ?? aboutContent?.mission ?? "",
+    organogramPdfUrl: aboutContent?.organogramPdfUrl ?? aboutContent?.organogramPdfLink ?? "",
+    heroImageUrl: aboutContent?.heroImageUrl || "",
+    journeyImageUrl: aboutContent?.journeyImageUrl || ""
+  };
   const [isMissionSaved, setIsMissionSaved] = useState(false);
 
   // Certifications Handlers
@@ -252,7 +257,9 @@ export default function AdminAboutPage() {
     setNodeForm({
       title: node.title,
       subtitle: node.subtitle,
-      level: node.level,
+      level: node.level ?? ({ "General Body": 1, "Executive Committee": 2, "Senior Management": 3, "Divisions": 5, "Field Operations": 6 }[node.category || ""] || 5),
+      order: node.order,
+      category: node.category,
       department: node.department || "Directorate",
       isSpecial: !!node.isSpecial
     });
@@ -277,7 +284,9 @@ export default function AdminAboutPage() {
       visionText: missionForm.visionText,
       missionText: missionForm.missionText,
       organogramPdfLink: missionForm.organogramPdfUrl,
-      organogramPdfUrl: missionForm.organogramPdfUrl
+      organogramPdfUrl: missionForm.organogramPdfUrl,
+      heroImageUrl: missionForm.heroImageUrl,
+      journeyImageUrl: missionForm.journeyImageUrl
     });
     setIsMissionSaved(true);
     setTimeout(() => setIsMissionSaved(false), 3000);
@@ -358,6 +367,7 @@ export default function AdminAboutPage() {
         {[
           { key: "certifications", label: "Legal & Certifications", icon: ShieldCheck, count: legalCertifications?.length || 0 },
           { key: "reports", label: "Annual Reports", icon: FileText, count: annualReports?.length || 0 },
+          { key: "board", label: "Board of Directors", icon: Users, count: aboutContent.boardMembers?.length || 0 },
           { key: "awards", label: "Awards & Honors", icon: Award, count: awards?.length || 0 },
           { key: "organogram", label: "Governance Organogram", icon: Users, count: organogramNodes?.length || 0 },
           { key: "mission", label: "Vision, Mission & Values", icon: Compass }
@@ -392,6 +402,8 @@ export default function AdminAboutPage() {
           );
         })}
       </div>
+
+      {activeTab === "board" && <BoardMembersEditor />}
 
       {/* TAB 1: LEGAL CERTIFICATIONS */}
       {activeTab === "certifications" && (
@@ -767,7 +779,7 @@ export default function AdminAboutPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
-                      Level {node.level}
+                      Level {node.level ?? ({ "General Body": 1, "Executive Committee": 2, "Senior Management": 3, "Divisions": 5, "Field Operations": 6 }[node.category || ""] || 5)}
                     </span>
                     {node.isSpecial && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-600">
@@ -830,6 +842,10 @@ export default function AdminAboutPage() {
             </div>
 
             <div className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2">
+                <ImageUploadField label="About page hero image" value={missionForm.heroImageUrl} onChange={url => setMissionForm(current => ({ ...(current ?? missionForm), heroImageUrl: url }))} hint="Landscape, ideally 1920 × 1080 px. Keep the main subject near the center for mobile." />
+                <ImageUploadField label="About journey image" value={missionForm.journeyImageUrl} onChange={url => setMissionForm(current => ({ ...(current ?? missionForm), journeyImageUrl: url }))} hint="Recommended: 1200 × 900 px or larger. The original aspect ratio is preserved in the upload." />
+              </div>
               <div>
                 <RichTextEditor
                   label="Vision Statement"
@@ -1246,7 +1262,7 @@ export default function AdminAboutPage() {
       {/* MODAL: ORGANOGRAM NODE */}
       {isNodeModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className={`w-full max-w-md rounded-3xl border p-6 space-y-4 ${
+          <div className={`w-full max-w-md rounded-3xl border p-6 space-y-4 max-h-[90dvh] overflow-y-auto ${
             theme === "dark" ? "bg-[#181824] border-white/10 text-white" : "bg-white border-gray-200 text-gray-900 shadow-xl"
           }`}>
             <div className="flex items-center justify-between">
@@ -1288,11 +1304,11 @@ export default function AdminAboutPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold mb-1">Hierarchy Level (1-5)</label>
+                  <label className="block text-xs font-bold mb-1">Hierarchy Level (1-6)</label>
                   <input
                     type="number"
                     min={1}
-                    max={5}
+                    max={6}
                     required
                     value={nodeForm.level}
                     onChange={(e) => setNodeForm({ ...nodeForm, level: parseInt(e.target.value) || 5 })}

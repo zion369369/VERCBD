@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -19,13 +20,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.cdnfonts.com/css/sf-pro-display"
-          rel="stylesheet"
-        />
-      </head>
       <body className="font-sans antialiased bg-brand-light text-brand-dark selection:bg-brand-primary/10">
         <LanguageProvider>
           <AuthProvider>

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   Heart, 
   Users, 
@@ -22,21 +22,13 @@ import {
   Eye
 } from "lucide-react";
 
+import { useContent } from "@/context/ContentContext";
+import ContentImage from "@/components/ContentImage";
+
 export default function LivelihoodPage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const heroSlides = [
-    { url: "/assets/livelihood_slide_1.jpg", fallback: "https://www.vercbd.org/images/image-10-main-2.jpg", title: "Agro-Enterprise & Farming" },
-    { url: "/assets/livelihood_slide_2.jpg", fallback: "https://www.vercbd.org/images/image-10-main-3.jpg", title: "Vocational Skills & Micro-Business" },
-    { url: "/assets/livelihood_slide_3.jpg", fallback: "https://www.vercbd.org/images/ibig16.jpg", title: "Women Self-Help Groups (SHGs)" }
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  const { programs, microfinanceProducts } = useContent();
+  const program = programs.find(item => item.slug === "livelihood" || item.slug === "/programs/livelihood");
+  const heroImage = program?.imageUrl || programs.find(item => item.slug === "microfinance")?.imageUrl || "/assets/microfinance_woman_hero.png";
 
   const galleryItems = [
     {
@@ -106,43 +98,10 @@ export default function LivelihoodPage() {
     <div className="bg-white min-h-screen font-sans selection:bg-brand-primary/10 overflow-x-hidden">
       
       {/* 1. HERO HEADER WITH ANIMATED SLIDESHOW */}
-      <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
+      <section className="relative pt-20 pb-20 sm:pt-28 sm:pb-24 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 0.8, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-              className="absolute inset-0"
-            >
-              <img 
-                src={heroSlides[currentSlide].url} 
-                alt={heroSlides[currentSlide].title} 
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = heroSlides[currentSlide].fallback;
-                }}
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
-          {/* Reduced contrast gradient: bright, crisp photo visibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-gray-950/35 to-gray-950/85"></div>
-
-          {/* Slide Indicator Dots */}
-          <div className="absolute bottom-8 right-8 z-20 flex gap-2">
-            {heroSlides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                className={`h-1.5 transition-all duration-300 rounded-full ${
-                  i === currentSlide ? "w-8 bg-brand-secondary" : "w-2 bg-white/40"
-                }`}
-                title={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
+          <ContentImage src={heroImage} alt="Livelihood and community enterprise development" sizes="100vw" priority fallback="/assets/microfinance_woman_hero.png" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-gray-950/35 to-gray-950/85" />
         </div>
         
         <div className="container-custom relative z-10 text-center max-w-4xl mx-auto space-y-6">
@@ -153,10 +112,10 @@ export default function LivelihoodPage() {
             className="space-y-6"
           >
             {/* Breadcrumb */}
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-gray-300 uppercase tracking-widest">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <ChevronRight size={12} />
-              <Link href="/programs/education" className="hover:text-white transition-colors">Social Programs</Link>
+              <Link href="/programs" className="hover:text-white transition-colors">Social Programs</Link>
               <ChevronRight size={12} />
               <span className="text-brand-secondary">Livelihood</span>
             </div>
@@ -165,12 +124,12 @@ export default function LivelihoodPage() {
               <TrendingUp size={14} className="text-emerald-300" /> Economic Self-Reliance
             </span>
             
-            <h1 className="text-5xl lg:text-8xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
-              Livelihood & <span className="text-brand-secondary">Empowerment.</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+              {program?.title || "Livelihood & Empowerment"}<span className="text-brand-secondary">.</span>
             </h1>
             
             <p className="text-lg lg:text-2xl text-gray-100 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              Transforming marginalized rural populations into self-reliant producers, entrepreneurs, and community leaders through vocational mastery, agricultural innovation, and micro-capital.
+              {program?.description || "Transforming marginalized rural populations into self-reliant producers, entrepreneurs, and community leaders through vocational mastery, agricultural innovation, and micro-capital."}
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 pt-4">
@@ -186,7 +145,7 @@ export default function LivelihoodPage() {
       </section>
 
       {/* 2. REAL-WORLD FIELD GALLERY SPOTLIGHT (THE 3 IMAGES) */}
-      <section className="py-24 bg-gray-50/70 border-b border-gray-100">
+      <section className="py-14 sm:py-20 lg:py-24 bg-gray-50/70 border-b border-gray-100">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
             <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Ground Realities</span>
@@ -207,15 +166,8 @@ export default function LivelihoodPage() {
                 className="bg-white rounded-[36px] overflow-hidden border border-gray-200/80 shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group"
               >
                 {/* Image Container with Hover Zoom */}
-                <div className="relative h-72 w-full overflow-hidden bg-gray-100">
-                  <img 
-                    src={item.image} 
-                    alt={item.title} 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = item.fallback;
-                    }}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                  />
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                  <ContentImage src={item.image} alt={item.title} sizes="(max-width: 1023px) calc(100vw - 32px), 400px" className="object-cover group-hover:scale-105 transition-transform duration-700" fallback="/assets/livelihood_slide_1.jpg" />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
                   
                   {/* Floating Tag */}
@@ -224,7 +176,7 @@ export default function LivelihoodPage() {
                   </span>
 
                   {/* Impact Stat Badge */}
-                  <span className="absolute bottom-4 left-5 right-5 text-white text-xs font-bold flex items-center justify-between">
+                  <span className="absolute bottom-4 left-5 right-5 text-white text-xs font-bold flex flex-wrap gap-2 items-center justify-between">
                     <span className="text-brand-secondary font-black">{item.stats}</span>
                     <span className="flex items-center gap-1 opacity-90"><ShieldCheck size={14} className="text-emerald-400" /> Verified Field Project</span>
                   </span>
@@ -255,16 +207,34 @@ export default function LivelihoodPage() {
         </div>
       </section>
 
+      <section id="microfinance" className="scroll-mt-28 border-b border-sky-100 bg-gradient-to-br from-sky-50/70 to-white py-16 sm:py-20">
+        <div className="container-custom grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white shadow-lg">
+            <ContentImage src={microfinanceProducts[0]?.imageUrl || "/assets/microfinance_woman_hero.png"} alt="VERC microfinance and livelihood support" sizes="(max-width: 1023px) calc(100vw - 32px), 50vw" />
+          </div>
+          <div>
+            <span className="inline-flex rounded-full border border-sky-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-widest text-brand-primary">Under Livelihood & Empowerment</span>
+            <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-900 sm:text-5xl">Microfinance for <span className="text-brand-primary">lasting opportunity.</span></h2>
+            <p className="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">Financial inclusion is part of our livelihood work. Explore savings and enterprise finance alongside skills development and community support.</p>
+            <div className="mt-6 flex flex-wrap gap-2">{microfinanceProducts.slice(0, 3).map(product => <span key={product.id} className="rounded-full border border-sky-100 bg-white px-3 py-2 text-xs font-bold text-slate-600">{product.title}</span>)}</div>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/microfinance" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-bold text-white shadow-lg">Explore Microfinance <ArrowRight size={16} /></Link>
+              <Link href="/microfinance/products" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-6 py-3 text-sm font-bold text-brand-primary">Loan & Savings Products <ArrowRight size={16} /></Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 3. CORE STRATEGY & NUMERICAL IMPACT */}
-      <section className="py-28 bg-white">
+      <section className="py-16 sm:py-24 lg:py-28 bg-white">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
             
             {/* Strategy Column */}
             <motion.div {...fadeIn} className="lg:col-span-7 space-y-8">
               <div className="space-y-4">
                 <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Sustainable Methodology</span>
-                <h2 className="text-4xl lg:text-6xl font-black text-gray-900 leading-[1.08] tracking-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black text-gray-900 leading-[1.08] tracking-tight">
                   Breaking Intergenerational <br />
                   <span className="text-brand-primary">Poverty Cycles.</span>
                 </h2>
@@ -299,7 +269,7 @@ export default function LivelihoodPage() {
 
             {/* Impact Metric Pillar */}
             <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="lg:col-span-5">
-              <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-10 sm:p-12 rounded-[44px] text-white shadow-2xl space-y-8 border border-gray-800">
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-6 sm:p-12 rounded-[44px] text-white shadow-2xl space-y-8 border border-gray-800">
                 <div className="border-b border-white/10 pb-4">
                   <span className="text-xs font-black uppercase tracking-[0.25em] text-brand-secondary">Cumulative Reach</span>
                   <h4 className="text-2xl font-black text-white mt-1">Livelihood Milestones</h4>
@@ -334,7 +304,7 @@ export default function LivelihoodPage() {
       </section>
 
       {/* 4. STRATEGIC INTERVENTIONS GRID */}
-      <section className="py-24 bg-gray-50/60 border-t border-gray-100">
+      <section className="py-14 sm:py-20 lg:py-24 bg-gray-50/60 border-t border-gray-100">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16 space-y-3">
             <span className="text-xs font-black uppercase tracking-[0.3em] text-brand-primary">Intervention Matrix</span>
@@ -368,10 +338,10 @@ export default function LivelihoodPage() {
       </section>
 
       {/* 5. CALL TO ACTION */}
-      <section className="py-24 bg-brand-primary text-white relative overflow-hidden">
+      <section className="py-14 sm:py-20 lg:py-24 bg-brand-primary text-white relative overflow-hidden">
         <div className="container-custom relative z-10 text-center">
           <motion.div {...fadeIn} className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-4xl lg:text-7xl font-black tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-tight">
               Empower a Family. <br />
               <span className="text-brand-secondary">Transform an Entire Community.</span>
             </h2>
@@ -379,10 +349,10 @@ export default function LivelihoodPage() {
               Your partnership or contribution directly equips a rural woman or youth with life-changing skills and sustainable income.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link href="/donate" className="px-10 py-4 bg-white text-brand-primary text-lg font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-3">
+              <Link href="/donate" className="px-6 sm:px-10 py-4 bg-white text-brand-primary text-lg font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-3">
                 Donate to Livelihood Fund <ArrowRight size={20} />
               </Link>
-              <Link href="/contact" className="px-10 py-4 bg-white/10 text-white border border-white/20 text-lg font-bold rounded-2xl hover:bg-white/20 transition-all inline-block">
+              <Link href="/contact" className="px-6 sm:px-10 py-4 bg-white/10 text-white border border-white/20 text-lg font-bold rounded-2xl hover:bg-white/20 transition-all inline-block">
                 Inquire for Institutional Partnership
               </Link>
             </div>

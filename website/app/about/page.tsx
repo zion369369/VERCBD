@@ -3,10 +3,9 @@
 import React from "react";
 import { Users, Shield, Target, Award, History, BookOpen, Heart, Droplets, Briefcase, Globe, Zap, CheckCircle2, ArrowRight, TrendingUp, BarChart3, Activity, Mail, Phone } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
-import aboutHero from "@/app/assets/about_official.jpg";
 import { useContent } from "@/context/ContentContext";
+import ContentImage from "@/components/ContentImage";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
 export default function AboutPage() {
@@ -38,13 +37,13 @@ export default function AboutPage() {
   return (
     <div className="bg-white font-sans selection:bg-brand-primary/10 overflow-x-hidden">
       {/* Google-Grade Premium Hero */}
-      <section className="relative min-h-[90vh] flex items-center pt-20 pb-32 overflow-hidden bg-gray-900">
+      <section className="relative min-h-[560px] sm:min-h-[75vh] flex items-center pt-20 pb-32 overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <Image 
-            src={aboutHero} 
+          <ContentImage
+            src={aboutContent.heroImageUrl || "/assets/about_official.jpg"}
             alt="VERC Hero" 
-            fill 
-            className="object-cover opacity-60 scale-105"
+            sizes="100vw"
+            className="object-cover object-center opacity-70"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent"></div>
@@ -71,7 +70,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 1 }}
-                className="text-6xl lg:text-9xl font-black text-white mb-10 leading-[0.95] tracking-tighter"
+                className="text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-10 leading-[0.95] tracking-tighter"
               >
                 Transforming <br/>
                 <span className="text-brand-secondary inline-block mt-2 font-black">Lives.</span>
@@ -80,7 +79,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 1 }}
-                className="text-xl lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mb-12"
+                className="text-base sm:text-lg lg:text-2xl text-gray-300 leading-relaxed font-medium max-w-2xl mb-12"
               >
                 Pioneering sustainable community empowerment in Bangladesh for over four decades through non-formal education and sanitation innovation.
               </motion.p>
@@ -90,10 +89,10 @@ export default function AboutPage() {
                 transition={{ delay: 0.8, duration: 1 }}
                 className="flex flex-wrap gap-6"
               >
-                <Link href="/programs/education" className="px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 group">
+                <Link href="/programs" className="px-6 sm:px-10 py-4 sm:py-5 bg-white text-gray-900 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 group">
                   Our Programs <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                 </Link>
-                <Link href="/contact" className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                <Link href="/contact" className="px-6 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
                   Partner with Us
                 </Link>
               </motion.div>
@@ -113,12 +112,12 @@ export default function AboutPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         viewport={{ once: true }}
-                        className="bg-white p-8 lg:p-12 rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.06)] border border-gray-50 flex flex-col items-center text-center group hover:translate-y-[-8px] transition-all duration-500"
+                        className="bg-white p-4 sm:p-8 lg:p-12 rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.06)] border border-gray-50 flex flex-col items-center text-center group hover:translate-y-[-8px] transition-all duration-500"
                     >
                         <div className="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-colors">
                             <TrendingUp size={24} />
                         </div>
-                        <h4 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">
+                        <h4 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-2">
                           <AnimatedCounter value={stat.value} duration={1.2} />
                         </h4>
                         <p className="text-[12px] font-black uppercase tracking-widest text-gray-400">{stat.label}</p>
@@ -128,27 +127,37 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="py-16 sm:py-24" aria-label="Vision and mission">
+        <div className="container-custom grid gap-6 md:grid-cols-2">
+          {[{ title: "Our Vision", text: aboutContent.visionText ?? aboutContent.vision }, { title: "Our Mission", text: aboutContent.missionText ?? aboutContent.mission }].map(item => <article key={item.title} className="rounded-3xl border border-sky-100 bg-gradient-to-br from-sky-50/70 to-white p-6 sm:p-10">
+            <h2 className="mb-4 text-2xl font-black text-brand-primary">{item.title}</h2>
+            <div className="cms-copy text-base leading-relaxed text-slate-600" dangerouslySetInnerHTML={{ __html: item.text || "" }} />
+          </article>)}
+        </div>
+        <div className="container-custom mt-6"><Link href="/about/board" className="inline-flex min-h-11 items-center gap-2 font-bold text-brand-primary">Meet our Board of Directors <ArrowRight size={16} /></Link></div>
+      </section>
+
       {/* Journey Begins */}
-      <section className="py-40">
+      <section className="py-16 sm:py-24 lg:py-40">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-center">
             <motion.div {...fadeIn} className="space-y-10">
               <div className="space-y-6">
                 <div className="flex items-center gap-3 text-brand-primary">
                     <History size={24} />
                     <h2 className="font-black uppercase tracking-[0.2em] text-xs">Journey Begins</h2>
                 </div>
-                <h3 className="text-5xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tight">
+                <h3 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.05] tracking-tight">
                     From SCF-USA <br/> to a <span className="text-brand-primary">National Leader.</span>
                 </h3>
               </div>
               <div className="space-y-8 text-xl text-gray-600 leading-relaxed font-medium">
                 <p>
-                    VERC started its journey as a project of **SCF-USA back in 1977** with an aim to provide process consultancy 
+                    VERC started its journey as a project of SCF-USA back in 1977 with an aim to provide process consultancy
                     to internal projects. By 1989, it became a separate local organization, setting new benchmarks for the 
                     entire NGO sector in Bangladesh.
                 </p>
-                <div className="flex items-start gap-6 p-10 bg-[#f0f7ff] rounded-[40px] border border-blue-50">
+                <div className="flex items-start gap-6 p-6 sm:p-10 bg-[#f0f7ff] rounded-[40px] border border-blue-50">
                     <BarChart3 size={32} className="text-brand-primary flex-shrink-0 mt-1" />
                     <p className="text-lg italic font-bold text-gray-700 leading-relaxed">
                         &quot;Organizations where people continually expand their capacity to create the results they truly desire... where collective aspiration is set free.&quot;
@@ -160,16 +169,16 @@ export default function AboutPage() {
             <motion.div 
                 {...fadeIn}
                 transition={{ delay: 0.2 }}
-                className="relative h-[600px] lg:h-[800px] rounded-[64px] overflow-hidden shadow-2xl group"
+                className="relative aspect-[4/3] lg:aspect-[4/5] rounded-3xl sm:rounded-[48px] lg:rounded-[64px] overflow-hidden shadow-2xl group"
             >
-                <Image 
-                    src={aboutHero} 
+                <ContentImage
+                    src={aboutContent.journeyImageUrl || "/assets/about_official.jpg"}
                     alt="VERC Journey" 
-                    fill 
+                    sizes="(max-width: 1023px) calc(100vw - 32px), 50vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-1000"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-12 left-12 right-12">
+                <div className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10">
                     <p className="text-white text-2xl font-bold italic leading-relaxed">
                         &quot;Innovating non-formal education models for a self-reliant society.&quot;
                     </p>
@@ -180,13 +189,13 @@ export default function AboutPage() {
       </section>
 
       {/* Leadership & Senior Staff Members (Dynamic from Admin) */}
-      <section className="py-32 bg-gray-50">
+      <section className="py-16 sm:py-24 lg:py-32 bg-gray-50">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <span className="text-brand-primary font-black uppercase text-xs tracking-widest block mb-4">
               Governance & Management
             </span>
-            <h3 className="text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">
+            <h3 className="text-3xl sm:text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">
               Senior Leadership Team.
             </h3>
             <p className="text-gray-500 mt-4 text-base">
@@ -203,8 +212,8 @@ export default function AboutPage() {
                 className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-xl transition-all duration-300"
               >
                 <div className="space-y-4">
-                  <div className="w-20 h-20 rounded-3xl overflow-hidden bg-brand-primary/10 border-2 border-brand-primary/20">
-                    <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
+                  <div className="relative w-20 h-20 rounded-3xl overflow-hidden bg-brand-primary/10 border-2 border-brand-primary/20">
+                    <ContentImage src={member.imageUrl} alt={member.name} sizes="80px" className="object-contain" />
                   </div>
                   <div>
                     <h4 className="text-xl font-extrabold text-gray-900">{member.name}</h4>
@@ -229,10 +238,10 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values */}
-      <section className="py-32 bg-white">
+      <section className="py-16 sm:py-24 lg:py-32 bg-white">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h3 className="text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">Our Core Values</h3>
+            <h3 className="text-3xl sm:text-4xl lg:text-6xl font-black text-gray-900 tracking-tight">Our Core Values</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coreValues.map((v, i) => (
@@ -246,16 +255,16 @@ export default function AboutPage() {
       </section>
 
       {/* Pioneering Contributions */}
-      <section className="py-40 bg-gray-900 text-white overflow-hidden relative">
+      <section className="py-16 sm:py-24 lg:py-40 bg-gray-900 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-primary/10 blur-[150px] -mr-40 mt-40"></div>
         <div className="container-custom relative z-10">
-            <div className="text-center max-w-4xl mx-auto mb-32">
+            <div className="text-center max-w-4xl mx-auto mb-16 lg:mb-32">
                 <div className="flex items-center justify-center gap-3 text-brand-secondary mb-8">
                     <Activity size={24} />
                     <h2 className="font-black uppercase tracking-[0.4em] text-xs">Global Impact</h2>
                 </div>
-                <h3 className="text-6xl lg:text-8xl font-black mb-10 leading-[1] tracking-tighter">Pioneering <br/> <span className="text-brand-secondary">World Standards.</span></h3>
-                <p className="text-xl lg:text-2xl text-gray-400 font-medium">
+                <h3 className="text-4xl sm:text-6xl lg:text-8xl font-black mb-10 leading-[1] tracking-tighter">Pioneering <br/> <span className="text-brand-secondary">World Standards.</span></h3>
+                <p className="text-base sm:text-lg lg:text-2xl text-gray-400 font-medium">
                     Our innovations aren&apos;t just for Bangladesh—they are blueprint models for global development.
                 </p>
             </div>
@@ -276,7 +285,7 @@ export default function AboutPage() {
                     <motion.div 
                         key={i}
                         {...fadeIn}
-                        className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start p-12 lg:p-20 bg-white/5 backdrop-blur-md rounded-[64px] border border-white/10"
+                        className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start p-6 sm:p-10 lg:p-20 bg-white/5 backdrop-blur-md rounded-3xl sm:rounded-[48px] lg:rounded-[64px] border border-white/10"
                     >
                         <div className="lg:col-span-5">
                             <h4 className="text-3xl lg:text-4xl font-black mb-8 leading-tight">{item.title}</h4>
