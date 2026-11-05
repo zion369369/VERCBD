@@ -392,26 +392,31 @@ export default function Home() {
             {programs.slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
               const styles = [
-                { icon: GraduationCap, href: "/programs/education", tint: "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300", top: "bg-sky-500", border: "hover:border-sky-200 focus-visible:ring-sky-500", text: "text-sky-700 dark:text-sky-300", arrow: "bg-sky-50 group-hover:bg-sky-600 group-hover:text-white dark:bg-sky-950/50" },
-                { icon: Droplets, href: "/programs/wash", tint: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300", top: "bg-emerald-500", border: "hover:border-emerald-200 focus-visible:ring-emerald-500", text: "text-emerald-700 dark:text-emerald-300", arrow: "bg-emerald-50 group-hover:bg-emerald-600 group-hover:text-white dark:bg-emerald-950/50" },
-                { icon: TrendingUp, href: "/programs/livelihood", tint: "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300", top: "bg-rose-400", border: "hover:border-rose-200 focus-visible:ring-rose-500", text: "text-rose-700 dark:text-rose-300", arrow: "bg-rose-50 group-hover:bg-rose-600 group-hover:text-white dark:bg-rose-950/50" },
-                { icon: Target, href: "/programs/capacity", tint: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300", top: "bg-amber-400", border: "hover:border-amber-200 focus-visible:ring-amber-500", text: "text-amber-700 dark:text-amber-300", arrow: "bg-amber-50 group-hover:bg-amber-600 group-hover:text-white dark:bg-amber-950/50" },
+                { icon: GraduationCap, href: "/programs/education", color: "#0069A6" },
+                { icon: Droplets, href: "/programs/wash", color: "#007D70" },
+                { icon: TrendingUp, href: "/programs/livelihood", color: "#BF1948" },
+                { icon: Target, href: "/programs/capacity", color: "#9D6509" },
               ];
               const cfg = styles[i];
               const Icon = cfg.icon;
+              const number = String(i + 1).padStart(2, "0");
               return (
                 <Link key={item.id} href={cfg.href} aria-labelledby={`pillar-title-${item.id}`}
-                  className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_4px_20px_-8px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_-12px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none sm:p-7 dark:border-slate-800 dark:bg-slate-900 ${cfg.border}`}>
-                  <div className={`absolute inset-x-0 top-0 h-[3px] ${cfg.top}`} aria-hidden="true" />
-                  <div className="mb-6 flex items-center justify-between gap-4">
-                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cfg.tint}`}><Icon size={25} strokeWidth={1.8} aria-hidden="true" /></div>
-                    <span className="font-mono text-sm font-medium tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  style={{ backgroundColor: cfg.color }}
+                  className="group relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[30px] border border-white/20 p-7 text-white shadow-[0_12px_28px_-16px_rgba(15,23,42,0.5)] transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_40px_-18px_rgba(15,23,42,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none sm:p-7">
+                  <span aria-hidden="true" className="pointer-events-none absolute -right-2 -top-6 -z-10 select-none text-[142px] font-black leading-none tracking-[-0.09em] text-white/[0.09]">{number}</span>
+                  <div className="mb-5 flex items-center justify-between gap-4">
+                    <span aria-hidden="true" className="text-3xl font-extrabold leading-none tracking-tight">{number}</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/15 px-2.5 py-1 text-[10px] font-bold tracking-wide"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-300" />VERC</span>
                   </div>
-                  <h3 id={`pillar-title-${item.id}`} className="mb-3 text-xl font-bold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">{progInfo.title}</h3>
-                  <p className="mb-6 text-sm leading-6 text-slate-600 dark:text-slate-400">{progInfo.desc}</p>
-                  <div className={`mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-slate-100 pt-5 text-xs font-bold dark:border-slate-800 ${cfg.text}`}>
+                  <h3 id={`pillar-title-${item.id}`} className="relative text-xl font-extrabold leading-snug tracking-tight sm:min-h-[3.5rem]">{progInfo.title}</h3>
+                  <div aria-hidden="true" className="flex h-28 shrink-0 items-center justify-center sm:h-32">
+                    <Icon size={64} strokeWidth={1.5} className="drop-shadow-sm transition-transform duration-300 group-hover:scale-110 motion-reduce:transform-none motion-reduce:transition-none" />
+                  </div>
+                  <p className="mb-6 text-[13px] leading-[1.75] text-white/90">{progInfo.desc}</p>
+                  <div className="mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-white/25 pt-4 text-xs font-bold">
                     <span>{t("explore_program")}</span>
-                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${cfg.arrow}`}><ArrowRight size={17} aria-hidden="true" /></span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 transition-colors duration-200 group-hover:bg-white group-hover:text-slate-900 motion-reduce:transition-none"><ArrowRight size={16} aria-hidden="true" /></span>
                   </div>
                 </Link>
               );
