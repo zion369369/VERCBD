@@ -1359,6 +1359,20 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [syncStatus, setSyncStatus] = useState<"synced" | "saving" | "error" | "offline">("synced");
   const [lastLiveSync, setLastLiveSync] = useState<number | null>(null);
   const isInitialServerFetchDone = React.useRef(false);
+  const isHydratingRef = React.useRef(false);
+  const uploadedDataUrlCacheRef = React.useRef<Map<string, string>>(new Map());
+  const lastSyncedSnapshotByKeyRef = React.useRef<Record<string, string>>({});
+
+  const recordSyncedKeys = (data: Record<string, any>) => {
+    if (!data || typeof data !== "object") return;
+    for (const [k, v] of Object.entries(data)) {
+      if (v !== undefined) {
+        try {
+          lastSyncedSnapshotByKeyRef.current[k] = JSON.stringify(v);
+        } catch (_) {}
+      }
+    }
+  };
 
   // Helper to apply incoming payload into component states
   const applyPayload = (parsed: any) => {
@@ -1396,6 +1410,210 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (parsed.primaryColor) setPrimaryColor(parsed.primaryColor);
   };
 
+  // Convert any base64 data:image/... URL to a real uploaded file via /api/upload
+  // so Apache ModSecurity never blocks raw data:image/ strings in JSON bodies.
+  const uploadDataUrlToServer = async (dataUrl: string): Promise<string> => {
+    if (!dataUrl || typeof dataUrl !== "string" || !dataUrl.startsWith("data:")) {
+      return dataUrl;
+    }
+    const cached = uploadedDataUrlCacheRef.current.get(dataUrl);
+    if (cached) return cached;
+
+    try {
+      let blob: Blob | null = null;
+      let ext = "jpg";
+
+      if (dataUrl.startsWith("data:image/") && !dataUrl.startsWith("data:image/svg")) {
+        blob = await new Promise<Blob | null>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            const maxWidth = 1920;
+            const maxHeight = 1080;
+            let width = img.width || 1200;
+            let height = img.height || 800;
+            if (width > maxWidth || height > maxHeight) {
+              if (width / height > maxWidth / maxHeight) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              } else {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob((b) => resolve(b), "image/jpeg", 0.82);
+            } else {
+              resolve(null);
+            }
+          };
+          img.onerror = () => resolve(null);
+          img.src = dataUrl;
+        });
+      }
+
+      if (!blob) {
+        const res = await fetch(dataUrl);
+        blob = await res.blob();
+        if (blob.type.includes("png")) ext = "png";
+        else if (blob.type.includes("webp")) ext = "webp";
+        else if (blob.type.includes("svg")) ext = "svg";
+        else if (blob.type.includes("pdf")) ext = "pdf";
+      }
+
+      const formData = new FormData();
+      formData.append("file", blob, `cms-asset-${Date.now()}.${ext}`);
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      });
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        if (uploadData?.url) {
+          uploadedDataUrlCacheRef.current.set(dataUrl, uploadData.url);
+          return uploadData.url;
+        }
+      }
+    } catch (err) {
+      console.warn("[ContentContext] Failed to convert data URL via /api/upload:", err);
+    }
+    return dataUrl;
+  };
+
+  // Recursively replaces any data:image/... strings anywhere in the payload with uploaded /uploads/... URLs
+  const optimizePayloadImages = async (value: any): Promise<any> => {
+    if (!value) return value;
+    if (typeof value === "string") {
+      if (value.startsWith("data:image/") || value.startsWith("data:application/pdf")) {
+        return uploadDataUrlToServer(value);
+      }
+      return value;
+    }
+    if (Array.isArray(value)) {
+      return Promise.all(value.map((item) => optimizePayloadImages(item)));
+    }
+    if (typeof value === "object") {
+      const entries = await Promise.all(
+        Object.entries(value).map(async ([k, v]) => [k, await optimizePayloadImages(v)] as const)
+      );
+      return Object.fromEntries(entries);
+    }
+    return value;
+  };
+
+  // Count nested JSON keys so no single POST request exceeds cPanel Apache SecArgumentLimit (1,000 keys)
+  const countJsonKeys = (val: any): number => {
+    if (!val || typeof val !== "object") return 0;
+    if (Array.isArray(val)) {
+      return val.reduce((sum: number, item) => sum + countJsonKeys(item), 0);
+    }
+    const keys = Object.keys(val);
+    return keys.length + keys.reduce((sum: number, k) => sum + countJsonKeys(val[k]), 0);
+  };
+
+  // Send a payload object to /api/content in safe batches (< 400 JSON keys per request)
+  const syncPayloadInBatches = async (
+    rawPayload: Record<string, any>,
+    options: { onlyChanged?: boolean; includeUnchangedBranches?: boolean } = {}
+  ): Promise<{ success: boolean; lastUpdated?: number; optimizedPayload: Record<string, any> }> => {
+    const optimizedPayload = await optimizePayloadImages(rawPayload);
+
+    // Filter keys to send
+    const keysToSend: string[] = [];
+    for (const [k, v] of Object.entries(optimizedPayload)) {
+      if (v === undefined) continue;
+      const serialized = JSON.stringify(v);
+      const prevSerialized = lastSyncedSnapshotByKeyRef.current[k];
+      if (options.onlyChanged && prevSerialized === serialized) {
+        continue;
+      }
+      // Avoid sending all 137 branches (1,100 keys) unless branches actually changed
+      if ((k === "branches" || k === "branchDirectoryVersion") && !options.includeUnchangedBranches && prevSerialized === serialized) {
+        continue;
+      }
+      keysToSend.push(k);
+    }
+
+    if (keysToSend.length === 0) {
+      return { success: true, lastUpdated: Date.now(), optimizedPayload };
+    }
+
+    const MAX_KEYS_PER_BATCH = 400;
+    const batches: Array<Record<string, any>> = [];
+    let currentBatch: Record<string, any> = {};
+    let currentBatchKeyCount = 0;
+
+    for (const key of keysToSend) {
+      const val = optimizedPayload[key];
+      const valKeys = countJsonKeys(val) + 1;
+
+      // If a single array (e.g. 137 branches) exceeds MAX_KEYS_PER_BATCH, chunk it using collectionChunk
+      if (Array.isArray(val) && valKeys > MAX_KEYS_PER_BATCH) {
+        const chunkSize = 30;
+        for (let offset = 0; offset < val.length; offset += chunkSize) {
+          batches.push({
+            collectionChunk: {
+              key,
+              offset,
+              reset: offset === 0,
+              total: val.length,
+              items: val.slice(offset, offset + chunkSize)
+            }
+          });
+        }
+        continue;
+      }
+
+      if (currentBatchKeyCount + valKeys > MAX_KEYS_PER_BATCH && Object.keys(currentBatch).length > 0) {
+        batches.push(currentBatch);
+        currentBatch = {};
+        currentBatchKeyCount = 0;
+      }
+      currentBatch[key] = val;
+      currentBatchKeyCount += valKeys;
+    }
+
+    if (Object.keys(currentBatch).length > 0) {
+      batches.push(currentBatch);
+    }
+
+    let latestTimestamp = Date.now();
+    for (const batch of batches) {
+      const res = await fetch("/api/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(batch)
+      });
+
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error("Payload size limit exceeded on server. Please use library images or a smaller image file.");
+        }
+        const text = await res.text();
+        throw new Error(`Server returned HTTP ${res.status}: ${text.slice(0, 100)}`);
+      }
+
+      const data = await res.json();
+      if (!data?.success) {
+        throw new Error(data?.error || "Save to live server failed.");
+      }
+      if (data.lastUpdated) latestTimestamp = data.lastUpdated;
+    }
+
+    for (const key of keysToSend) {
+      try {
+        lastSyncedSnapshotByKeyRef.current[key] = JSON.stringify(optimizedPayload[key]);
+      } catch (_) {}
+    }
+
+    return { success: true, lastUpdated: latestTimestamp, optimizedPayload };
+  };
+
   // 1. Initial Load: instant local cache + authoritative live server sync
   useEffect(() => {
     let localParsed: any = null;
@@ -1403,6 +1621,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         localParsed = JSON.parse(stored);
+        isHydratingRef.current = true;
         applyPayload(localParsed);
       }
     } catch (e) {
@@ -1419,29 +1638,54 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then((json) => {
+      .then(async (json) => {
         if (json?.success && json?.data) {
-          applyPayload(json.data);
+          recordSyncedKeys(json.data);
+
+          // Preserve any local collections (such as unsynced heroSlides) that are not yet present on the server
+          const mergedServerAndLocal: Record<string, any> = {
+            ...(localParsed && typeof localParsed === "object" ? localParsed : {}),
+            ...json.data
+          };
+
+          isHydratingRef.current = true;
+          applyPayload(mergedServerAndLocal);
           if (json.lastUpdated) setLastLiveSync(json.lastUpdated);
+
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(json.data));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedServerAndLocal));
           } catch (_) {}
+
+          // If local cache had collections missing on the server (e.g. heroSlides), sync them cleanly now
+          if (localParsed && typeof localParsed === "object") {
+            const missingOnServer: Record<string, any> = {};
+            for (const [k, v] of Object.entries(localParsed)) {
+              if (v !== undefined && json.data[k] === undefined) {
+                missingOnServer[k] = v;
+              }
+            }
+            if (Object.keys(missingOnServer).length > 0) {
+              try {
+                const syncRes = await syncPayloadInBatches(missingOnServer, { onlyChanged: true });
+                isHydratingRef.current = true;
+                applyPayload(syncRes.optimizedPayload);
+                if (syncRes.lastUpdated) setLastLiveSync(syncRes.lastUpdated);
+              } catch (syncErr) {
+                console.warn("[ContentContext] Background migration of unsynced local keys failed:", syncErr);
+              }
+            }
+          }
+
           setSyncStatus("synced");
         } else if (localParsed) {
-          // If live server has no content file yet, auto-migrate existing local modifications to the server
-          fetch("/api/content", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(localParsed)
-          })
-            .then((r) => r.json())
-            .then((res) => {
-              if (res?.success) {
-                setLastLiveSync(res.lastUpdated || Date.now());
-                setSyncStatus("synced");
-              }
-            })
-            .catch(() => {});
+          // If live server has no content file yet, auto-migrate existing local modifications in safe batches
+          try {
+            const syncRes = await syncPayloadInBatches(localParsed, { onlyChanged: true });
+            isHydratingRef.current = true;
+            applyPayload(syncRes.optimizedPayload);
+            if (syncRes.lastUpdated) setLastLiveSync(syncRes.lastUpdated);
+            setSyncStatus("synced");
+          } catch (_) {}
         }
       })
       .catch((err) => {
@@ -1449,7 +1693,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSyncStatus("offline");
       })
       .finally(() => {
-        isInitialServerFetchDone.current = true;
+        setTimeout(() => {
+          isHydratingRef.current = false;
+          isInitialServerFetchDone.current = true;
+        }, 150);
       });
   }, []);
 
@@ -1467,6 +1714,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
         if (!data) return;
 
+        isHydratingRef.current = true;
         applyPayload(data);
       } catch (err) {
         console.warn("Sync error:", err);
@@ -1553,113 +1801,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     primaryColor
   });
 
-  // Client-side canvas compressor to shrink large base64 strings down to ~80-120KB
-  const compressBase64Image = (dataUrl: string): Promise<string> => {
-    if (!dataUrl || typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/") || dataUrl.length < 250 * 1024) {
-      return Promise.resolve(dataUrl);
-    }
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        const maxWidth = 1920;
-        const maxHeight = 1080;
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth || height > maxHeight) {
-          if (width / height > maxWidth / maxHeight) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", 0.78));
-        } else {
-          resolve(dataUrl);
-        }
-      };
-      img.onerror = () => resolve(dataUrl);
-      img.src = dataUrl;
-    });
-  };
-
-  // Traverses all collections and optimizes any uncompressed base64 images
-  const optimizePayloadImages = async (snapshot: any): Promise<any> => {
-    if (!snapshot || typeof snapshot !== "object") return snapshot;
-    const optimized = { ...snapshot };
-
-    if (Array.isArray(optimized.heroSlides)) {
-      optimized.heroSlides = await Promise.all(
-        optimized.heroSlides.map(async (s: HeroSlide) => {
-          if (s.imageUrl && s.imageUrl.startsWith("data:image/")) {
-            const compressed = await compressBase64Image(s.imageUrl);
-            return { ...s, imageUrl: compressed };
-          }
-          return s;
-        })
-      );
-    }
-
-    if (Array.isArray(optimized.gallery)) {
-      optimized.gallery = await Promise.all(
-        optimized.gallery.map(async (g: GalleryItem) => {
-          if (g.imageUrl && g.imageUrl.startsWith("data:image/")) {
-            const compressed = await compressBase64Image(g.imageUrl);
-            return { ...g, imageUrl: compressed };
-          }
-          return g;
-        })
-      );
-    }
-
-    if (Array.isArray(optimized.teamMembers)) {
-      optimized.teamMembers = await Promise.all(
-        optimized.teamMembers.map(async (t: TeamMember) => {
-          if (t.imageUrl && t.imageUrl.startsWith("data:image/")) {
-            const compressed = await compressBase64Image(t.imageUrl);
-            return { ...t, imageUrl: compressed };
-          }
-          return t;
-        })
-      );
-    }
-
-    if (Array.isArray(optimized.partners)) {
-      optimized.partners = await Promise.all(
-        optimized.partners.map(async (p: PartnerItem) => {
-          if (p.logoUrl && p.logoUrl.startsWith("data:image/")) {
-            const compressed = await compressBase64Image(p.logoUrl);
-            return { ...p, logoUrl: compressed };
-          }
-          return p;
-        })
-      );
-    }
-
-    if (optimized.siteSettings && optimized.siteSettings.logoUrl?.startsWith("data:image/")) {
-      optimized.siteSettings = {
-        ...optimized.siteSettings,
-        logoUrl: await compressBase64Image(optimized.siteSettings.logoUrl)
-      };
-    }
-
-    return optimized;
-  };
-
-  // Save to LocalStorage immediately and debounce auto-sync to live server (/api/content)
+  // Save to LocalStorage immediately and debounce auto-sync of changed keys to live server (/api/content)
   useEffect(() => {
     if (!isLoaded || !isInitialServerFetchDone.current) return;
+    if (isHydratingRef.current) {
+      isHydratingRef.current = false;
+      return;
+    }
 
-    setSyncStatus("saving");
     const payload = getCurrentSnapshot();
+
+    // Check if any key actually changed compared to last synced state
+    const changedSubset: Record<string, any> = {};
+    for (const [k, v] of Object.entries(payload)) {
+      if (v === undefined) continue;
+      const serialized = JSON.stringify(v);
+      if (lastSyncedSnapshotByKeyRef.current[k] !== serialized) {
+        changedSubset[k] = v;
+      }
+    }
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -1667,26 +1827,21 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.warn("Could not save content to localStorage:", e);
     }
 
+    if (Object.keys(changedSubset).length === 0) {
+      return;
+    }
+
+    setSyncStatus("saving");
+
     const timer = setTimeout(async () => {
       try {
-        const optimizedPayload = await optimizePayloadImages(payload);
-        const res = await fetch("/api/content", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(optimizedPayload)
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+        const result = await syncPayloadInBatches(changedSubset, { onlyChanged: true });
+        if (JSON.stringify(result.optimizedPayload) !== JSON.stringify(changedSubset)) {
+          isHydratingRef.current = true;
+          applyPayload(result.optimizedPayload);
         }
-
-        const data = await res.json();
-        if (data?.success) {
-          setSyncStatus("synced");
-          setLastLiveSync(data.lastUpdated || Date.now());
-        } else {
-          setSyncStatus("error");
-        }
+        setSyncStatus("synced");
+        setLastLiveSync(result.lastUpdated || Date.now());
       } catch (err) {
         console.warn("[ContentContext] Failed to sync content to live server:", err);
         setSyncStatus("error");
@@ -1739,18 +1894,14 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.warn(`Immediate save for ${key} failed:`, e);
     }
 
-    // Also push slice to live server safely
-    fetch("/api/content", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [key]: value })
-    })
-      .then(async (r) => {
-        if (!r.ok) return null;
-        return r.json();
-      })
+    // Upload any embedded data:image/ URLs first and push slice in safe batches
+    syncPayloadInBatches({ [key]: value }, { onlyChanged: false, includeUnchangedBranches: key === "branches" })
       .then((res) => {
-        if (res?.success) {
+        if (res.success) {
+          if (JSON.stringify(res.optimizedPayload[key]) !== JSON.stringify(value)) {
+            isHydratingRef.current = true;
+            applyPayload(res.optimizedPayload);
+          }
           setSyncStatus("synced");
           setLastLiveSync(res.lastUpdated || Date.now());
         }
@@ -1764,46 +1915,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const rawPayload = getCurrentSnapshot();
 
     try {
-      // 1. Automatically compress any multi-MB base64 images so payload is < 150KB
-      const optimizedPayload = await optimizePayloadImages(rawPayload);
+      const result = await syncPayloadInBatches(rawPayload, { onlyChanged: false, includeUnchangedBranches: false });
 
-      // 2. Update local state with optimized slides/images to prevent memory bloat
-      if (optimizedPayload.heroSlides) setHeroSlides(optimizedPayload.heroSlides);
-      if (optimizedPayload.gallery) setGallery(optimizedPayload.gallery);
+      if (JSON.stringify(result.optimizedPayload) !== JSON.stringify(rawPayload)) {
+        isHydratingRef.current = true;
+        applyPayload(result.optimizedPayload);
+      }
 
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(optimizedPayload));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(result.optimizedPayload));
       } catch (lsErr) {
         console.warn("LocalStorage save warning:", lsErr);
       }
 
-      // 3. Send lightweight payload to live server
-      const res = await fetch("/api/content", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(optimizedPayload)
-      });
-
-      if (!res.ok) {
-        if (res.status === 413) {
-          throw new Error("Payload size limit exceeded on server. Please use library images or a smaller image file.");
-        }
-        const text = await res.text();
-        throw new Error(`Server returned HTTP ${res.status}: ${text.slice(0, 100)}`);
-      }
-
-      const data = await res.json();
-      if (data?.success) {
-        setSyncStatus("synced");
-        setLastLiveSync(data.lastUpdated || Date.now());
-        return {
-          success: true,
-          message: "All changes are now live! Any visitor across the globe will see these updates."
-        };
-      } else {
-        setSyncStatus("error");
-        return { success: false, message: data?.error || "Save to live server failed." };
-      }
+      setSyncStatus("synced");
+      setLastLiveSync(result.lastUpdated || Date.now());
+      return {
+        success: true,
+        message: "All changes are now live! Any visitor across the globe will see these updates."
+      };
     } catch (err: any) {
       setSyncStatus("error");
       return { success: false, message: err?.message || "Failed to reach live server." };

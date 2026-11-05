@@ -70,21 +70,36 @@ export async function POST(req: Request) {
     const existing = readServerContent();
     const existingData = migrateContent(existing?.data || {});
 
+    // Support chunked array updates so large collections (like 137 branches) stay well under Apache's 1,000 JSON key limit
+    const incomingBody: Record<string, any> = { ...body };
+    if (incomingBody.collectionChunk && typeof incomingBody.collectionChunk === "object") {
+      const { key, offset = 0, reset = false, total, items = [] } = incomingBody.collectionChunk;
+      if (typeof key === "string" && Array.isArray(items)) {
+        const baseList = reset || !Array.isArray(existingData[key]) ? [] : [...existingData[key]];
+        baseList.splice(offset, items.length, ...items);
+        if (typeof total === "number" && baseList.length > total) {
+          baseList.length = total;
+        }
+        incomingBody[key] = baseList;
+      }
+      delete incomingBody.collectionChunk;
+    }
+
     const mergedData = migrateContent({
       ...existingData,
-      ...body,
-      branchDirectoryVersion: body.branches ? body.branchDirectoryVersion : BRANCH_DIRECTORY_VERSION,
-      photoLibraryVersion: body.gallery ? body.photoLibraryVersion : PHOTO_LIBRARY_VERSION,
-      careersContentVersion: body.jobOpenings || body.jobApplications ? body.careersContentVersion : CAREERS_CONTENT_VERSION
+      ...incomingBody,
+      branchDirectoryVersion: incomingBody.branches ? incomingBody.branchDirectoryVersion ?? BRANCH_DIRECTORY_VERSION : BRANCH_DIRECTORY_VERSION,
+      photoLibraryVersion: incomingBody.gallery ? incomingBody.photoLibraryVersion ?? PHOTO_LIBRARY_VERSION : PHOTO_LIBRARY_VERSION,
+      careersContentVersion: incomingBody.jobOpenings || incomingBody.jobApplications ? incomingBody.careersContentVersion ?? CAREERS_CONTENT_VERSION : CAREERS_CONTENT_VERSION
     });
 
     // A visitor may send a new inquiry while another tab holds an older CMS
     // snapshot. Preserve messages absent from that snapshot; only explicit
     // admin deletions remove them.
-    const deletedIds = new Set<string>([...(existingData.deletedMessageIds || []), ...(Array.isArray(body.deletedMessageIds) ? body.deletedMessageIds : [])].filter((id: unknown) => typeof id === "string"));
-    if (Array.isArray(body.messages)) {
+    const deletedIds = new Set<string>([...(existingData.deletedMessageIds || []), ...(Array.isArray(incomingBody.deletedMessageIds) ? incomingBody.deletedMessageIds : [])].filter((id: unknown) => typeof id === "string"));
+    if (Array.isArray(incomingBody.messages)) {
       const messagesById = new Map<string, any>();
-      for (const message of [...(existingData.messages || []), ...body.messages]) {
+      for (const message of [...(existingData.messages || []), ...incomingBody.messages]) {
         if (message && typeof message.id === "string" && !deletedIds.has(message.id)) messagesById.set(message.id, message);
       }
       mergedData.messages = Array.from(messagesById.values()).sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
@@ -112,4 +127,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
