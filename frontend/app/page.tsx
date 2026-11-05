@@ -45,7 +45,7 @@ export default function Home() {
 
   const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
   const requestedHeroImage = currentSlide === 0
-    ? "/assets/homepage-community-hero.webp"
+    ? "/assets/homepage-child-monochrome.webp"
     : activeSlide?.imageUrl || "/assets/home_official_1.jpg";
   const fallbackHeroImage = requestedHeroImage.startsWith("/photos/") ? "/assets/community_success_hero.png" : "/assets/home_official_1.jpg";
   const heroImage = failedHeroImages.has(requestedHeroImage) || requestedHeroImage.startsWith("/photos/") ? fallbackHeroImage : requestedHeroImage;
@@ -179,10 +179,10 @@ export default function Home() {
                 >
                   <img 
                     src={heroImage}
-                    alt={activeSlide.title || "VERC Bangladesh"} 
+                    alt={currentSlide === 0 ? "A smiling Bangladeshi girl with arms raised in the VERC emblem pose, in black and white" : activeSlide.title || "VERC Bangladesh"}
                     fetchPriority={currentSlide === 0 ? "high" : "auto"}
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full object-cover ${currentSlide === 0 ? "max-sm:h-[82%] max-sm:object-top" : ""}`}
                     onError={() => {
                       if (requestedHeroImage !== fallbackHeroImage) {
                         setFailedHeroImages(images => new Set(images).add(requestedHeroImage));
