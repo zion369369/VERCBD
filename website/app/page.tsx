@@ -390,13 +390,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. PROGRAM PILLARS */}
-      <section id="program-pillars" aria-labelledby="program-pillars-title" className="bg-slate-50/60 py-16 sm:py-20 lg:py-24 dark:bg-slate-950">
-        <div className="container-custom">
-          <div className="mb-9 grid gap-5 sm:mb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16">
+      {/* 3. PROGRAM PILLARS — LIQUID FROSTED GLASS POLYMORPHIC DESIGN */}
+      <section id="program-pillars" aria-labelledby="program-pillars-title" className="relative overflow-hidden bg-gradient-to-b from-slate-50/70 via-sky-50/35 to-white py-16 sm:py-20 lg:py-26 dark:bg-slate-950">
+        {/* Ambient Liquid Glass Color Orbs Behind Frosted Cards */}
+        <div className="pointer-events-none absolute -top-20 left-1/4 h-80 w-80 -translate-x-1/2 rounded-full bg-sky-400/15 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/12 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-20 right-1/4 h-80 w-80 translate-x-1/2 rounded-full bg-amber-400/15 blur-3xl" aria-hidden="true" />
+
+        <div className="container-custom relative z-10">
+          <div className="mb-10 grid gap-5 sm:mb-14 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-16">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary dark:text-sky-300">
-                <Target size={16} strokeWidth={2} />
+              <div className="mb-4 inline-flex items-center gap-2.5 rounded-full border border-white/90 bg-white/75 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary shadow-[0_4px_14px_rgba(0,75,141,0.08),inset_0_1px_1px_rgba(255,255,255,1)] backdrop-blur-xl dark:border-white/15 dark:bg-white/10 dark:text-sky-300">
+                <Target size={15} strokeWidth={2} />
                 <span>{t("focus_badge")}</span>
               </div>
               <h2 id="program-pillars-title" className={`text-3xl font-extrabold text-slate-900 sm:text-5xl lg:text-[3.4rem] dark:text-white ${language === "bn" ? "leading-[1.25]" : "leading-[1.08] tracking-tight"}`}>
@@ -404,17 +409,53 @@ export default function Home() {
                 <span className="text-brand-primary dark:text-sky-300">{t("focus_highlight")}</span>
               </h2>
             </div>
-            <p className="max-w-lg text-sm leading-7 text-slate-600 sm:text-base lg:mb-1 lg:border-l-2 lg:border-sky-100 lg:pl-6 dark:border-slate-800 dark:text-slate-400">{t("focus_subtitle")}</p>
+            <p className="max-w-lg text-sm leading-7 text-slate-600 sm:text-base lg:mb-1 lg:border-l-2 lg:border-sky-200/80 lg:pl-6 dark:border-slate-800 dark:text-slate-400">{t("focus_subtitle")}</p>
           </div>
 
-          <div className="grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+          <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-7">
             {programs.filter((p) => p.status !== "Draft").slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
               const styles = [
-                { icon: GraduationCap, href: "/programs/education", tint: "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300", top: "bg-sky-500", border: "hover:border-sky-200 focus-visible:ring-sky-500", text: "text-sky-700 dark:text-sky-300", arrow: "bg-sky-50 group-hover:bg-sky-600 group-hover:text-white dark:bg-sky-950/50" },
-                { icon: Droplets, href: "/programs/wash", tint: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300", top: "bg-emerald-500", border: "hover:border-emerald-200 focus-visible:ring-emerald-500", text: "text-emerald-700 dark:text-emerald-300", arrow: "bg-emerald-50 group-hover:bg-emerald-600 group-hover:text-white dark:bg-emerald-950/50" },
-                { icon: TrendingUp, href: "/programs/livelihood", tint: "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300", top: "bg-rose-400", border: "hover:border-rose-200 focus-visible:ring-rose-500", text: "text-rose-700 dark:text-rose-300", arrow: "bg-rose-50 group-hover:bg-rose-600 group-hover:text-white dark:bg-rose-950/50" },
-                { icon: Target, href: "/programs/capacity", tint: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300", top: "bg-amber-400", border: "hover:border-amber-200 focus-visible:ring-amber-500", text: "text-amber-700 dark:text-amber-300", arrow: "bg-amber-50 group-hover:bg-amber-600 group-hover:text-white dark:bg-amber-950/50" },
+                {
+                  icon: GraduationCap,
+                  href: "/programs/education",
+                  tint: "from-white/95 via-sky-50/85 to-sky-100/70 text-sky-700 border-sky-200/70 dark:from-sky-950/60 dark:to-sky-900/40 dark:text-sky-300",
+                  top: "from-sky-400 via-cyan-400 to-sky-600",
+                  orb: "bg-sky-400/20",
+                  border: "hover:border-sky-300/80 focus-visible:ring-sky-500",
+                  text: "text-sky-700 dark:text-sky-300",
+                  arrow: "bg-sky-500/12 text-sky-700 border border-sky-200/70 group-hover:bg-sky-600 group-hover:text-white group-hover:border-sky-600 dark:bg-sky-950/50",
+                },
+                {
+                  icon: Droplets,
+                  href: "/programs/wash",
+                  tint: "from-white/95 via-emerald-50/85 to-emerald-100/70 text-emerald-700 border-emerald-200/70 dark:from-emerald-950/60 dark:to-emerald-900/40 dark:text-emerald-300",
+                  top: "from-emerald-400 via-teal-400 to-emerald-600",
+                  orb: "bg-emerald-400/20",
+                  border: "hover:border-emerald-300/80 focus-visible:ring-emerald-500",
+                  text: "text-emerald-700 dark:text-emerald-300",
+                  arrow: "bg-emerald-500/12 text-emerald-700 border border-emerald-200/70 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 dark:bg-emerald-950/50",
+                },
+                {
+                  icon: TrendingUp,
+                  href: "/programs/livelihood",
+                  tint: "from-white/95 via-rose-50/85 to-rose-100/70 text-rose-700 border-rose-200/70 dark:from-rose-950/60 dark:to-rose-900/40 dark:text-rose-300",
+                  top: "from-rose-400 via-pink-400 to-rose-600",
+                  orb: "bg-rose-400/20",
+                  border: "hover:border-rose-300/80 focus-visible:ring-rose-500",
+                  text: "text-rose-700 dark:text-rose-300",
+                  arrow: "bg-rose-500/12 text-rose-700 border border-rose-200/70 group-hover:bg-rose-600 group-hover:text-white group-hover:border-rose-600 dark:bg-rose-950/50",
+                },
+                {
+                  icon: Target,
+                  href: "/programs/capacity",
+                  tint: "from-white/95 via-amber-50/85 to-amber-100/70 text-amber-700 border-amber-200/70 dark:from-amber-950/60 dark:to-amber-900/40 dark:text-amber-300",
+                  top: "from-amber-400 via-orange-400 to-amber-500",
+                  orb: "bg-amber-400/20",
+                  border: "hover:border-amber-300/80 focus-visible:ring-amber-500",
+                  text: "text-amber-700 dark:text-amber-300",
+                  arrow: "bg-amber-500/12 text-amber-700 border border-amber-200/70 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 dark:bg-amber-950/50",
+                },
               ];
               const cfg = styles[i % styles.length];
               const slugMap: Record<string, string> = {
@@ -426,18 +467,43 @@ export default function Home() {
               const resolvedHref = (item.slug && slugMap[item.slug]) || cfg.href;
               const Icon = cfg.icon;
               return (
-                <Link key={item.id} href={resolvedHref} aria-labelledby={`pillar-title-${item.id}`}
-                  className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_4px_20px_-8px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_-12px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none sm:p-7 dark:border-slate-800 dark:bg-slate-900 ${cfg.border}`}>
-                  <div className={`absolute inset-x-0 top-0 h-[3px] ${cfg.top}`} aria-hidden="true" />
-                  <div className="mb-6 flex items-center justify-between gap-4">
-                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cfg.tint}`}><Icon size={25} strokeWidth={1.8} aria-hidden="true" /></div>
-                    <span className="font-mono text-sm font-medium tabular-nums text-slate-400 dark:text-slate-500" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <Link
+                  key={item.id}
+                  href={resolvedHref}
+                  aria-labelledby={`pillar-title-${item.id}`}
+                  className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[32px] border border-white/90 bg-white/75 p-6 sm:p-7 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_20px_50px_-12px_rgba(0,75,141,0.12),0_4px_14px_rgba(15,23,42,0.04),inset_0_1px_2px_rgba(255,255,255,0.98),inset_0_-1px_2px_rgba(0,75,141,0.05)] transition-all duration-500 hover:-translate-y-2.5 hover:bg-white/90 hover:shadow-[0_30px_70px_-12px_rgba(0,75,141,0.22),0_0_32px_rgba(0,174,239,0.15),inset_0_1px_2px_rgba(255,255,255,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-slate-900/75 ${cfg.border}`}
+                >
+                  {/* Liquid Top Specular Gradient Bar */}
+                  <div className={`absolute inset-x-0 top-0 h-[3.5px] bg-gradient-to-r ${cfg.top}`} aria-hidden="true" />
+
+                  {/* Inner Liquid Glass Shimmer Sweep on Hover */}
+                  <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/55 to-transparent transition-transform duration-1000 group-hover:translate-x-full" aria-hidden="true" />
+
+                  {/* Polymorphic Corner Light Orbs */}
+                  <div className={`pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-150 ${cfg.orb}`} aria-hidden="true" />
+                  <div className={`pointer-events-none absolute -bottom-12 -left-12 h-28 w-28 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-125 ${cfg.orb}`} aria-hidden="true" />
+
+                  <div className="relative z-10 mb-6 flex items-center justify-between gap-4">
+                    <div className={`flex h-13 w-13 items-center justify-center rounded-2xl border bg-gradient-to-br shadow-[0_8px_20px_rgba(0,75,141,0.08),inset_0_1px_2px_rgba(255,255,255,0.98)] transition-transform duration-500 group-hover:scale-110 ${cfg.tint}`}>
+                      <Icon size={25} strokeWidth={1.9} aria-hidden="true" />
+                    </div>
+                    <span className="rounded-full border border-white/80 bg-white/70 px-3 py-1 font-mono text-xs font-semibold tabular-nums text-slate-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-slate-400" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <h3 id={`pillar-title-${item.id}`} className="mb-3 text-xl font-bold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">{progInfo.title}</h3>
-                  <p className="mb-6 text-sm leading-6 text-slate-600 dark:text-slate-400">{progInfo.desc}</p>
-                  <div className={`mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-slate-100 pt-5 text-xs font-bold dark:border-slate-800 ${cfg.text}`}>
+
+                  <h3 id={`pillar-title-${item.id}`} className="relative z-10 mb-3 text-xl font-bold leading-snug tracking-tight text-slate-900 sm:min-h-[3.5rem] dark:text-white">
+                    {progInfo.title}
+                  </h3>
+                  <p className="relative z-10 mb-6 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    {progInfo.desc}
+                  </p>
+
+                  <div className={`relative z-10 mt-auto flex min-h-12 items-center justify-between gap-3 border-t border-slate-200/60 pt-5 text-xs font-bold dark:border-slate-800 ${cfg.text}`}>
                     <span>{t("explore_program")}</span>
-                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${cfg.arrow}`}><ArrowRight size={17} aria-hidden="true" /></span>
+                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-xs backdrop-blur-md transition-all duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none ${cfg.arrow}`}>
+                      <ArrowRight size={17} aria-hidden="true" />
+                    </span>
                   </div>
                 </Link>
               );

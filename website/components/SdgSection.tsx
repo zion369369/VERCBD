@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -422,6 +422,20 @@ export default function SdgSection() {
 
   const isBn = language === "bn";
 
+  useEffect(() => {
+    if (!selectedGoal) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedGoal(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selectedGoal]);
+
   return (
     <section className="relative py-28 lg:py-36 bg-gradient-to-b from-slate-50 via-white to-slate-100/70 overflow-hidden">
       {/* Background Subtle Tech/Geometric World Grid Lines */}
@@ -576,7 +590,7 @@ export default function SdgSection() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-16 sm:mt-20 p-6 sm:p-8 rounded-[32px] bg-white shadow-xl border border-slate-200/80 backdrop-blur-md max-w-5xl mx-auto"
+          className="mt-16 sm:mt-20 p-6 sm:p-8 rounded-[36px] backdrop-blur-2xl backdrop-saturate-150 bg-white/80 border border-white/90 shadow-[0_24px_60px_-15px_rgba(0,75,141,0.15),0_4px_16px_rgba(15,23,42,0.04),inset_0_1px_2px_rgba(255,255,255,0.98)] max-w-5xl mx-auto"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-100 text-center">
             <div className="pt-3 md:pt-0">
@@ -623,73 +637,81 @@ export default function SdgSection() {
       </div>
 
       {/* ===================================================================
-          INTERACTIVE SDG DETAILS MODAL
-          Opens when ANY SDG card is clicked!
+          INTERACTIVE SDG DETAILS MODAL — LIQUID FROSTED GLASS POLYMORPHIC
+          Positioned at z-[120] above sticky Navbar (z-[60]) so it never collides!
           =================================================================== */}
       <AnimatePresence>
         {selectedGoal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-            {/* Backdrop with rich blur */}
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+            {/* Liquid Frosted Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedGoal(null)}
-              className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity"
+              className="fixed inset-0 bg-slate-950/65 backdrop-blur-xl transition-opacity"
             />
 
-            {/* Modal Box */}
+            {/* Liquid Frosted Glass Polymorphic Modal Box */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.94, y: 18 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-2xl bg-white rounded-[36px] shadow-2xl overflow-hidden border border-slate-200 z-10"
+              exit={{ opacity: 0, scale: 0.94, y: 18 }}
+              transition={{ type: "spring", damping: 26, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="sdg-modal-title"
+              className="relative my-auto w-full max-w-2xl max-h-[calc(100dvh-2.5rem)] flex flex-col rounded-[36px] backdrop-blur-2xl backdrop-saturate-150 bg-white/92 border border-white/80 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.45),0_0_40px_rgba(255,255,255,0.12),inset_0_1px_2px_rgba(255,255,255,0.98)] overflow-hidden z-10"
             >
-              {/* Modal Color Banner Header */}
+              {/* Modal Color Banner Header with Liquid Glass Specular Sheen */}
               <div 
                 style={{ backgroundColor: selectedGoal.color }}
-                className="p-6 sm:p-8 text-white relative overflow-hidden"
+                className="p-6 sm:p-8 text-white relative overflow-hidden shrink-0"
               >
+                {/* Top Specular Glass Reflection */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+                <div className="pointer-events-none absolute -top-20 -left-20 w-56 h-56 rounded-full bg-white/20 blur-2xl" />
+
                 {/* Background Giant Watermark Number */}
                 <div className="absolute -top-6 -right-4 text-9xl font-black text-white/15 select-none pointer-events-none">
                   {selectedGoal.id}
                 </div>
 
-                {/* Close Button */}
+                {/* Close Button — Always visible and clickable */}
                 <button
+                  type="button"
                   onClick={() => setSelectedGoal(null)}
-                  className="absolute top-5 right-5 w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center transition-colors backdrop-blur-xs"
+                  className="absolute top-4 right-4 sm:top-5 sm:right-5 z-20 w-10 h-10 rounded-full bg-black/25 hover:bg-black/45 border border-white/30 text-white flex items-center justify-center transition-all backdrop-blur-md shadow-lg cursor-pointer"
                   aria-label="Close modal"
                 >
                   <X size={20} />
                 </button>
 
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 p-2.5 backdrop-blur-xs flex items-center justify-center shadow-inner shrink-0">
+                <div className="relative z-10 flex items-center gap-4 pr-10">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 border border-white/35 p-2.5 backdrop-blur-md flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.15),inset_0_1px_2px_rgba(255,255,255,0.6)] shrink-0">
                     <selectedGoal.IconComponent className="w-full h-full text-white" />
                   </div>
                   <div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 text-white/95 text-xs font-black uppercase tracking-wider backdrop-blur-xs mb-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 border border-white/25 text-white/95 text-xs font-bold uppercase tracking-wider backdrop-blur-md mb-2">
                       <span>{isBn ? `এসডিজি লক্ষ্য ${selectedGoal.id}` : `UN SDG GOAL ${selectedGoal.id}`}</span>
                       <span>•</span>
                       <span className="text-emerald-300">{isBn ? "ভার্ক অগ্রাধিকার" : "VERC Core Focus"}</span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
+                    <h3 id="sdg-modal-title" className="text-xl sm:text-2xl font-bold tracking-tight leading-tight">
                       {isBn ? selectedGoal.titleBn : selectedGoal.titleEn}
                     </h3>
-                    <p className="text-xs sm:text-sm text-white/85 font-medium mt-1">
+                    <p className="text-xs sm:text-sm text-white/90 font-medium mt-1">
                       {isBn ? selectedGoal.subtitleBn : selectedGoal.subtitleEn}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Modal Body Content */}
-              <div className="p-6 sm:p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+              {/* Modal Body Content (Frosted Glass Cards) */}
+              <div className="p-6 sm:p-8 space-y-5 overflow-y-auto flex-1">
                 {/* UN Official Target */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                  <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
+                <div className="p-4 sm:p-5 rounded-2xl backdrop-blur-xl bg-slate-50/90 border border-white shadow-[0_8px_24px_-8px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,1)]">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                     <Target size={14} className="text-brand-primary" />
                     {isBn ? "জাতিসংঘ ২০৩০ সুনির্দিষ্ট লক্ষ্য" : "UN 2030 Official Target"}
                   </div>
@@ -699,8 +721,8 @@ export default function SdgSection() {
                 </div>
 
                 {/* VERC Direct Action in Bangladesh */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/70">
-                  <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5">
+                <div className="p-4 sm:p-5 rounded-2xl backdrop-blur-xl bg-emerald-50/80 border border-emerald-200/80 shadow-[0_8px_24px_-8px_rgba(16,185,129,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)]">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5">
                     <CheckCircle2 size={15} className="text-emerald-600" />
                     {isBn ? "মাঠপর্যায়ে ভার্কের ভূমিকা ও অবদান" : "VERC's On-The-Ground Contribution in Bangladesh"}
                   </div>
@@ -710,12 +732,12 @@ export default function SdgSection() {
                 </div>
 
                 {/* Key Metric Badge */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-100/80 border border-slate-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl backdrop-blur-xl bg-white/90 border border-slate-200/80 shadow-[0_8px_24px_-8px_rgba(0,75,141,0.08),inset_0_1px_1px_rgba(255,255,255,1)]">
                   <div>
-                    <div className="text-[11px] font-black uppercase tracking-wider text-slate-500">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       {isBn ? "পরিমাপযোগ্য অর্জন" : "VERC Quantifiable Impact"}
                     </div>
-                    <div className="text-lg font-black text-slate-900 mt-0.5">
+                    <div className="text-lg font-bold text-slate-900 mt-0.5">
                       {isBn ? selectedGoal.impactStatBn : selectedGoal.impactStatEn}
                     </div>
                   </div>
@@ -724,7 +746,7 @@ export default function SdgSection() {
                     <Link
                       href={`/programs/${selectedGoal.programSlug}`}
                       onClick={() => setSelectedGoal(null)}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-xs sm:text-sm font-bold shadow-md hover:bg-brand-primary/90 transition-all shrink-0"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-xs sm:text-sm font-semibold shadow-md hover:bg-brand-primary/90 transition-all shrink-0"
                     >
                       <span>{isBn ? "সম্পর্কিত কর্মসূচি দেখুন" : "Explore Related Program"}</span>
                       <ExternalLink size={14} />
@@ -734,13 +756,14 @@ export default function SdgSection() {
               </div>
 
               {/* Modal Footer */}
-              <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <div className="px-6 py-4 bg-slate-50/90 backdrop-blur-xl border-t border-slate-200/70 flex items-center justify-between shrink-0">
                 <span className="text-xs text-slate-500 font-medium">
                   {isBn ? "জাতিসংঘ টেকসই উন্নয়ন এজেন্ডা ২০৩০" : "UN Sustainable Development Agenda 2030"}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setSelectedGoal(null)}
-                  className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition-colors"
+                  className="px-5 py-2 rounded-xl bg-slate-200/90 hover:bg-slate-300 text-slate-800 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   {isBn ? "বন্ধ করুন" : "Close"}
                 </button>
