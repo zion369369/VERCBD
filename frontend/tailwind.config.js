@@ -19,22 +19,37 @@ module.exports = {
       },
       fontFamily: {
         sans: [
-          "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
-          "'Segoe UI'",
+          "'SF Pro Text'",
+          "'SF Pro Display'",
+          "'SF Pro Icons'",
+          "var(--font-inter)",
+          "'Helvetica Neue'",
+          "Helvetica",
+          "Arial",
           "sans-serif"
         ],
         display: [
-          "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
+          "'SF Pro Display'",
+          "'SF Pro Text'",
+          "var(--font-inter)",
+          "'Helvetica Neue'",
+          "Helvetica",
+          "Arial",
           "sans-serif"
         ],
         valley: [
-          "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
+          "'SF Pro Display'",
+          "'SF Pro Text'",
+          "var(--font-inter)",
+          "'Helvetica Neue'",
+          "Helvetica",
+          "Arial",
           "sans-serif"
         ],
       },

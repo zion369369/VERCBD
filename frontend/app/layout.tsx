@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -7,6 +8,12 @@ import Chatbot from "@/components/Chatbot";
 import { ContentProvider } from "@/context/ContentContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "VERC | Village Education Resource Center",
@@ -19,7 +26,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.cdnfonts.com/css/sf-pro-display"
+        />
+      </head>
       <body className="font-sans antialiased bg-brand-light text-brand-dark selection:bg-brand-primary/10">
         <LanguageProvider>
           <AuthProvider>
