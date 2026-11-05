@@ -1664,6 +1664,107 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     primaryColor
   });
 
+  // Client-side canvas compressor to shrink large base64 strings down to ~80-120KB
+  const compressBase64Image = (dataUrl: string): Promise<string> => {
+    if (!dataUrl || typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/") || dataUrl.length < 250 * 1024) {
+      return Promise.resolve(dataUrl);
+    }
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const maxWidth = 1920;
+        const maxHeight = 1080;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.78));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
+  // Traverses all collections and optimizes any uncompressed base64 images
+  const optimizePayloadImages = async (snapshot: any): Promise<any> => {
+    if (!snapshot || typeof snapshot !== "object") return snapshot;
+    const optimized = { ...snapshot };
+
+    if (Array.isArray(optimized.heroSlides)) {
+      optimized.heroSlides = await Promise.all(
+        optimized.heroSlides.map(async (s: HeroSlide) => {
+          if (s.imageUrl && s.imageUrl.startsWith("data:image/")) {
+            const compressed = await compressBase64Image(s.imageUrl);
+            return { ...s, imageUrl: compressed };
+          }
+          return s;
+        })
+      );
+    }
+
+    if (Array.isArray(optimized.gallery)) {
+      optimized.gallery = await Promise.all(
+        optimized.gallery.map(async (g: GalleryItem) => {
+          if (g.imageUrl && g.imageUrl.startsWith("data:image/")) {
+            const compressed = await compressBase64Image(g.imageUrl);
+            return { ...g, imageUrl: compressed };
+          }
+          return g;
+        })
+      );
+    }
+
+    if (Array.isArray(optimized.teamMembers)) {
+      optimized.teamMembers = await Promise.all(
+        optimized.teamMembers.map(async (t: TeamMember) => {
+          if (t.imageUrl && t.imageUrl.startsWith("data:image/")) {
+            const compressed = await compressBase64Image(t.imageUrl);
+            return { ...t, imageUrl: compressed };
+          }
+          return t;
+        })
+      );
+    }
+
+    if (Array.isArray(optimized.partners)) {
+      optimized.partners = await Promise.all(
+        optimized.partners.map(async (p: PartnerItem) => {
+          if (p.logoUrl && p.logoUrl.startsWith("data:image/")) {
+            const compressed = await compressBase64Image(p.logoUrl);
+            return { ...p, logoUrl: compressed };
+          }
+          return p;
+        })
+      );
+    }
+
+    if (optimized.siteSettings && optimized.siteSettings.logoUrl?.startsWith("data:image/")) {
+      optimized.siteSettings = {
+        ...optimized.siteSettings,
+        logoUrl: await compressBase64Image(optimized.siteSettings.logoUrl)
+      };
+    }
+
+    return optimized;
+  };
+
   // Save to LocalStorage immediately and debounce auto-sync to live server (/api/content)
   useEffect(() => {
     if (!isLoaded || !isInitialServerFetchDone.current) return;
@@ -1677,26 +1778,31 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.warn("Could not save content to localStorage:", e);
     }
 
-    const timer = setTimeout(() => {
-      fetch("/api/content", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res?.success) {
-            setSyncStatus("synced");
-            setLastLiveSync(res.lastUpdated || Date.now());
-          } else {
-            setSyncStatus("error");
-          }
-        })
-        .catch((err) => {
-          console.warn("[ContentContext] Failed to sync content to live server:", err);
-          setSyncStatus("error");
+    const timer = setTimeout(async () => {
+      try {
+        const optimizedPayload = await optimizePayloadImages(payload);
+        const res = await fetch("/api/content", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(optimizedPayload)
         });
-    }, 400);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data?.success) {
+          setSyncStatus("synced");
+          setLastLiveSync(data.lastUpdated || Date.now());
+        } else {
+          setSyncStatus("error");
+        }
+      } catch (err) {
+        console.warn("[ContentContext] Failed to sync content to live server:", err);
+        setSyncStatus("error");
+      }
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [
@@ -1743,13 +1849,16 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.warn(`Immediate save for ${key} failed:`, e);
     }
 
-    // Also immediately push slice to live server
+    // Also push slice to live server safely
     fetch("/api/content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [key]: value })
     })
-      .then((r) => r.json())
+      .then(async (r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
       .then((res) => {
         if (res?.success) {
           setSyncStatus("synced");
@@ -1762,15 +1871,37 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Explicit publish function for Admin UI
   const publishToLive = async (): Promise<{ success: boolean; message: string }> => {
     setSyncStatus("saving");
-    const payload = getCurrentSnapshot();
+    const rawPayload = getCurrentSnapshot();
 
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      // 1. Automatically compress any multi-MB base64 images so payload is < 150KB
+      const optimizedPayload = await optimizePayloadImages(rawPayload);
+
+      // 2. Update local state with optimized slides/images to prevent memory bloat
+      if (optimizedPayload.heroSlides) setHeroSlides(optimizedPayload.heroSlides);
+      if (optimizedPayload.gallery) setGallery(optimizedPayload.gallery);
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(optimizedPayload));
+      } catch (lsErr) {
+        console.warn("LocalStorage save warning:", lsErr);
+      }
+
+      // 3. Send lightweight payload to live server
       const res = await fetch("/api/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(optimizedPayload)
       });
+
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error("Payload size limit exceeded on server. Please use library images or a smaller image file.");
+        }
+        const text = await res.text();
+        throw new Error(`Server returned HTTP ${res.status}: ${text.slice(0, 100)}`);
+      }
+
       const data = await res.json();
       if (data?.success) {
         setSyncStatus("synced");

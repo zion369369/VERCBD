@@ -1,4 +1,7 @@
 # VERCBD Next.js Production Apache / Passenger Configuration for cPanel
+# Increase request body limit to 50MB to support media and CMS sync
+LimitRequestBody 52428800
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 

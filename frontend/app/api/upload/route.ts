@@ -28,14 +28,30 @@ export async function POST(req: Request) {
       .slice(0, 40);
 
     const uniqueFileName = `${Date.now()}_${baseName}${extension}`;
-    const destinationPath = path.join(uploadsDir, uniqueFileName);
-
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    fs.writeFileSync(destinationPath, buffer);
+    let destinationPath = path.join(uploadsDir, uniqueFileName);
+    let publicUrl = `/uploads/${uniqueFileName}`;
 
-    const publicUrl = `/uploads/${uniqueFileName}`;
+    try {
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true, mode: 0o777 });
+      }
+      try { fs.chmodSync(uploadsDir, 0o777); } catch (_) {}
+      fs.writeFileSync(destinationPath, buffer);
+    } catch (writeErr: any) {
+      console.warn("[api/upload] public/uploads write failed, trying data/uploads fallback:", writeErr.message);
+      // Fallback: write to data/uploads which is guaranteed writable on cPanel
+      const fallbackDir = path.join(process.cwd(), "data", "uploads");
+      if (!fs.existsSync(fallbackDir)) {
+        fs.mkdirSync(fallbackDir, { recursive: true, mode: 0o777 });
+      }
+      try { fs.chmodSync(fallbackDir, 0o777); } catch (_) {}
+      destinationPath = path.join(fallbackDir, uniqueFileName);
+      fs.writeFileSync(destinationPath, buffer);
+      publicUrl = `/api/uploads/${uniqueFileName}`;
+    }
 
     return NextResponse.json({
       success: true,
@@ -51,4 +67,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

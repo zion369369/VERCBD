@@ -50,6 +50,51 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
   const displayText = helperText || hint;
 
+  // Compresses an image client-side on an HTML5 canvas to guarantee lightweight payloads (~80-120KB)
+  const compressFileToDataUrl = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      if (file.type === "image/svg+xml" || file.size < 150 * 1024) {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxWidth = 1920;
+          const maxHeight = 1080;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth || height > maxHeight) {
+            if (width / height > maxWidth / maxHeight) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            } else {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL("image/jpeg", 0.8));
+          } else {
+            resolve(e.target?.result as string);
+          }
+        };
+        img.onerror = () => resolve(e.target?.result as string);
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFile = async (file: File) => {
     if (!file) return;
     if (!file.type.startsWith("image/") && !file.type.includes("pdf")) {
@@ -78,17 +123,15 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       }
       throw new Error("Server upload returned non-OK status");
     } catch (err) {
-      console.warn("[ImageUploadField] Direct server upload failed, falling back to base64 Data URL:", err);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setPreviewError(false);
-          onChange(e.target.result as string);
-        }
-        setIsUploading(false);
-      };
-      reader.onerror = () => setIsUploading(false);
-      reader.readAsDataURL(file);
+      console.warn("[ImageUploadField] Direct server upload failed, falling back to optimized Data URL:", err);
+      try {
+        const optimized = await compressFileToDataUrl(file);
+        setPreviewError(false);
+        onChange(optimized);
+      } catch (readErr) {
+        console.error("Failed to read file:", readErr);
+      }
+      setIsUploading(false);
     }
   };
 
