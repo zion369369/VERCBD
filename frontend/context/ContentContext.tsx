@@ -486,7 +486,7 @@ const defaultHeroSlides: HeroSlide[] = [
     title: "Transforming",
     highlightText: "Destinies.",
     subtitle: "Dedicated to empowering marginalized communities through sustainable innovation and participatory development since 1977.",
-    imageUrl: "/assets/home_official_1.jpg",
+    imageUrl: "/assets/homepage-community-hero.webp",
     primaryBtnText: "Our Story",
     primaryBtnLink: "/about",
     secondaryBtnText: "Partner with Us",
