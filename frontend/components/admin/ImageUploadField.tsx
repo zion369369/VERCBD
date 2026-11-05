@@ -110,7 +110,6 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     try {
       const optimized = await optimizeImage(file);
       const formData = new FormData();
-<<<<<<< HEAD
       formData.append("file", optimized);
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
