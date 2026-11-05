@@ -45,13 +45,14 @@ export const DocumentUploadField: React.FC<DocumentUploadFieldProps> = ({
   const [activeTab, setActiveTab] = useState<"upload" | "url" | "presets">("upload");
   const [urlInput, setUrlInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isPdf = value?.toLowerCase().endsWith(".pdf") || value?.startsWith("data:application/pdf");
   const isImage = value?.startsWith("data:image/") || /\.(jpg|jpeg|png|webp|svg|gif)(\?.*)?$/i.test(value || "");
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     setErrorMessage("");
     if (!file) return;
 
@@ -65,11 +66,36 @@ export const DocumentUploadField: React.FC<DocumentUploadFieldProps> = ({
       ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
       : `${Math.round(file.size / 1024)} KB`;
 
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.url) {
+          onChange(data.url, file.name, sizeFormatted);
+          setIsUploading(false);
+          return;
+        }
+      }
+    } catch {
+      // Fallback to data URL below if server upload fails
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
+      setIsUploading(false);
       if (e.target?.result) {
         onChange(e.target.result as string, file.name, sizeFormatted);
       }
+    };
+    reader.onerror = () => {
+      setIsUploading(false);
+      setErrorMessage("Failed to read file.");
     };
     reader.readAsDataURL(file);
   };

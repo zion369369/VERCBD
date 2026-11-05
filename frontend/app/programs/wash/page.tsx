@@ -24,13 +24,16 @@ import {
   Building,
   Target
 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function CombinedWashHealthPage() {
+  const { programs } = useContent();
+  const cmsProgram = programs.find((p) => p.slug === "wash") || programs[1];
   const [activeTab, setActiveTab] = useState<"wash" | "health">("wash");
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const washSlides = [
-    { url: "/assets/wash_slide_1.jpg", fallback: "https://www.vercbd.org/images/watsan-1-thumb.jpg", title: "Community Safe Water Tap" },
+    { url: cmsProgram?.imageUrl || "/assets/wash_slide_1.jpg", fallback: "https://www.vercbd.org/images/watsan-1-thumb.jpg", title: cmsProgram?.title || "Community Safe Water Tap" },
     { url: "/assets/wash_slide_2.jpg", fallback: "https://www.vercbd.org/images/watsan-2-thumb.jpg", title: "Sanitation & Hygiene Infrastructure" },
     { url: "/assets/wash_slide_3.jpg", fallback: "https://www.vercbd.org/images/watsan-3-thumb.jpg", title: "CLTS Community Mobilization" }
   ];
@@ -171,7 +174,7 @@ export default function CombinedWashHealthPage() {
             </h1>
 
             <p className="text-lg lg:text-2xl text-gray-100 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              Pioneers of Community-Led Total Sanitation (CLTS), delivering arsenic-safe piped drinking water, and operating subsidized Mother & Child hospitals across Bangladesh.
+              {cmsProgram?.description || "Pioneers of Community-Led Total Sanitation (CLTS), delivering arsenic-safe piped drinking water, and operating subsidized Mother & Child hospitals across Bangladesh."}
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 pt-4">

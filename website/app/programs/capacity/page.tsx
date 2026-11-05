@@ -27,8 +27,11 @@ import {
   Calendar,
   Sparkles
 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function CapacityBuildingPage() {
+  const { programs } = useContent();
+  const cmsProgram = programs.find((p) => p.slug === "capacity") || programs[3];
   const trainingFields = [
     { name: "WaSH & Hygiene Promotion", category: "Public Health", icon: <HardHat className="text-emerald-600 w-6 h-6" />, desc: "CLTS facilitation, community water safety planning, and school hygiene club mobilization." },
     { name: "Local Governance & LGI Support", category: "Governance", icon: <Building2 className="text-blue-600 w-6 h-6" />, desc: "Union Parishad participatory budgeting, tax assessment, and transparent citizen charters." },
@@ -77,7 +80,7 @@ export default function CapacityBuildingPage() {
       <section className="relative pt-36 pb-28 lg:pt-48 lg:pb-36 bg-gray-900 overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/assets/capacity_building_training.jpg" 
+            src={cmsProgram?.imageUrl || "/assets/capacity_building_training.jpg"} 
             alt="VERC Capacity Building Training Workshop" 
             className="w-full h-full object-cover opacity-30 scale-105"
           />
@@ -109,7 +112,7 @@ export default function CapacityBuildingPage() {
             </h1>
 
             <p className="text-lg lg:text-2xl text-gray-300 font-medium max-w-3xl mx-auto leading-relaxed">
-              Enhancing human potential, fostering participatory leadership, and developing institutional excellence across Bangladesh’s grassroots development sector since 1977.
+              {cmsProgram?.description || "Enhancing human potential, fostering participatory leadership, and developing institutional excellence across Bangladesh’s grassroots development sector since 1977."}
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 pt-4">

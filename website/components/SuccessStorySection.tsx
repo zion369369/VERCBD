@@ -9,6 +9,7 @@ import {
   MapPin, BookOpen, ExternalLink
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useContent } from "@/context/ContentContext";
 
 interface ImpactStory {
   id: string;
@@ -178,26 +179,41 @@ const STORIES: ImpactStory[] = [
 
 export default function SuccessStorySection() {
   const { language } = useLanguage();
+  const { stories } = useContent();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const publishedCmsStories = stories || [];
+  const displayStories: ImpactStory[] = STORIES.map((base, idx) => {
+    const cms = publishedCmsStories[idx];
+    if (!cms) return base;
+    return {
+      ...base,
+      titleEn: cms.title || base.titleEn,
+      quoteEn: cms.story || base.quoteEn,
+      locationEn: cms.location || base.locationEn,
+      personNameEn: cms.beneficiaryName || base.personNameEn,
+      image: cms.imageUrl || base.image,
+    };
+  });
 
   // Auto-advance stories smoothly every 8 seconds when not hovered
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % STORIES.length);
+      setActiveIndex((prev) => (prev + 1) % displayStories.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, displayStories.length]);
 
-  const current = STORIES[activeIndex];
+  const current = displayStories[activeIndex] || displayStories[0];
 
   const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + STORIES.length) % STORIES.length);
+    setActiveIndex((prev) => (prev - 1 + displayStories.length) % displayStories.length);
   };
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % STORIES.length);
+    setActiveIndex((prev) => (prev + 1) % displayStories.length);
   };
 
   return (
@@ -244,7 +260,7 @@ export default function SuccessStorySection() {
           {/* 3D Morphic Segmented Control (Strictly 3 buttons in one line, 0 horizontal scroll) */}
           <div className="pt-4 max-w-2xl mx-auto w-full px-2 sm:px-0">
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 rounded-2xl sm:rounded-full bg-slate-100/95 backdrop-blur-xl border border-slate-200/90 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06),0_10px_25px_-5px_rgba(15,23,42,0.08)]">
-              {STORIES.map((story, idx) => {
+              {displayStories.map((story, idx) => {
                 const isActive = idx === activeIndex;
                 return (
                   <button

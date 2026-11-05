@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Calendar, Share2 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
-// In a real app, this would be fetched from the NestJS API
-const getStoryData = (slug: string) => {
+const getFallbackStoryData = (slug: string) => {
   const stories: Record<string, any> = {
     "nilima-success": {
       title: "Nilima's Journey to Self-Reliance",
@@ -40,7 +42,23 @@ const getStoryData = (slug: string) => {
 };
 
 export default function ImpactStoryPage({ params }: { params: { slug: string } }) {
-  const story = getStoryData(params.slug);
+  const { stories } = useContent();
+  const cmsStory = stories.find(
+    (s) =>
+      s.slug === params.slug ||
+      s.id === params.slug ||
+      s.title.toLowerCase().replace(/[^a-z0-9]+/g, "-") === params.slug
+  );
+  const fallback = getFallbackStoryData(params.slug);
+  const story = cmsStory
+    ? {
+        title: cmsStory.title,
+        location: cmsStory.location,
+        date: cmsStory.date,
+        image: cmsStory.imageUrl || fallback.image,
+        content: cmsStory.story,
+      }
+    : fallback;
 
   return (
     <div className="bg-white pb-24">

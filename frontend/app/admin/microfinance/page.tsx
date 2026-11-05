@@ -228,7 +228,7 @@ export default function AdminMicrofinancePage() {
             <Eye size={13} /> View Microfinance <ExternalLink size={11} />
           </a>
           <a
-            href="/programs/microfinance"
+            href="/programs/livelihood#microfinance"
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 transition-all flex items-center gap-1.5"

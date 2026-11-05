@@ -63,19 +63,23 @@ export default function AdminSettingsPage() {
         }
 
         if (confirm("Restore content from this backup? This will update the entire live website!")) {
-          const res = await fetch("/api/content", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parsed)
-          });
-          const result = await res.json();
-          if (result?.success) {
-            localStorage.setItem("verc_live_content_v3", JSON.stringify(parsed));
-            setBackupMsg("Backup restored successfully! Reloading live content...");
-            setTimeout(() => window.location.reload(), 1200);
-          } else {
-            alert("Server failed to save backup: " + (result?.error || "Unknown error"));
+          const entries = Object.entries(parsed);
+          for (let i = 0; i < entries.length; i += 4) {
+            const chunk = Object.fromEntries(entries.slice(i, i + 4));
+            const res = await fetch("/api/content", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(chunk)
+            });
+            const result = await res.json();
+            if (!result?.success) {
+              alert("Server failed to save backup chunk: " + (result?.error || "Unknown error"));
+              return;
+            }
           }
+          localStorage.setItem("verc_live_content_v3", JSON.stringify(parsed));
+          setBackupMsg("Backup restored successfully! Reloading live content...");
+          setTimeout(() => window.location.reload(), 1200);
         }
       } catch (err: any) {
         alert("Failed to read backup file: " + err.message);

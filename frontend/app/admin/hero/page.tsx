@@ -23,6 +23,7 @@ export default function AdminHeroPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   const isBannerGloballyEnabled = siteSettings.heroBannerEnabled !== false;
 
@@ -247,16 +248,24 @@ export default function AdminHeroPage() {
                     {slide.subtitle || "(No subtitle provided)"}
                   </p>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/5 text-xs font-semibold">
-                    <span
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/5 text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => openEditModal(slide)}
+                      title={`Click to edit Primary Button (${slide.primaryBtnLink || "/about"})`}
                       style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
-                      className="px-2.5 py-1 rounded-lg text-[11px]"
+                      className="px-2.5 py-1 rounded-lg text-[11px] cursor-pointer hover:opacity-80 transition-opacity"
                     >
                       {slide.primaryBtnText || "Primary"} →
-                    </span>
-                    <span className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-lg text-[11px]">
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openEditModal(slide)}
+                      title={`Click to edit Secondary Button (${slide.secondaryBtnLink || "/contact"})`}
+                      className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-lg text-[11px] cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                    >
                       {slide.secondaryBtnText || "Secondary"}
-                    </span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -412,7 +421,8 @@ export default function AdminHeroPage() {
               <ImageUploadField
                 label="Hero Background Image"
                 value={formData.imageUrl}
-                onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                onChange={(url) => setFormData((prev) => ({ ...prev, imageUrl: url }))}
+                onUploadingChange={setIsImageUploading}
                 hint="Supports direct local file upload, preset library, or custom image URL"
               />
 
@@ -480,10 +490,11 @@ export default function AdminHeroPage() {
                 </button>
                 <button
                   type="submit"
+                  disabled={isImageUploading}
                   style={{ backgroundColor: primaryColor }}
-                  className="px-6 py-2.5 text-white rounded-xl font-bold shadow-md cursor-pointer hover:opacity-90"
+                  className="px-6 py-2.5 text-white rounded-xl font-bold shadow-md cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {editingSlide ? "Save Changes" : "Create Slide"}
+                  {isImageUploading ? "Uploading Image..." : editingSlide ? "Save Changes" : "Create Slide"}
                 </button>
               </div>
             </form>

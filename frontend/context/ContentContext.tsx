@@ -1359,9 +1359,40 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [syncStatus, setSyncStatus] = useState<"synced" | "saving" | "error" | "offline">("synced");
   const [lastLiveSync, setLastLiveSync] = useState<number | null>(null);
   const isInitialServerFetchDone = React.useRef(false);
-  const isHydratingRef = React.useRef(false);
   const uploadedDataUrlCacheRef = React.useRef<Map<string, string>>(new Map());
-  const lastSyncedSnapshotByKeyRef = React.useRef<Record<string, string>>({});
+  const lastSyncedSnapshotByKeyRef = React.useRef<Record<string, string>>({
+    heroSlides: JSON.stringify(defaultHeroSlides),
+    impactStats: JSON.stringify(defaultImpactStats),
+    programs: JSON.stringify(defaultPrograms),
+    news: JSON.stringify(defaultNews),
+    stories: JSON.stringify(defaultStories),
+    microfinanceProducts: JSON.stringify(defaultMicrofinanceProducts),
+    teamMembers: JSON.stringify(defaultTeamMembers),
+    partners: JSON.stringify(defaultPartners),
+    gallery: JSON.stringify(defaultGallery),
+    photoLibraryVersion: JSON.stringify(PHOTO_LIBRARY_VERSION),
+    careersContentVersion: JSON.stringify(CAREERS_CONTENT_VERSION),
+    branches: JSON.stringify(defaultBranches),
+    branchDirectoryVersion: JSON.stringify(BRANCH_DIRECTORY_VERSION),
+    deletedMessageIds: JSON.stringify([]),
+    messages: JSON.stringify(defaultMessages),
+    subscribers: JSON.stringify(defaultSubscribers),
+    donations: JSON.stringify(defaultDonations),
+    campaigns: JSON.stringify(defaultCampaigns),
+    siteSettings: JSON.stringify(defaultSiteSettings),
+    dashboardMetrics: JSON.stringify(defaultDashboardMetrics),
+    legalCertifications: JSON.stringify(defaultLegalCertifications),
+    annualReports: JSON.stringify(defaultAnnualReports),
+    awards: JSON.stringify(defaultAwards),
+    organogramNodes: JSON.stringify(defaultOrganogramNodes),
+    aboutContent: JSON.stringify(defaultAboutContent),
+    microfinanceProcess: JSON.stringify(defaultMicrofinanceProcess),
+    jobOpenings: JSON.stringify(defaultJobOpenings),
+    jobApplications: JSON.stringify(defaultJobApplications),
+    departments: JSON.stringify(defaultDepartments),
+    theme: JSON.stringify("light"),
+    primaryColor: JSON.stringify("#004B8D")
+  });
 
   const recordSyncedKeys = (data: Record<string, any>) => {
     if (!data || typeof data !== "object") return;
@@ -1375,11 +1406,19 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Helper to apply incoming payload into component states
-  const applyPayload = (parsed: any) => {
+  const applyPayload = (parsed: any, markAsSynced = false) => {
     if (!parsed || typeof parsed !== "object") return;
     if (Array.isArray(parsed.branches)) parsed = ensureBranchDirectory(parsed);
     if (Array.isArray(parsed.gallery)) parsed = ensurePhotoLibrary(parsed);
     if (Array.isArray(parsed.jobOpenings) || Array.isArray(parsed.jobApplications)) parsed = ensureCareers(parsed);
+    if (markAsSynced) {
+      recordSyncedKeys(parsed);
+      if (parsed.aboutContent && typeof parsed.aboutContent === "object") {
+        try {
+          lastSyncedSnapshotByKeyRef.current.aboutContent = JSON.stringify({ ...defaultAboutContent, ...parsed.aboutContent });
+        } catch (_) {}
+      }
+    }
     if (parsed.heroSlides && Array.isArray(parsed.heroSlides)) setHeroSlides(parsed.heroSlides);
     if (parsed.impactStats && Array.isArray(parsed.impactStats)) setImpactStats(parsed.impactStats);
     if (parsed.programs && Array.isArray(parsed.programs)) setPrograms(parsed.programs);
@@ -1621,8 +1660,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         localParsed = JSON.parse(stored);
-        isHydratingRef.current = true;
-        applyPayload(localParsed);
+        applyPayload(localParsed, false);
       }
     } catch (e) {
       console.warn("Could not load stored content from localStorage:", e);
@@ -1648,8 +1686,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
             ...json.data
           };
 
-          isHydratingRef.current = true;
-          applyPayload(mergedServerAndLocal);
+          applyPayload(mergedServerAndLocal, true);
           if (json.lastUpdated) setLastLiveSync(json.lastUpdated);
 
           try {
@@ -1667,8 +1704,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
             if (Object.keys(missingOnServer).length > 0) {
               try {
                 const syncRes = await syncPayloadInBatches(missingOnServer, { onlyChanged: true });
-                isHydratingRef.current = true;
-                applyPayload(syncRes.optimizedPayload);
+                applyPayload(syncRes.optimizedPayload, true);
                 if (syncRes.lastUpdated) setLastLiveSync(syncRes.lastUpdated);
               } catch (syncErr) {
                 console.warn("[ContentContext] Background migration of unsynced local keys failed:", syncErr);
@@ -1681,8 +1717,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           // If live server has no content file yet, auto-migrate existing local modifications in safe batches
           try {
             const syncRes = await syncPayloadInBatches(localParsed, { onlyChanged: true });
-            isHydratingRef.current = true;
-            applyPayload(syncRes.optimizedPayload);
+            applyPayload(syncRes.optimizedPayload, true);
             if (syncRes.lastUpdated) setLastLiveSync(syncRes.lastUpdated);
             setSyncStatus("synced");
           } catch (_) {}
@@ -1693,10 +1728,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSyncStatus("offline");
       })
       .finally(() => {
-        setTimeout(() => {
-          isHydratingRef.current = false;
-          isInitialServerFetchDone.current = true;
-        }, 150);
+        isInitialServerFetchDone.current = true;
       });
   }, []);
 
@@ -1714,8 +1746,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
         if (!data) return;
 
-        isHydratingRef.current = true;
-        applyPayload(data);
+        applyPayload(data, true);
       } catch (err) {
         console.warn("Sync error:", err);
       }
@@ -1804,10 +1835,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Save to LocalStorage immediately and debounce auto-sync of changed keys to live server (/api/content)
   useEffect(() => {
     if (!isLoaded || !isInitialServerFetchDone.current) return;
-    if (isHydratingRef.current) {
-      isHydratingRef.current = false;
-      return;
-    }
 
     const payload = getCurrentSnapshot();
 
@@ -1837,8 +1864,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         const result = await syncPayloadInBatches(changedSubset, { onlyChanged: true });
         if (JSON.stringify(result.optimizedPayload) !== JSON.stringify(changedSubset)) {
-          isHydratingRef.current = true;
-          applyPayload(result.optimizedPayload);
+          applyPayload(result.optimizedPayload, true);
         }
         setSyncStatus("synced");
         setLastLiveSync(result.lastUpdated || Date.now());
@@ -1846,7 +1872,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         console.warn("[ContentContext] Failed to sync content to live server:", err);
         setSyncStatus("error");
       }
-    }, 600);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [
@@ -1881,34 +1907,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isLoaded
   ]);
 
-  // Helper for immediate synchronous persistence
-  const saveToStorageImmediate = (key: string, value: any) => {
-    if (typeof window === "undefined") return;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const parsed = stored ? JSON.parse(stored) : {};
-      parsed[key] = value;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-      window.dispatchEvent(new CustomEvent("verc_content_sync", { detail: { [key]: value } }));
-    } catch (e) {
-      console.warn(`Immediate save for ${key} failed:`, e);
-    }
-
-    // Upload any embedded data:image/ URLs first and push slice in safe batches
-    syncPayloadInBatches({ [key]: value }, { onlyChanged: false, includeUnchangedBranches: key === "branches" })
-      .then((res) => {
-        if (res.success) {
-          if (JSON.stringify(res.optimizedPayload[key]) !== JSON.stringify(value)) {
-            isHydratingRef.current = true;
-            applyPayload(res.optimizedPayload);
-          }
-          setSyncStatus("synced");
-          setLastLiveSync(res.lastUpdated || Date.now());
-        }
-      })
-      .catch(() => {});
-  };
-
   // Explicit publish function for Admin UI
   const publishToLive = async (): Promise<{ success: boolean; message: string }> => {
     setSyncStatus("saving");
@@ -1918,8 +1916,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const result = await syncPayloadInBatches(rawPayload, { onlyChanged: false, includeUnchangedBranches: false });
 
       if (JSON.stringify(result.optimizedPayload) !== JSON.stringify(rawPayload)) {
-        isHydratingRef.current = true;
-        applyPayload(result.optimizedPayload);
+        applyPayload(result.optimizedPayload, true);
       }
 
       try {
@@ -1943,25 +1940,13 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // CRUD Operations
   const addHeroSlide = (slide: Omit<HeroSlide, "id">) => {
     const newSlide = { ...slide, id: `hero-${Date.now()}`, enabled: slide.enabled ?? true };
-    setHeroSlides(prev => {
-      const updated = [...prev, newSlide];
-      saveToStorageImmediate("heroSlides", updated);
-      return updated;
-    });
+    setHeroSlides(prev => [...prev, newSlide]);
   };
   const updateHeroSlide = (id: string, slide: Partial<HeroSlide>) => {
-    setHeroSlides(prev => {
-      const updated = prev.map(s => s.id === id ? { ...s, ...slide } : s);
-      saveToStorageImmediate("heroSlides", updated);
-      return updated;
-    });
+    setHeroSlides(prev => prev.map(s => s.id === id ? { ...s, ...slide } : s));
   };
   const deleteHeroSlide = (id: string) => {
-    setHeroSlides(prev => {
-      const updated = prev.filter(s => s.id !== id);
-      saveToStorageImmediate("heroSlides", updated);
-      return updated;
-    });
+    setHeroSlides(prev => prev.filter(s => s.id !== id));
   };
 
   const updateImpactStat = (id: string, stat: Partial<ImpactStat>) => {
@@ -2121,11 +2106,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateSiteSettings = (settings: Partial<SiteSettings>) => {
-    setSiteSettings(prev => {
-      const updated = { ...prev, ...settings };
-      saveToStorageImmediate("siteSettings", updated);
-      return updated;
-    });
+    setSiteSettings(prev => ({ ...prev, ...settings }));
     if (settings.primaryColor) {
       setPrimaryColor(settings.primaryColor);
     }

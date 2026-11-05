@@ -24,8 +24,10 @@ import {
   Copy,
   Check
 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function DonatePage() {
+  const { addDonation, siteSettings } = useContent();
   const [donationType, setDonationType] = useState<"one-time" | "monthly">("one-time");
   const [currency, setCurrency] = useState<"BDT" | "USD">("BDT");
   const [selectedAmount, setSelectedAmount] = useState<number>(5000);
@@ -63,6 +65,32 @@ export default function DonatePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const programMap: Record<string, "WaSH & Clean Water" | "Child Education" | "Mother & Child Health" | "Emergency Flood Relief" | "Microfinance Capital" | "General Humanitarian Fund"> = {
+      general: "General Humanitarian Fund",
+      wash: "WaSH & Clean Water",
+      education: "Child Education",
+      health: "Mother & Child Health",
+      livelihood: "Microfinance Capital",
+    };
+    const methodLabel: "bKash / Nagad" | "Credit Card" | "Bank Transfer" =
+      paymentMethod === "mfs"
+        ? "bKash / Nagad"
+        : paymentMethod === "card"
+        ? "Credit Card"
+        : "Bank Transfer";
+    addDonation({
+      donorName: isAnonymous ? "Anonymous Donor" : donorName.trim() || "Valued Donor",
+      donorType: "Individual",
+      donorEmail: donorEmail.trim() || "anonymous@vercbd.org",
+      amount: activeAmount,
+      currency: currency,
+      program: programMap[selectedCause] || "General Humanitarian Fund",
+      date: new Date().toISOString().slice(0, 10),
+      paymentMethod: methodLabel,
+      receiptNumber: `VERC-${Date.now().toString().slice(-6)}`,
+      status: "Completed",
+      notes: `${donationType === "monthly" ? "Monthly recurring" : "One-time"} donation${donorPhone ? ` • Phone: ${donorPhone}` : ""}`,
+    });
     setIsSubmitted(true);
   };
 
@@ -525,11 +553,11 @@ export default function DonatePage() {
             Our donor relations team is available to assist with custom grant agreements, wire verification, or customized impact reporting.
           </p>
           <div className="flex flex-wrap justify-center gap-6 pt-2 text-xs font-bold text-gray-700">
-            <a href="tel:+88027792015" className="flex items-center gap-2 hover:text-brand-primary">
-              <Phone size={14} className="text-brand-primary" /> +880-2-7792015
+            <a href={`tel:${(siteSettings.phone || "+880-2-7792015").replace(/\s+/g, "")}`} className="flex items-center gap-2 hover:text-brand-primary">
+              <Phone size={14} className="text-brand-primary" /> {siteSettings.phone || "+880-2-7792015"}
             </a>
-            <a href="mailto:info@vercbd.org" className="flex items-center gap-2 hover:text-brand-primary">
-              <Mail size={14} className="text-brand-primary" /> info@vercbd.org
+            <a href={`mailto:${siteSettings.email || "info@vercbd.org"}`} className="flex items-center gap-2 hover:text-brand-primary">
+              <Mail size={14} className="text-brand-primary" /> {siteSettings.email || "info@vercbd.org"}
             </a>
           </div>
         </div>

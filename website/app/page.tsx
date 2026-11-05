@@ -44,12 +44,26 @@ export default function Home() {
   }, [activeHeroSlides.length, currentSlide]);
 
   const activeSlide = activeHeroSlides[currentSlide] || activeHeroSlides[0];
-  const requestedHeroImage = currentSlide === 0
-    ? "/assets/homepage-community-hero.webp"
-    : activeSlide?.imageUrl || "/assets/home_official_1.jpg";
-  const fallbackHeroImage = requestedHeroImage.startsWith("/photos/") ? "/assets/community_success_hero.png" : "/assets/home_official_1.jpg";
-  const heroImage = failedHeroImages.has(requestedHeroImage) || requestedHeroImage.startsWith("/photos/") ? fallbackHeroImage : requestedHeroImage;
+  const requestedHeroImage = activeSlide?.imageUrl?.trim() || "/assets/home_official_1.jpg";
+  const fallbackHeroImage = "/assets/home_official_1.jpg";
+  const heroImage = failedHeroImages.has(requestedHeroImage) ? fallbackHeroImage : requestedHeroImage;
   const primaryStats = impactStats.slice(0, 4);
+
+  const normalizeHref = (href?: string, fallback = "/about") => {
+    const val = (href || "").trim();
+    if (!val) return fallback;
+    if (
+      val.startsWith("/") ||
+      val.startsWith("#") ||
+      val.startsWith("http://") ||
+      val.startsWith("https://") ||
+      val.startsWith("mailto:") ||
+      val.startsWith("tel:")
+    ) {
+      return val;
+    }
+    return `/${val}`;
+  };
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -125,12 +139,14 @@ export default function Home() {
 
   const currentSlideText = getSlideContent(activeSlide);
 
-  // Helper for bilingual stat labels
+  // Helper for bilingual stat labels (uses CMS label in English, translation dictionary in Bangla)
   const getStatLabel = (key: string, defaultLabel: string) => {
-    if (key === "lives") return t("stat_lives_label");
-    if (key === "districts") return t("stat_districts_label");
-    if (key === "leaders") return t("stat_leaders_label");
-    if (key === "legacy") return t("stat_legacy_label");
+    if (language === "bn") {
+      if (key === "lives") return t("stat_lives_label");
+      if (key === "districts") return t("stat_districts_label");
+      if (key === "leaders") return t("stat_leaders_label");
+      if (key === "legacy") return t("stat_legacy_label");
+    }
     return defaultLabel;
   };
 
@@ -143,12 +159,14 @@ export default function Home() {
     return <TrendingUp size={22} className="stroke-[2.2]" />;
   };
 
-  // Helper for bilingual program details
+  // Helper for bilingual program details (uses CMS title/description in English, translation dictionary in Bangla)
   const getProgramInfo = (index: number, defaultTitle: string, defaultDesc: string) => {
-    if (index === 0) return { title: t("prog_edu_title"), desc: t("prog_edu_desc") };
-    if (index === 1) return { title: t("prog_wash_title"), desc: t("prog_wash_desc") };
-    if (index === 2) return { title: t("prog_live_title"), desc: t("prog_live_desc") };
-    if (index === 3) return { title: t("prog_cap_title"), desc: t("prog_cap_desc") };
+    if (language === "bn") {
+      if (index === 0) return { title: t("prog_edu_title"), desc: t("prog_edu_desc") };
+      if (index === 1) return { title: t("prog_wash_title"), desc: t("prog_wash_desc") };
+      if (index === 2) return { title: t("prog_live_title"), desc: t("prog_live_desc") };
+      if (index === 3) return { title: t("prog_cap_title"), desc: t("prog_cap_desc") };
+    }
     return { title: defaultTitle, desc: defaultDesc };
   };
 
@@ -159,7 +177,7 @@ export default function Home() {
         <section 
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center pt-48 sm:pt-56 lg:pt-64 pb-16 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+          className="relative min-h-[580px] sm:min-h-[660px] lg:min-h-[740px] flex items-center pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
         >
           {/* Ambient Decorative Lighting */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
@@ -243,8 +261,8 @@ export default function Home() {
             </div>
           )}
           
-          {/* Main Slide Content - Positioned downwards to fill bottom space and uncover faces */}
-          <div className="container-custom relative z-20 text-white text-center mt-14 sm:mt-20 lg:mt-28 mb-3 sm:mb-5">
+          {/* Main Slide Content - Centered with proper spacing above Impact Stats */}
+          <div className="container-custom relative z-30 text-white text-center my-auto py-6">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
               <AnimatePresence mode="wait">
                 {activeSlide && (
@@ -275,16 +293,16 @@ export default function Home() {
                     </p>
 
                     {/* CTAs */}
-                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5">
+                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 relative z-40">
                       <Link 
-                        href={activeSlide.primaryBtnLink || "/about"} 
+                        href={normalizeHref(activeSlide.primaryBtnLink, "/about")} 
                         className="group relative inline-flex items-center gap-2.5 px-8 py-4 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-100 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl text-sm sm:text-base cursor-pointer"
                       >
                         <span>{currentSlideText.btnPrimary}</span>
                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                       </Link>
                       <Link 
-                        href={activeSlide.secondaryBtnLink || "/contact"} 
+                        href={normalizeHref(activeSlide.secondaryBtnLink, "/contact")} 
                         className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl text-white border border-white/25 font-semibold rounded-2xl hover:bg-white/20 hover:border-white/40 hover:scale-[1.03] active:scale-[0.98] transition-all text-sm sm:text-base shadow-lg cursor-pointer"
                       >
                         <span>{currentSlideText.btnSecondary}</span>
@@ -299,7 +317,7 @@ export default function Home() {
       ) : null}
 
       {/* 2. IMPACT STATS SECTION - CLASSY POLYMORPHIC GLASS DESIGN (Positioned downward) */}
-      <section className={`relative z-30 ${isBannerGloballyEnabled && activeHeroSlides.length > 0 ? "-mt-4 sm:-mt-6 lg:-mt-8" : "pt-28 sm:pt-32"} pb-6`}>
+      <section className={`relative z-20 ${isBannerGloballyEnabled && activeHeroSlides.length > 0 ? "-mt-4 sm:-mt-6 lg:-mt-8" : "pt-28 sm:pt-32"} pb-6`}>
         <div className="container-custom relative">
           {/* Subtle Ambient Color Reflection Glow Behind Glass Cards */}
           <div 
@@ -389,7 +407,7 @@ export default function Home() {
           </div>
 
           <div className="grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
-            {programs.slice(0, 4).map((item, i) => {
+            {programs.filter((p) => p.status !== "Draft").slice(0, 4).map((item, i) => {
               const progInfo = getProgramInfo(i, item.title, item.description);
               const styles = [
                 { icon: GraduationCap, href: "/programs/education", tint: "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300", top: "bg-sky-500", border: "hover:border-sky-200 focus-visible:ring-sky-500", text: "text-sky-700 dark:text-sky-300", arrow: "bg-sky-50 group-hover:bg-sky-600 group-hover:text-white dark:bg-sky-950/50" },
@@ -397,10 +415,17 @@ export default function Home() {
                 { icon: TrendingUp, href: "/programs/livelihood", tint: "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300", top: "bg-rose-400", border: "hover:border-rose-200 focus-visible:ring-rose-500", text: "text-rose-700 dark:text-rose-300", arrow: "bg-rose-50 group-hover:bg-rose-600 group-hover:text-white dark:bg-rose-950/50" },
                 { icon: Target, href: "/programs/capacity", tint: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300", top: "bg-amber-400", border: "hover:border-amber-200 focus-visible:ring-amber-500", text: "text-amber-700 dark:text-amber-300", arrow: "bg-amber-50 group-hover:bg-amber-600 group-hover:text-white dark:bg-amber-950/50" },
               ];
-              const cfg = styles[i];
+              const cfg = styles[i % styles.length];
+              const slugMap: Record<string, string> = {
+                education: "/programs/education",
+                wash: "/programs/wash",
+                livelihood: "/programs/livelihood",
+                capacity: "/programs/capacity",
+              };
+              const resolvedHref = (item.slug && slugMap[item.slug]) || cfg.href;
               const Icon = cfg.icon;
               return (
-                <Link key={item.id} href={cfg.href} aria-labelledby={`pillar-title-${item.id}`}
+                <Link key={item.id} href={resolvedHref} aria-labelledby={`pillar-title-${item.id}`}
                   className={`group relative flex h-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_4px_20px_-8px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_-12px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 motion-reduce:transform-none motion-reduce:transition-none sm:p-7 dark:border-slate-800 dark:bg-slate-900 ${cfg.border}`}>
                   <div className={`absolute inset-x-0 top-0 h-[3px] ${cfg.top}`} aria-hidden="true" />
                   <div className="mb-6 flex items-center justify-between gap-4">

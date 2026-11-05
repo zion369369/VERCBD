@@ -9,6 +9,7 @@ import {
   Building2, Award, Users, HeartHandshake
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useContent } from "@/context/ContentContext";
 
 interface SpotlightSlide {
   id: string;
@@ -76,8 +77,13 @@ const PARTNER_LOGOS = [
 
 export default function GlobalCollaborationsSection() {
   const { language, t } = useLanguage();
+  const { partners } = useContent();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const displayedPartners = partners && partners.length > 0
+    ? partners.map((p) => ({ name: p.name, logo: p.logoUrl, type: p.category, website: p.websiteUrl }))
+    : PARTNER_LOGOS.map((p) => ({ ...p, website: "/partners" }));
 
   const isBn = language === "bn";
   const activeSlide = SPOTLIGHT_SLIDES[currentSlideIndex];
@@ -204,9 +210,9 @@ export default function GlobalCollaborationsSection() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {PARTNER_LOGOS.slice(0, 6).map((partner) => (
+                {displayedPartners.slice(0, 9).map((partner, idx) => (
                   <div
-                    key={partner.name}
+                    key={`${partner.name}-${idx}`}
                     title={`${partner.name} (${partner.type})`}
                     className="group relative px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white shadow-xs border border-slate-200/90 hover:border-brand-primary/50 hover:shadow-md transition-all duration-300 flex items-center justify-center h-11 sm:h-12 w-24 sm:w-28"
                   >

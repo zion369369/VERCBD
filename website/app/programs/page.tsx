@@ -27,10 +27,12 @@ import { useContent } from "@/context/ContentContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function SocialProgramsPage() {
-  const { primaryColor } = useContent();
+  const { primaryColor, programs } = useContent();
   const { language } = useLanguage();
 
   const isBn = language === "bn";
+  const getCmsProg = (slug: string, idx: number) =>
+    programs.find((p) => p.slug === slug) || programs[idx];
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -45,11 +47,11 @@ export default function SocialProgramsPage() {
       slug: "education",
       tagNumber: "01",
       icon: GraduationCap,
-      title: isBn ? "জীবন দক্ষতা ও প্রাথমিক শিক্ষা" : "Life Skill Education",
+      title: isBn ? "জীবন দক্ষতা ও প্রাথমিক শিক্ষা" : (getCmsProg("education", 0)?.title || "Life Skill Education"),
       subtitle: isBn ? "সবার জন্য অন্তর্ভুক্তিমূলক মানসম্মত শিক্ষা" : "Inclusive Quality Learning for Every Child",
       desc: isBn
         ? "সুবিধাবঞ্চিত শিশুদের জন্য আনন্দময় উপানুষ্ঠানিক শিক্ষা, প্রাক-প্রাথমিক ও প্রাথমিক সহায়তা, কিশোর-কিশোরী ও বয়স্ক শিক্ষা এবং জীবন দক্ষতা প্রশিক্ষণ কর্মসূচি।"
-        : "Delivering inclusive non-formal primary education, early childhood development, adolescent literacy, and practical life-skills training for marginalized children and youth.",
+        : (getCmsProg("education", 0)?.description || "Delivering inclusive non-formal primary education, early childhood development, adolescent literacy, and practical life-skills training for marginalized children and youth."),
       href: "/programs/education",
       lightBg: "from-sky-100/90 via-sky-50/70 to-blue-50/60",
       darkBg: "dark:from-sky-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
@@ -84,11 +86,11 @@ export default function SocialProgramsPage() {
       slug: "wash",
       tagNumber: "02",
       icon: Droplets,
-      title: isBn ? "স্বাস্থ্য, পুষ্টি ও ওয়াশ (WaSH)" : "Health, Nutrition & WaSH",
+      title: isBn ? "স্বাস্থ্য, পুষ্টি ও ওয়াশ (WaSH)" : (getCmsProg("wash", 1)?.title || "Health, Nutrition & WaSH"),
       subtitle: isBn ? "কমিউনিটি পরিচালিত সম্পূর্ণ স্যানিটেশন পথিকৃৎ" : "Global Pioneer of Community-Led Total Sanitation",
       desc: isBn
         ? "বিশ্বব্যাপী সমাদৃত সিএলটিএস (CLTS) পদ্ধতির উদ্ভাবক হিসেবে শতভাগ স্যানিটেশন নিশ্চিতকরণ, আর্সেনিকমুক্ত নিরাপদ পানি সরবরাহ এবং মা ও শিশু স্বাস্থ্যসেবা।"
-        : "Global pioneer of Community-Led Total Sanitation (CLTS), bringing 100% open-defecation-free status, arsenic-safe drinking water, and mother & child healthcare to millions.",
+        : (getCmsProg("wash", 1)?.description || "Global pioneer of Community-Led Total Sanitation (CLTS), bringing 100% open-defecation-free status, arsenic-safe drinking water, and mother & child healthcare to millions."),
       href: "/programs/wash",
       lightBg: "from-emerald-100/90 via-emerald-50/70 to-teal-50/60",
       darkBg: "dark:from-emerald-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
@@ -123,11 +125,11 @@ export default function SocialProgramsPage() {
       slug: "livelihood",
       tagNumber: "03",
       icon: TrendingUp,
-      title: isBn ? "জীবিকা ও নারী ক্ষমতায়ন" : "Livelihood & Empowerment",
+      title: isBn ? "জীবিকা ও নারী ক্ষমতায়ন" : (getCmsProg("livelihood", 2)?.title || "Livelihood & Empowerment"),
       subtitle: isBn ? "টেকসই অর্থনৈতিক উন্নয়ন ও স্বাবলম্বিতা" : "Resilient Futures Through Economic Empowerment",
       desc: isBn
         ? "কারিগরি ও বৃত্তিমূলক প্রশিক্ষণ, কৃষি ও অকৃষি ভিত্তিক ক্ষুদ্র উদ্যোগ সৃষ্টি, নারী উদ্যোক্তা তৈরি এবং জলবায়ু সহনশীল টেকসই জীবিকা উন্নয়ন।"
-        : "Building resilient livelihoods through market-driven vocational training, women-led micro-enterprises, agro-technology transfer, and climate-adaptive income generation.",
+        : (getCmsProg("livelihood", 2)?.description || "Building resilient livelihoods through market-driven vocational training, women-led micro-enterprises, agro-technology transfer, and climate-adaptive income generation."),
       href: "/programs/livelihood",
       lightBg: "from-rose-100/90 via-rose-50/70 to-orange-50/60",
       darkBg: "dark:from-rose-950/40 dark:via-slate-900/80 dark:to-slate-900/90",
@@ -162,11 +164,11 @@ export default function SocialProgramsPage() {
       slug: "capacity",
       tagNumber: "04",
       icon: Target,
-      title: isBn ? "সক্ষমতা বৃদ্ধি ও সুশাসন" : "Capacity Building & Training",
+      title: isBn ? "সক্ষমতা বৃদ্ধি ও সুশাসন" : (getCmsProg("capacity", 3)?.title || "Capacity Building & Training"),
       subtitle: isBn ? "স্থানীয় প্রতিষ্ঠান ও তৃণমূল নেতৃত্ব বিকাশ" : "Institutional Strengthening & Good Governance",
       desc: isBn
         ? "স্থানীয় সরকার প্রতিষ্ঠান (ইউনিয়ন পরিষদ), তৃণমূল সামাজিক সংগঠন (CBO), যুব নেতৃত্ব ও দুর্যোগ ব্যবস্থাপনা কমিটির প্রাতিষ্ঠানিক সক্ষমতা জোরদার।"
-        : "Strengthening local government bodies (Union Parishads), empowering grassroots Community-Based Organizations (CBOs), and training youth leaders for lasting civic change.",
+        : (getCmsProg("capacity", 3)?.description || "Strengthening local government bodies (Union Parishads), empowering grassroots Community-Based Organizations (CBOs), and training youth leaders for lasting civic change."),
       href: "/programs/capacity",
       lightBg: "from-amber-100/90 via-amber-50/70 to-yellow-50/60",
       darkBg: "dark:from-amber-950/40 dark:via-slate-900/80 dark:to-slate-900/90",

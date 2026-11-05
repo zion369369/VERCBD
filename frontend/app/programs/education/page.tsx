@@ -29,11 +29,14 @@ import {
   Compass
 } from "lucide-react";
 import Image from "next/image";
+import { useContent } from "@/context/ContentContext";
 import educationHero1 from "@/app/assets/edu_1.png";
 import educationHero2 from "@/app/assets/edu_2.png";
 import educationHero3 from "@/app/assets/edu_3.png";
 
 export default function LifeSkillEducationPage() {
+  const { programs } = useContent();
+  const cmsProgram = programs.find((p) => p.slug === "education") || programs[0];
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [educationHero1, educationHero2, educationHero3];
 
@@ -189,7 +192,7 @@ export default function LifeSkillEducationPage() {
 
             <div className="space-y-3">
               <span className="inline-block px-4 py-1 bg-brand-primary/30 backdrop-blur-md rounded-full text-xs font-bold text-brand-secondary uppercase tracking-widest border border-brand-primary/40">
-                Life Skill Education Section
+                {cmsProgram?.title || "Life Skill Education Section"}
               </span>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
                 Inclusive Learning & <br />
